@@ -1,0 +1,47 @@
+// npx prisma generate
+// npx prisma migrate dev --name hst
+// npx prisma migrate deploy
+
+generator client {
+  provider      = "prisma-client-js"
+  output        = "../prisma/generated"
+  binaryTargets = ["native", "linux-arm64-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+//Modelo da Tabela de Usuário
+model Users {
+  id         Int       @id @default(autoincrement())
+  user       String    @unique
+  password   String
+  name       String
+  active     Boolean   @default(true)
+  dateJoined DateTime  @default(now())
+  lastLogin  DateTime?
+  updatedAt  DateTime  @default(now())
+
+  @@index(id(sort: Asc), name: "IndexUserById")
+}
+
+//Modelo da Tabela de Aeroportos
+model Airports {
+  id          Int    @id @default(autoincrement())
+  city        String
+  airportCode String @unique
+
+  @@index(id(sort: Asc), name: "IndexAirportsById")
+}
+
+//Modelo da Tabela de Locais que vão aparecer na tela de Home
+model Locals {
+  id     Int     @id @default(autoincrement())
+  name   String
+  image  String
+  active Boolean
+
+  @@index(id(sort: Asc), name: "IndexLocalsById")
+}
