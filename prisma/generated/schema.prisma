@@ -29,19 +29,22 @@ model Users {
 
 //Modelo da Tabela de Aeroportos
 model Airports {
-  id          Int    @id @default(autoincrement())
+  id          Int     @id @default(autoincrement())
   city        String
-  airportCode String @unique
+  airportCode String  @unique
+  local       Locals? @relation("AirportToLocal")
 
   @@index(id(sort: Asc), name: "IndexAirportsById")
 }
 
 //Modelo da Tabela de Locais que vão aparecer na tela de Home
 model Locals {
-  id     Int     @id @default(autoincrement())
-  name   String
-  image  String
-  active Boolean
+  id        Int      @id @default(autoincrement())
+  airportId Int      @unique
+  city      String
+  image     String
+  active    Boolean  @default(true)
+  airport   Airports @relation("AirportToLocal", fields: [airportId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@index(id(sort: Asc), name: "IndexLocalsById")
 }

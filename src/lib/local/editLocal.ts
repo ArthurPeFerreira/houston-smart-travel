@@ -1,0 +1,41 @@
+import { prismaClient } from "../prisma/prisma"; // Importa o cliente do Prisma para interagir com o banco de dados
+import { updateLocalCache } from "./cacheLocal"; // Importa a função para atualizar o cache de Locais
+import { EditLocalType, LocalType } from "./types"; // Importa o tipo LocalType para garantir a tipagem correta
+
+// Função assíncrona para editar as informações de um Local no banco de dados
+export async function editLocal(localInfo: EditLocalType): Promise<LocalType | undefined> {
+    try {
+        // Atualiza as informações do Local no banco de dados usando o Prisma
+        let localEdited = await prismaClient.locals.update({
+            where: {
+                id: localInfo.id // Localiza o Local pelo ID fornecido
+            },
+            data: {
+                city: localInfo.city, // Atualiza o nome da cidade do Local
+                image: localInfo.image,
+                active: localInfo.active,
+                airportId: localInfo.airportId,
+            },
+            select: {
+                id: true,
+                city: true,
+                image: true,
+                active: true,
+                airport: true,
+            }
+        });
+
+        // Atualiza o Cache dos Locais para refletir as mudanças recentes
+        await updateLocalCache();
+
+        // Retorna o Local atualizado com as novas informações
+        return localEdited;
+    } catch {
+        // Em caso de erro, exibe uma mensagem de erro no console
+        console.error("Failed to Edit Local!");
+        return undefined; // Retorna undefined para indicar que a operação falhou
+    } finally {
+        // Desconecta o cliente do Prisma após a operação, garantindo que a conexão seja encerrada
+        await prismaClient.$disconnect();
+    }
+}

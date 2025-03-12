@@ -16,11 +16,14 @@ import { useEffect, useState } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { toastConfigs } from "@/lib/toastify/toastify";
-import { CreateAirportType } from "@/lib/airport/types";
+import { AirportType } from "@/lib/airport/types";
 
+interface AirportBoxProps {
+  airportsInitialData: AirportType[] | undefined;
+}
 
 // Componente principal que exibe a tabela de usuários
-export default function LocalBox() {
+export default function LocalBox(data:AirportBoxProps) {
 
     const inputs = "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white"; 
 

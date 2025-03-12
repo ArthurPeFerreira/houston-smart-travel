@@ -15,8 +15,12 @@ import { AirportType, CreateAndEditAirportType } from "@/lib/airport/types";
 import { FaSpinner } from "react-icons/fa";
 import AirportsInfo from "./components/AirportsInfo";
 
+interface AirportBoxProps {
+  airportsInitialData: AirportType[] | undefined;
+}
+
 // Componente principal que gerencia aeroportos
-export default function AirportBox() {
+export default function AirportBox(data: AirportBoxProps) {
 
     // Classe para estilização de inputs
     const inputs = "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white"; 
@@ -47,11 +51,8 @@ export default function AirportBox() {
       async function fetchInitialData() {
         setLoadingAirportsInfoModal(true);
         try {
-          // Requisição para obter a lista de aeroportos
-          const response = await api.get("api/admin/airport");
-
-          if(response.data){  
-            setAirports(response.data);
+          if(data.airportsInitialData){  
+            setAirports(data.airportsInitialData);
           }
         } catch (error) {
           console.error("Failed to Find Initial Data!");

@@ -66,7 +66,7 @@ export class PrismaClient<
    */
 
   constructor(optionsArg ?: Prisma.Subset<ClientOptions, Prisma.PrismaClientOptions>);
-  $on<V extends U>(eventType: V, callback: (event: V extends 'query' ? Prisma.QueryEvent : Prisma.LogEvent) => void): void;
+  $on<V extends U>(eventType: V, callback: (event: V extends 'query' ? Prisma.QueryEvent : Prisma.LogEvent) => void): PrismaClient;
 
   /**
    * Connect with the database
@@ -150,9 +150,9 @@ export class PrismaClient<
   $transaction<R>(fn: (prisma: Omit<PrismaClient, runtime.ITXClientDenyList>) => $Utils.JsPromise<R>, options?: { maxWait?: number, timeout?: number, isolationLevel?: Prisma.TransactionIsolationLevel }): $Utils.JsPromise<R>
 
 
-  $extends: $Extensions.ExtendsHook<"extends", Prisma.TypeMapCb, ExtArgs, $Utils.Call<Prisma.TypeMapCb, {
+  $extends: $Extensions.ExtendsHook<"extends", Prisma.TypeMapCb<ClientOptions>, ExtArgs, $Utils.Call<Prisma.TypeMapCb<ClientOptions>, {
     extArgs: ExtArgs
-  }>, ClientOptions>
+  }>>
 
       /**
    * `prisma.users`: Exposes CRUD operations for the **Users** model.
@@ -241,8 +241,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.4.1
-   * Query Engine version: a9055b89e58b4b5bfb59600785423b1db3d0e75d
+   * Prisma Client JS version: 6.5.0
+   * Query Engine version: 173f8d54f8d52e692c7e27e72a88314ec7aeff60
    */
   export type PrismaVersion = {
     client: string
@@ -509,7 +509,7 @@ export namespace Prisma {
   type AtLeast<O extends object, K extends string> = NoExpand<
     O extends unknown
     ? | (K extends keyof O ? { [P in K]: O[P] } & O : O)
-      | {[P in keyof O as P extends K ? K : never]-?: O[P]} & O
+      | {[P in keyof O as P extends K ? P : never]-?: O[P]} & O
     : never>;
 
   type _Strict<U, _U = U> = U extends unknown ? U & OptionalFlat<_Record<Exclude<Keys<_U>, keyof U>, never>> : never;
@@ -635,11 +635,14 @@ export namespace Prisma {
     db?: Datasource
   }
 
-  interface TypeMapCb extends $Utils.Fn<{extArgs: $Extensions.InternalArgs, clientOptions: PrismaClientOptions }, $Utils.Record<string, any>> {
-    returns: Prisma.TypeMap<this['params']['extArgs'], this['params']['clientOptions']>
+  interface TypeMapCb<ClientOptions = {}> extends $Utils.Fn<{extArgs: $Extensions.InternalArgs }, $Utils.Record<string, any>> {
+    returns: Prisma.TypeMap<this['params']['extArgs'], ClientOptions extends { omit: infer OmitOptions } ? OmitOptions : {}>
   }
 
-  export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
+  export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> = {
+    globalOmitOptions: {
+      omit: GlobalOmitOptions
+    }
     meta: {
       modelProps: "users" | "airports" | "locals"
       txIsolationLevel: Prisma.TransactionIsolationLevel
@@ -1330,7 +1333,7 @@ export namespace Prisma {
       select?: UsersCountAggregateInputType | true
     }
 
-  export interface UsersDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> {
+  export interface UsersDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
     [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Users'], meta: { name: 'Users' } }
     /**
      * Find zero or one Users that matches the filter.
@@ -1343,7 +1346,7 @@ export namespace Prisma {
      *   }
      * })
      */
-    findUnique<T extends UsersFindUniqueArgs>(args: SelectSubset<T, UsersFindUniqueArgs<ExtArgs>>): Prisma__UsersClient<$Result.GetResult<Prisma.$UsersPayload<ExtArgs>, T, "findUnique", ClientOptions> | null, null, ExtArgs, ClientOptions>
+    findUnique<T extends UsersFindUniqueArgs>(args: SelectSubset<T, UsersFindUniqueArgs<ExtArgs>>): Prisma__UsersClient<$Result.GetResult<Prisma.$UsersPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
      * Find one Users that matches the filter or throw an error with `error.code='P2025'`
@@ -1357,7 +1360,7 @@ export namespace Prisma {
      *   }
      * })
      */
-    findUniqueOrThrow<T extends UsersFindUniqueOrThrowArgs>(args: SelectSubset<T, UsersFindUniqueOrThrowArgs<ExtArgs>>): Prisma__UsersClient<$Result.GetResult<Prisma.$UsersPayload<ExtArgs>, T, "findUniqueOrThrow", ClientOptions>, never, ExtArgs, ClientOptions>
+    findUniqueOrThrow<T extends UsersFindUniqueOrThrowArgs>(args: SelectSubset<T, UsersFindUniqueOrThrowArgs<ExtArgs>>): Prisma__UsersClient<$Result.GetResult<Prisma.$UsersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Find the first Users that matches the filter.
@@ -1372,7 +1375,7 @@ export namespace Prisma {
      *   }
      * })
      */
-    findFirst<T extends UsersFindFirstArgs>(args?: SelectSubset<T, UsersFindFirstArgs<ExtArgs>>): Prisma__UsersClient<$Result.GetResult<Prisma.$UsersPayload<ExtArgs>, T, "findFirst", ClientOptions> | null, null, ExtArgs, ClientOptions>
+    findFirst<T extends UsersFindFirstArgs>(args?: SelectSubset<T, UsersFindFirstArgs<ExtArgs>>): Prisma__UsersClient<$Result.GetResult<Prisma.$UsersPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
      * Find the first Users that matches the filter or
@@ -1388,7 +1391,7 @@ export namespace Prisma {
      *   }
      * })
      */
-    findFirstOrThrow<T extends UsersFindFirstOrThrowArgs>(args?: SelectSubset<T, UsersFindFirstOrThrowArgs<ExtArgs>>): Prisma__UsersClient<$Result.GetResult<Prisma.$UsersPayload<ExtArgs>, T, "findFirstOrThrow", ClientOptions>, never, ExtArgs, ClientOptions>
+    findFirstOrThrow<T extends UsersFindFirstOrThrowArgs>(args?: SelectSubset<T, UsersFindFirstOrThrowArgs<ExtArgs>>): Prisma__UsersClient<$Result.GetResult<Prisma.$UsersPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Find zero or more Users that matches the filter.
@@ -1406,7 +1409,7 @@ export namespace Prisma {
      * const usersWithIdOnly = await prisma.users.findMany({ select: { id: true } })
      * 
      */
-    findMany<T extends UsersFindManyArgs>(args?: SelectSubset<T, UsersFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UsersPayload<ExtArgs>, T, "findMany", ClientOptions>>
+    findMany<T extends UsersFindManyArgs>(args?: SelectSubset<T, UsersFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UsersPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
     /**
      * Create a Users.
@@ -1420,7 +1423,7 @@ export namespace Prisma {
      * })
      * 
      */
-    create<T extends UsersCreateArgs>(args: SelectSubset<T, UsersCreateArgs<ExtArgs>>): Prisma__UsersClient<$Result.GetResult<Prisma.$UsersPayload<ExtArgs>, T, "create", ClientOptions>, never, ExtArgs, ClientOptions>
+    create<T extends UsersCreateArgs>(args: SelectSubset<T, UsersCreateArgs<ExtArgs>>): Prisma__UsersClient<$Result.GetResult<Prisma.$UsersPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Create many Users.
@@ -1458,7 +1461,7 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    createManyAndReturn<T extends UsersCreateManyAndReturnArgs>(args?: SelectSubset<T, UsersCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UsersPayload<ExtArgs>, T, "createManyAndReturn", ClientOptions>>
+    createManyAndReturn<T extends UsersCreateManyAndReturnArgs>(args?: SelectSubset<T, UsersCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UsersPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
     /**
      * Delete a Users.
@@ -1472,7 +1475,7 @@ export namespace Prisma {
      * })
      * 
      */
-    delete<T extends UsersDeleteArgs>(args: SelectSubset<T, UsersDeleteArgs<ExtArgs>>): Prisma__UsersClient<$Result.GetResult<Prisma.$UsersPayload<ExtArgs>, T, "delete", ClientOptions>, never, ExtArgs, ClientOptions>
+    delete<T extends UsersDeleteArgs>(args: SelectSubset<T, UsersDeleteArgs<ExtArgs>>): Prisma__UsersClient<$Result.GetResult<Prisma.$UsersPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Update one Users.
@@ -1489,7 +1492,7 @@ export namespace Prisma {
      * })
      * 
      */
-    update<T extends UsersUpdateArgs>(args: SelectSubset<T, UsersUpdateArgs<ExtArgs>>): Prisma__UsersClient<$Result.GetResult<Prisma.$UsersPayload<ExtArgs>, T, "update", ClientOptions>, never, ExtArgs, ClientOptions>
+    update<T extends UsersUpdateArgs>(args: SelectSubset<T, UsersUpdateArgs<ExtArgs>>): Prisma__UsersClient<$Result.GetResult<Prisma.$UsersPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Delete zero or more Users.
@@ -1552,7 +1555,7 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    updateManyAndReturn<T extends UsersUpdateManyAndReturnArgs>(args: SelectSubset<T, UsersUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UsersPayload<ExtArgs>, T, "updateManyAndReturn", ClientOptions>>
+    updateManyAndReturn<T extends UsersUpdateManyAndReturnArgs>(args: SelectSubset<T, UsersUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UsersPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
     /**
      * Create or update one Users.
@@ -1571,7 +1574,7 @@ export namespace Prisma {
      *   }
      * })
      */
-    upsert<T extends UsersUpsertArgs>(args: SelectSubset<T, UsersUpsertArgs<ExtArgs>>): Prisma__UsersClient<$Result.GetResult<Prisma.$UsersPayload<ExtArgs>, T, "upsert", ClientOptions>, never, ExtArgs, ClientOptions>
+    upsert<T extends UsersUpsertArgs>(args: SelectSubset<T, UsersUpsertArgs<ExtArgs>>): Prisma__UsersClient<$Result.GetResult<Prisma.$UsersPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
 
     /**
@@ -1711,7 +1714,7 @@ export namespace Prisma {
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export interface Prisma__UsersClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> extends Prisma.PrismaPromise<T> {
+  export interface Prisma__UsersClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -2298,6 +2301,7 @@ export namespace Prisma {
     id?: boolean
     city?: boolean
     airportCode?: boolean
+    local?: boolean | Airports$localArgs<ExtArgs>
   }, ExtArgs["result"]["airports"]>
 
   export type AirportsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -2319,10 +2323,17 @@ export namespace Prisma {
   }
 
   export type AirportsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "city" | "airportCode", ExtArgs["result"]["airports"]>
+  export type AirportsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    local?: boolean | Airports$localArgs<ExtArgs>
+  }
+  export type AirportsIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type AirportsIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
 
   export type $AirportsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Airports"
-    objects: {}
+    objects: {
+      local: Prisma.$LocalsPayload<ExtArgs> | null
+    }
     scalars: $Extensions.GetPayloadResult<{
       id: number
       city: string
@@ -2338,7 +2349,7 @@ export namespace Prisma {
       select?: AirportsCountAggregateInputType | true
     }
 
-  export interface AirportsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> {
+  export interface AirportsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
     [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Airports'], meta: { name: 'Airports' } }
     /**
      * Find zero or one Airports that matches the filter.
@@ -2351,7 +2362,7 @@ export namespace Prisma {
      *   }
      * })
      */
-    findUnique<T extends AirportsFindUniqueArgs>(args: SelectSubset<T, AirportsFindUniqueArgs<ExtArgs>>): Prisma__AirportsClient<$Result.GetResult<Prisma.$AirportsPayload<ExtArgs>, T, "findUnique", ClientOptions> | null, null, ExtArgs, ClientOptions>
+    findUnique<T extends AirportsFindUniqueArgs>(args: SelectSubset<T, AirportsFindUniqueArgs<ExtArgs>>): Prisma__AirportsClient<$Result.GetResult<Prisma.$AirportsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
      * Find one Airports that matches the filter or throw an error with `error.code='P2025'`
@@ -2365,7 +2376,7 @@ export namespace Prisma {
      *   }
      * })
      */
-    findUniqueOrThrow<T extends AirportsFindUniqueOrThrowArgs>(args: SelectSubset<T, AirportsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AirportsClient<$Result.GetResult<Prisma.$AirportsPayload<ExtArgs>, T, "findUniqueOrThrow", ClientOptions>, never, ExtArgs, ClientOptions>
+    findUniqueOrThrow<T extends AirportsFindUniqueOrThrowArgs>(args: SelectSubset<T, AirportsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AirportsClient<$Result.GetResult<Prisma.$AirportsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Find the first Airports that matches the filter.
@@ -2380,7 +2391,7 @@ export namespace Prisma {
      *   }
      * })
      */
-    findFirst<T extends AirportsFindFirstArgs>(args?: SelectSubset<T, AirportsFindFirstArgs<ExtArgs>>): Prisma__AirportsClient<$Result.GetResult<Prisma.$AirportsPayload<ExtArgs>, T, "findFirst", ClientOptions> | null, null, ExtArgs, ClientOptions>
+    findFirst<T extends AirportsFindFirstArgs>(args?: SelectSubset<T, AirportsFindFirstArgs<ExtArgs>>): Prisma__AirportsClient<$Result.GetResult<Prisma.$AirportsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
      * Find the first Airports that matches the filter or
@@ -2396,7 +2407,7 @@ export namespace Prisma {
      *   }
      * })
      */
-    findFirstOrThrow<T extends AirportsFindFirstOrThrowArgs>(args?: SelectSubset<T, AirportsFindFirstOrThrowArgs<ExtArgs>>): Prisma__AirportsClient<$Result.GetResult<Prisma.$AirportsPayload<ExtArgs>, T, "findFirstOrThrow", ClientOptions>, never, ExtArgs, ClientOptions>
+    findFirstOrThrow<T extends AirportsFindFirstOrThrowArgs>(args?: SelectSubset<T, AirportsFindFirstOrThrowArgs<ExtArgs>>): Prisma__AirportsClient<$Result.GetResult<Prisma.$AirportsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Find zero or more Airports that matches the filter.
@@ -2414,7 +2425,7 @@ export namespace Prisma {
      * const airportsWithIdOnly = await prisma.airports.findMany({ select: { id: true } })
      * 
      */
-    findMany<T extends AirportsFindManyArgs>(args?: SelectSubset<T, AirportsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AirportsPayload<ExtArgs>, T, "findMany", ClientOptions>>
+    findMany<T extends AirportsFindManyArgs>(args?: SelectSubset<T, AirportsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AirportsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
     /**
      * Create a Airports.
@@ -2428,7 +2439,7 @@ export namespace Prisma {
      * })
      * 
      */
-    create<T extends AirportsCreateArgs>(args: SelectSubset<T, AirportsCreateArgs<ExtArgs>>): Prisma__AirportsClient<$Result.GetResult<Prisma.$AirportsPayload<ExtArgs>, T, "create", ClientOptions>, never, ExtArgs, ClientOptions>
+    create<T extends AirportsCreateArgs>(args: SelectSubset<T, AirportsCreateArgs<ExtArgs>>): Prisma__AirportsClient<$Result.GetResult<Prisma.$AirportsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Create many Airports.
@@ -2466,7 +2477,7 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    createManyAndReturn<T extends AirportsCreateManyAndReturnArgs>(args?: SelectSubset<T, AirportsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AirportsPayload<ExtArgs>, T, "createManyAndReturn", ClientOptions>>
+    createManyAndReturn<T extends AirportsCreateManyAndReturnArgs>(args?: SelectSubset<T, AirportsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AirportsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
     /**
      * Delete a Airports.
@@ -2480,7 +2491,7 @@ export namespace Prisma {
      * })
      * 
      */
-    delete<T extends AirportsDeleteArgs>(args: SelectSubset<T, AirportsDeleteArgs<ExtArgs>>): Prisma__AirportsClient<$Result.GetResult<Prisma.$AirportsPayload<ExtArgs>, T, "delete", ClientOptions>, never, ExtArgs, ClientOptions>
+    delete<T extends AirportsDeleteArgs>(args: SelectSubset<T, AirportsDeleteArgs<ExtArgs>>): Prisma__AirportsClient<$Result.GetResult<Prisma.$AirportsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Update one Airports.
@@ -2497,7 +2508,7 @@ export namespace Prisma {
      * })
      * 
      */
-    update<T extends AirportsUpdateArgs>(args: SelectSubset<T, AirportsUpdateArgs<ExtArgs>>): Prisma__AirportsClient<$Result.GetResult<Prisma.$AirportsPayload<ExtArgs>, T, "update", ClientOptions>, never, ExtArgs, ClientOptions>
+    update<T extends AirportsUpdateArgs>(args: SelectSubset<T, AirportsUpdateArgs<ExtArgs>>): Prisma__AirportsClient<$Result.GetResult<Prisma.$AirportsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Delete zero or more Airports.
@@ -2560,7 +2571,7 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    updateManyAndReturn<T extends AirportsUpdateManyAndReturnArgs>(args: SelectSubset<T, AirportsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AirportsPayload<ExtArgs>, T, "updateManyAndReturn", ClientOptions>>
+    updateManyAndReturn<T extends AirportsUpdateManyAndReturnArgs>(args: SelectSubset<T, AirportsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AirportsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
     /**
      * Create or update one Airports.
@@ -2579,7 +2590,7 @@ export namespace Prisma {
      *   }
      * })
      */
-    upsert<T extends AirportsUpsertArgs>(args: SelectSubset<T, AirportsUpsertArgs<ExtArgs>>): Prisma__AirportsClient<$Result.GetResult<Prisma.$AirportsPayload<ExtArgs>, T, "upsert", ClientOptions>, never, ExtArgs, ClientOptions>
+    upsert<T extends AirportsUpsertArgs>(args: SelectSubset<T, AirportsUpsertArgs<ExtArgs>>): Prisma__AirportsClient<$Result.GetResult<Prisma.$AirportsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
 
     /**
@@ -2719,8 +2730,9 @@ export namespace Prisma {
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export interface Prisma__AirportsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> extends Prisma.PrismaPromise<T> {
+  export interface Prisma__AirportsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    local<T extends Airports$localArgs<ExtArgs> = {}>(args?: Subset<T, Airports$localArgs<ExtArgs>>): Prisma__LocalsClient<$Result.GetResult<Prisma.$LocalsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2770,6 +2782,10 @@ export namespace Prisma {
      */
     omit?: AirportsOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AirportsInclude<ExtArgs> | null
+    /**
      * Filter, which Airports to fetch.
      */
     where: AirportsWhereUniqueInput
@@ -2788,6 +2804,10 @@ export namespace Prisma {
      */
     omit?: AirportsOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AirportsInclude<ExtArgs> | null
+    /**
      * Filter, which Airports to fetch.
      */
     where: AirportsWhereUniqueInput
@@ -2805,6 +2825,10 @@ export namespace Prisma {
      * Omit specific fields from the Airports
      */
     omit?: AirportsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AirportsInclude<ExtArgs> | null
     /**
      * Filter, which Airports to fetch.
      */
@@ -2854,6 +2878,10 @@ export namespace Prisma {
      */
     omit?: AirportsOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AirportsInclude<ExtArgs> | null
+    /**
      * Filter, which Airports to fetch.
      */
     where?: AirportsWhereInput
@@ -2902,6 +2930,10 @@ export namespace Prisma {
      */
     omit?: AirportsOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AirportsInclude<ExtArgs> | null
+    /**
      * Filter, which Airports to fetch.
      */
     where?: AirportsWhereInput
@@ -2944,6 +2976,10 @@ export namespace Prisma {
      * Omit specific fields from the Airports
      */
     omit?: AirportsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AirportsInclude<ExtArgs> | null
     /**
      * The data needed to create a Airports.
      */
@@ -2992,6 +3028,10 @@ export namespace Prisma {
      * Omit specific fields from the Airports
      */
     omit?: AirportsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AirportsInclude<ExtArgs> | null
     /**
      * The data needed to update a Airports.
      */
@@ -3059,6 +3099,10 @@ export namespace Prisma {
      */
     omit?: AirportsOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AirportsInclude<ExtArgs> | null
+    /**
      * The filter to search for the Airports to update in case it exists.
      */
     where: AirportsWhereUniqueInput
@@ -3085,6 +3129,10 @@ export namespace Prisma {
      */
     omit?: AirportsOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AirportsInclude<ExtArgs> | null
+    /**
      * Filter which Airports to delete.
      */
     where: AirportsWhereUniqueInput
@@ -3105,6 +3153,25 @@ export namespace Prisma {
   }
 
   /**
+   * Airports.local
+   */
+  export type Airports$localArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Locals
+     */
+    select?: LocalsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Locals
+     */
+    omit?: LocalsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocalsInclude<ExtArgs> | null
+    where?: LocalsWhereInput
+  }
+
+  /**
    * Airports without action
    */
   export type AirportsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3116,6 +3183,10 @@ export namespace Prisma {
      * Omit specific fields from the Airports
      */
     omit?: AirportsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AirportsInclude<ExtArgs> | null
   }
 
 
@@ -3133,29 +3204,34 @@ export namespace Prisma {
 
   export type LocalsAvgAggregateOutputType = {
     id: number | null
+    airportId: number | null
   }
 
   export type LocalsSumAggregateOutputType = {
     id: number | null
+    airportId: number | null
   }
 
   export type LocalsMinAggregateOutputType = {
     id: number | null
-    name: string | null
+    airportId: number | null
+    city: string | null
     image: string | null
     active: boolean | null
   }
 
   export type LocalsMaxAggregateOutputType = {
     id: number | null
-    name: string | null
+    airportId: number | null
+    city: string | null
     image: string | null
     active: boolean | null
   }
 
   export type LocalsCountAggregateOutputType = {
     id: number
-    name: number
+    airportId: number
+    city: number
     image: number
     active: number
     _all: number
@@ -3164,29 +3240,34 @@ export namespace Prisma {
 
   export type LocalsAvgAggregateInputType = {
     id?: true
+    airportId?: true
   }
 
   export type LocalsSumAggregateInputType = {
     id?: true
+    airportId?: true
   }
 
   export type LocalsMinAggregateInputType = {
     id?: true
-    name?: true
+    airportId?: true
+    city?: true
     image?: true
     active?: true
   }
 
   export type LocalsMaxAggregateInputType = {
     id?: true
-    name?: true
+    airportId?: true
+    city?: true
     image?: true
     active?: true
   }
 
   export type LocalsCountAggregateInputType = {
     id?: true
-    name?: true
+    airportId?: true
+    city?: true
     image?: true
     active?: true
     _all?: true
@@ -3280,7 +3361,8 @@ export namespace Prisma {
 
   export type LocalsGroupByOutputType = {
     id: number
-    name: string
+    airportId: number
+    city: string
     image: string
     active: boolean
     _count: LocalsCountAggregateOutputType | null
@@ -3306,40 +3388,59 @@ export namespace Prisma {
 
   export type LocalsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    name?: boolean
+    airportId?: boolean
+    city?: boolean
     image?: boolean
     active?: boolean
+    airport?: boolean | AirportsDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["locals"]>
 
   export type LocalsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    name?: boolean
+    airportId?: boolean
+    city?: boolean
     image?: boolean
     active?: boolean
+    airport?: boolean | AirportsDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["locals"]>
 
   export type LocalsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    name?: boolean
+    airportId?: boolean
+    city?: boolean
     image?: boolean
     active?: boolean
+    airport?: boolean | AirportsDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["locals"]>
 
   export type LocalsSelectScalar = {
     id?: boolean
-    name?: boolean
+    airportId?: boolean
+    city?: boolean
     image?: boolean
     active?: boolean
   }
 
-  export type LocalsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "image" | "active", ExtArgs["result"]["locals"]>
+  export type LocalsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "airportId" | "city" | "image" | "active", ExtArgs["result"]["locals"]>
+  export type LocalsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    airport?: boolean | AirportsDefaultArgs<ExtArgs>
+  }
+  export type LocalsIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    airport?: boolean | AirportsDefaultArgs<ExtArgs>
+  }
+  export type LocalsIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    airport?: boolean | AirportsDefaultArgs<ExtArgs>
+  }
 
   export type $LocalsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Locals"
-    objects: {}
+    objects: {
+      airport: Prisma.$AirportsPayload<ExtArgs>
+    }
     scalars: $Extensions.GetPayloadResult<{
       id: number
-      name: string
+      airportId: number
+      city: string
       image: string
       active: boolean
     }, ExtArgs["result"]["locals"]>
@@ -3353,7 +3454,7 @@ export namespace Prisma {
       select?: LocalsCountAggregateInputType | true
     }
 
-  export interface LocalsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> {
+  export interface LocalsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
     [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Locals'], meta: { name: 'Locals' } }
     /**
      * Find zero or one Locals that matches the filter.
@@ -3366,7 +3467,7 @@ export namespace Prisma {
      *   }
      * })
      */
-    findUnique<T extends LocalsFindUniqueArgs>(args: SelectSubset<T, LocalsFindUniqueArgs<ExtArgs>>): Prisma__LocalsClient<$Result.GetResult<Prisma.$LocalsPayload<ExtArgs>, T, "findUnique", ClientOptions> | null, null, ExtArgs, ClientOptions>
+    findUnique<T extends LocalsFindUniqueArgs>(args: SelectSubset<T, LocalsFindUniqueArgs<ExtArgs>>): Prisma__LocalsClient<$Result.GetResult<Prisma.$LocalsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
      * Find one Locals that matches the filter or throw an error with `error.code='P2025'`
@@ -3380,7 +3481,7 @@ export namespace Prisma {
      *   }
      * })
      */
-    findUniqueOrThrow<T extends LocalsFindUniqueOrThrowArgs>(args: SelectSubset<T, LocalsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__LocalsClient<$Result.GetResult<Prisma.$LocalsPayload<ExtArgs>, T, "findUniqueOrThrow", ClientOptions>, never, ExtArgs, ClientOptions>
+    findUniqueOrThrow<T extends LocalsFindUniqueOrThrowArgs>(args: SelectSubset<T, LocalsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__LocalsClient<$Result.GetResult<Prisma.$LocalsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Find the first Locals that matches the filter.
@@ -3395,7 +3496,7 @@ export namespace Prisma {
      *   }
      * })
      */
-    findFirst<T extends LocalsFindFirstArgs>(args?: SelectSubset<T, LocalsFindFirstArgs<ExtArgs>>): Prisma__LocalsClient<$Result.GetResult<Prisma.$LocalsPayload<ExtArgs>, T, "findFirst", ClientOptions> | null, null, ExtArgs, ClientOptions>
+    findFirst<T extends LocalsFindFirstArgs>(args?: SelectSubset<T, LocalsFindFirstArgs<ExtArgs>>): Prisma__LocalsClient<$Result.GetResult<Prisma.$LocalsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
      * Find the first Locals that matches the filter or
@@ -3411,7 +3512,7 @@ export namespace Prisma {
      *   }
      * })
      */
-    findFirstOrThrow<T extends LocalsFindFirstOrThrowArgs>(args?: SelectSubset<T, LocalsFindFirstOrThrowArgs<ExtArgs>>): Prisma__LocalsClient<$Result.GetResult<Prisma.$LocalsPayload<ExtArgs>, T, "findFirstOrThrow", ClientOptions>, never, ExtArgs, ClientOptions>
+    findFirstOrThrow<T extends LocalsFindFirstOrThrowArgs>(args?: SelectSubset<T, LocalsFindFirstOrThrowArgs<ExtArgs>>): Prisma__LocalsClient<$Result.GetResult<Prisma.$LocalsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Find zero or more Locals that matches the filter.
@@ -3429,7 +3530,7 @@ export namespace Prisma {
      * const localsWithIdOnly = await prisma.locals.findMany({ select: { id: true } })
      * 
      */
-    findMany<T extends LocalsFindManyArgs>(args?: SelectSubset<T, LocalsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LocalsPayload<ExtArgs>, T, "findMany", ClientOptions>>
+    findMany<T extends LocalsFindManyArgs>(args?: SelectSubset<T, LocalsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LocalsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
     /**
      * Create a Locals.
@@ -3443,7 +3544,7 @@ export namespace Prisma {
      * })
      * 
      */
-    create<T extends LocalsCreateArgs>(args: SelectSubset<T, LocalsCreateArgs<ExtArgs>>): Prisma__LocalsClient<$Result.GetResult<Prisma.$LocalsPayload<ExtArgs>, T, "create", ClientOptions>, never, ExtArgs, ClientOptions>
+    create<T extends LocalsCreateArgs>(args: SelectSubset<T, LocalsCreateArgs<ExtArgs>>): Prisma__LocalsClient<$Result.GetResult<Prisma.$LocalsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Create many Locals.
@@ -3481,7 +3582,7 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    createManyAndReturn<T extends LocalsCreateManyAndReturnArgs>(args?: SelectSubset<T, LocalsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LocalsPayload<ExtArgs>, T, "createManyAndReturn", ClientOptions>>
+    createManyAndReturn<T extends LocalsCreateManyAndReturnArgs>(args?: SelectSubset<T, LocalsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LocalsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
     /**
      * Delete a Locals.
@@ -3495,7 +3596,7 @@ export namespace Prisma {
      * })
      * 
      */
-    delete<T extends LocalsDeleteArgs>(args: SelectSubset<T, LocalsDeleteArgs<ExtArgs>>): Prisma__LocalsClient<$Result.GetResult<Prisma.$LocalsPayload<ExtArgs>, T, "delete", ClientOptions>, never, ExtArgs, ClientOptions>
+    delete<T extends LocalsDeleteArgs>(args: SelectSubset<T, LocalsDeleteArgs<ExtArgs>>): Prisma__LocalsClient<$Result.GetResult<Prisma.$LocalsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Update one Locals.
@@ -3512,7 +3613,7 @@ export namespace Prisma {
      * })
      * 
      */
-    update<T extends LocalsUpdateArgs>(args: SelectSubset<T, LocalsUpdateArgs<ExtArgs>>): Prisma__LocalsClient<$Result.GetResult<Prisma.$LocalsPayload<ExtArgs>, T, "update", ClientOptions>, never, ExtArgs, ClientOptions>
+    update<T extends LocalsUpdateArgs>(args: SelectSubset<T, LocalsUpdateArgs<ExtArgs>>): Prisma__LocalsClient<$Result.GetResult<Prisma.$LocalsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Delete zero or more Locals.
@@ -3575,7 +3676,7 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    updateManyAndReturn<T extends LocalsUpdateManyAndReturnArgs>(args: SelectSubset<T, LocalsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LocalsPayload<ExtArgs>, T, "updateManyAndReturn", ClientOptions>>
+    updateManyAndReturn<T extends LocalsUpdateManyAndReturnArgs>(args: SelectSubset<T, LocalsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LocalsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
     /**
      * Create or update one Locals.
@@ -3594,7 +3695,7 @@ export namespace Prisma {
      *   }
      * })
      */
-    upsert<T extends LocalsUpsertArgs>(args: SelectSubset<T, LocalsUpsertArgs<ExtArgs>>): Prisma__LocalsClient<$Result.GetResult<Prisma.$LocalsPayload<ExtArgs>, T, "upsert", ClientOptions>, never, ExtArgs, ClientOptions>
+    upsert<T extends LocalsUpsertArgs>(args: SelectSubset<T, LocalsUpsertArgs<ExtArgs>>): Prisma__LocalsClient<$Result.GetResult<Prisma.$LocalsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
 
     /**
@@ -3734,8 +3835,9 @@ export namespace Prisma {
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export interface Prisma__LocalsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> extends Prisma.PrismaPromise<T> {
+  export interface Prisma__LocalsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    airport<T extends AirportsDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AirportsDefaultArgs<ExtArgs>>): Prisma__AirportsClient<$Result.GetResult<Prisma.$AirportsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3766,7 +3868,8 @@ export namespace Prisma {
    */ 
   interface LocalsFieldRefs {
     readonly id: FieldRef<"Locals", 'Int'>
-    readonly name: FieldRef<"Locals", 'String'>
+    readonly airportId: FieldRef<"Locals", 'Int'>
+    readonly city: FieldRef<"Locals", 'String'>
     readonly image: FieldRef<"Locals", 'String'>
     readonly active: FieldRef<"Locals", 'Boolean'>
   }
@@ -3786,6 +3889,10 @@ export namespace Prisma {
      */
     omit?: LocalsOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocalsInclude<ExtArgs> | null
+    /**
      * Filter, which Locals to fetch.
      */
     where: LocalsWhereUniqueInput
@@ -3804,6 +3911,10 @@ export namespace Prisma {
      */
     omit?: LocalsOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocalsInclude<ExtArgs> | null
+    /**
      * Filter, which Locals to fetch.
      */
     where: LocalsWhereUniqueInput
@@ -3821,6 +3932,10 @@ export namespace Prisma {
      * Omit specific fields from the Locals
      */
     omit?: LocalsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocalsInclude<ExtArgs> | null
     /**
      * Filter, which Locals to fetch.
      */
@@ -3870,6 +3985,10 @@ export namespace Prisma {
      */
     omit?: LocalsOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocalsInclude<ExtArgs> | null
+    /**
      * Filter, which Locals to fetch.
      */
     where?: LocalsWhereInput
@@ -3918,6 +4037,10 @@ export namespace Prisma {
      */
     omit?: LocalsOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocalsInclude<ExtArgs> | null
+    /**
      * Filter, which Locals to fetch.
      */
     where?: LocalsWhereInput
@@ -3961,6 +4084,10 @@ export namespace Prisma {
      */
     omit?: LocalsOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocalsInclude<ExtArgs> | null
+    /**
      * The data needed to create a Locals.
      */
     data: XOR<LocalsCreateInput, LocalsUncheckedCreateInput>
@@ -3994,6 +4121,10 @@ export namespace Prisma {
      */
     data: LocalsCreateManyInput | LocalsCreateManyInput[]
     skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocalsIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -4008,6 +4139,10 @@ export namespace Prisma {
      * Omit specific fields from the Locals
      */
     omit?: LocalsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocalsInclude<ExtArgs> | null
     /**
      * The data needed to update a Locals.
      */
@@ -4060,6 +4195,10 @@ export namespace Prisma {
      * Limit how many Locals to update.
      */
     limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocalsIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -4074,6 +4213,10 @@ export namespace Prisma {
      * Omit specific fields from the Locals
      */
     omit?: LocalsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocalsInclude<ExtArgs> | null
     /**
      * The filter to search for the Locals to update in case it exists.
      */
@@ -4100,6 +4243,10 @@ export namespace Prisma {
      * Omit specific fields from the Locals
      */
     omit?: LocalsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocalsInclude<ExtArgs> | null
     /**
      * Filter which Locals to delete.
      */
@@ -4132,6 +4279,10 @@ export namespace Prisma {
      * Omit specific fields from the Locals
      */
     omit?: LocalsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocalsInclude<ExtArgs> | null
   }
 
 
@@ -4174,7 +4325,8 @@ export namespace Prisma {
 
   export const LocalsScalarFieldEnum: {
     id: 'id',
-    name: 'name',
+    airportId: 'airportId',
+    city: 'city',
     image: 'image',
     active: 'active'
   };
@@ -4353,12 +4505,14 @@ export namespace Prisma {
     id?: IntFilter<"Airports"> | number
     city?: StringFilter<"Airports"> | string
     airportCode?: StringFilter<"Airports"> | string
+    local?: XOR<LocalsNullableScalarRelationFilter, LocalsWhereInput> | null
   }
 
   export type AirportsOrderByWithRelationInput = {
     id?: SortOrder
     city?: SortOrder
     airportCode?: SortOrder
+    local?: LocalsOrderByWithRelationInput
   }
 
   export type AirportsWhereUniqueInput = Prisma.AtLeast<{
@@ -4368,6 +4522,7 @@ export namespace Prisma {
     OR?: AirportsWhereInput[]
     NOT?: AirportsWhereInput | AirportsWhereInput[]
     city?: StringFilter<"Airports"> | string
+    local?: XOR<LocalsNullableScalarRelationFilter, LocalsWhereInput> | null
   }, "id" | "airportCode">
 
   export type AirportsOrderByWithAggregationInput = {
@@ -4395,31 +4550,38 @@ export namespace Prisma {
     OR?: LocalsWhereInput[]
     NOT?: LocalsWhereInput | LocalsWhereInput[]
     id?: IntFilter<"Locals"> | number
-    name?: StringFilter<"Locals"> | string
+    airportId?: IntFilter<"Locals"> | number
+    city?: StringFilter<"Locals"> | string
     image?: StringFilter<"Locals"> | string
     active?: BoolFilter<"Locals"> | boolean
+    airport?: XOR<AirportsScalarRelationFilter, AirportsWhereInput>
   }
 
   export type LocalsOrderByWithRelationInput = {
     id?: SortOrder
-    name?: SortOrder
+    airportId?: SortOrder
+    city?: SortOrder
     image?: SortOrder
     active?: SortOrder
+    airport?: AirportsOrderByWithRelationInput
   }
 
   export type LocalsWhereUniqueInput = Prisma.AtLeast<{
     id?: number
+    airportId?: number
     AND?: LocalsWhereInput | LocalsWhereInput[]
     OR?: LocalsWhereInput[]
     NOT?: LocalsWhereInput | LocalsWhereInput[]
-    name?: StringFilter<"Locals"> | string
+    city?: StringFilter<"Locals"> | string
     image?: StringFilter<"Locals"> | string
     active?: BoolFilter<"Locals"> | boolean
-  }, "id">
+    airport?: XOR<AirportsScalarRelationFilter, AirportsWhereInput>
+  }, "id" | "airportId">
 
   export type LocalsOrderByWithAggregationInput = {
     id?: SortOrder
-    name?: SortOrder
+    airportId?: SortOrder
+    city?: SortOrder
     image?: SortOrder
     active?: SortOrder
     _count?: LocalsCountOrderByAggregateInput
@@ -4434,7 +4596,8 @@ export namespace Prisma {
     OR?: LocalsScalarWhereWithAggregatesInput[]
     NOT?: LocalsScalarWhereWithAggregatesInput | LocalsScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"Locals"> | number
-    name?: StringWithAggregatesFilter<"Locals"> | string
+    airportId?: IntWithAggregatesFilter<"Locals"> | number
+    city?: StringWithAggregatesFilter<"Locals"> | string
     image?: StringWithAggregatesFilter<"Locals"> | string
     active?: BoolWithAggregatesFilter<"Locals"> | boolean
   }
@@ -4516,23 +4679,27 @@ export namespace Prisma {
   export type AirportsCreateInput = {
     city: string
     airportCode: string
+    local?: LocalsCreateNestedOneWithoutAirportInput
   }
 
   export type AirportsUncheckedCreateInput = {
     id?: number
     city: string
     airportCode: string
+    local?: LocalsUncheckedCreateNestedOneWithoutAirportInput
   }
 
   export type AirportsUpdateInput = {
     city?: StringFieldUpdateOperationsInput | string
     airportCode?: StringFieldUpdateOperationsInput | string
+    local?: LocalsUpdateOneWithoutAirportNestedInput
   }
 
   export type AirportsUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     city?: StringFieldUpdateOperationsInput | string
     airportCode?: StringFieldUpdateOperationsInput | string
+    local?: LocalsUncheckedUpdateOneWithoutAirportNestedInput
   }
 
   export type AirportsCreateManyInput = {
@@ -4553,47 +4720,53 @@ export namespace Prisma {
   }
 
   export type LocalsCreateInput = {
-    name: string
+    city: string
     image: string
-    active: boolean
+    active?: boolean
+    airport: AirportsCreateNestedOneWithoutLocalInput
   }
 
   export type LocalsUncheckedCreateInput = {
     id?: number
-    name: string
+    airportId: number
+    city: string
     image: string
-    active: boolean
+    active?: boolean
   }
 
   export type LocalsUpdateInput = {
-    name?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
     image?: StringFieldUpdateOperationsInput | string
     active?: BoolFieldUpdateOperationsInput | boolean
+    airport?: AirportsUpdateOneRequiredWithoutLocalNestedInput
   }
 
   export type LocalsUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
+    airportId?: IntFieldUpdateOperationsInput | number
+    city?: StringFieldUpdateOperationsInput | string
     image?: StringFieldUpdateOperationsInput | string
     active?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type LocalsCreateManyInput = {
     id?: number
-    name: string
+    airportId: number
+    city: string
     image: string
-    active: boolean
+    active?: boolean
   }
 
   export type LocalsUpdateManyMutationInput = {
-    name?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
     image?: StringFieldUpdateOperationsInput | string
     active?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type LocalsUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
+    airportId?: IntFieldUpdateOperationsInput | number
+    city?: StringFieldUpdateOperationsInput | string
     image?: StringFieldUpdateOperationsInput | string
     active?: BoolFieldUpdateOperationsInput | boolean
   }
@@ -4767,6 +4940,11 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
+  export type LocalsNullableScalarRelationFilter = {
+    is?: LocalsWhereInput | null
+    isNot?: LocalsWhereInput | null
+  }
+
   export type AirportsCountOrderByAggregateInput = {
     id?: SortOrder
     city?: SortOrder
@@ -4793,33 +4971,43 @@ export namespace Prisma {
     id?: SortOrder
   }
 
+  export type AirportsScalarRelationFilter = {
+    is?: AirportsWhereInput
+    isNot?: AirportsWhereInput
+  }
+
   export type LocalsCountOrderByAggregateInput = {
     id?: SortOrder
-    name?: SortOrder
+    airportId?: SortOrder
+    city?: SortOrder
     image?: SortOrder
     active?: SortOrder
   }
 
   export type LocalsAvgOrderByAggregateInput = {
     id?: SortOrder
+    airportId?: SortOrder
   }
 
   export type LocalsMaxOrderByAggregateInput = {
     id?: SortOrder
-    name?: SortOrder
+    airportId?: SortOrder
+    city?: SortOrder
     image?: SortOrder
     active?: SortOrder
   }
 
   export type LocalsMinOrderByAggregateInput = {
     id?: SortOrder
-    name?: SortOrder
+    airportId?: SortOrder
+    city?: SortOrder
     image?: SortOrder
     active?: SortOrder
   }
 
   export type LocalsSumOrderByAggregateInput = {
     id?: SortOrder
+    airportId?: SortOrder
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -4844,6 +5032,52 @@ export namespace Prisma {
     decrement?: number
     multiply?: number
     divide?: number
+  }
+
+  export type LocalsCreateNestedOneWithoutAirportInput = {
+    create?: XOR<LocalsCreateWithoutAirportInput, LocalsUncheckedCreateWithoutAirportInput>
+    connectOrCreate?: LocalsCreateOrConnectWithoutAirportInput
+    connect?: LocalsWhereUniqueInput
+  }
+
+  export type LocalsUncheckedCreateNestedOneWithoutAirportInput = {
+    create?: XOR<LocalsCreateWithoutAirportInput, LocalsUncheckedCreateWithoutAirportInput>
+    connectOrCreate?: LocalsCreateOrConnectWithoutAirportInput
+    connect?: LocalsWhereUniqueInput
+  }
+
+  export type LocalsUpdateOneWithoutAirportNestedInput = {
+    create?: XOR<LocalsCreateWithoutAirportInput, LocalsUncheckedCreateWithoutAirportInput>
+    connectOrCreate?: LocalsCreateOrConnectWithoutAirportInput
+    upsert?: LocalsUpsertWithoutAirportInput
+    disconnect?: LocalsWhereInput | boolean
+    delete?: LocalsWhereInput | boolean
+    connect?: LocalsWhereUniqueInput
+    update?: XOR<XOR<LocalsUpdateToOneWithWhereWithoutAirportInput, LocalsUpdateWithoutAirportInput>, LocalsUncheckedUpdateWithoutAirportInput>
+  }
+
+  export type LocalsUncheckedUpdateOneWithoutAirportNestedInput = {
+    create?: XOR<LocalsCreateWithoutAirportInput, LocalsUncheckedCreateWithoutAirportInput>
+    connectOrCreate?: LocalsCreateOrConnectWithoutAirportInput
+    upsert?: LocalsUpsertWithoutAirportInput
+    disconnect?: LocalsWhereInput | boolean
+    delete?: LocalsWhereInput | boolean
+    connect?: LocalsWhereUniqueInput
+    update?: XOR<XOR<LocalsUpdateToOneWithWhereWithoutAirportInput, LocalsUpdateWithoutAirportInput>, LocalsUncheckedUpdateWithoutAirportInput>
+  }
+
+  export type AirportsCreateNestedOneWithoutLocalInput = {
+    create?: XOR<AirportsCreateWithoutLocalInput, AirportsUncheckedCreateWithoutLocalInput>
+    connectOrCreate?: AirportsCreateOrConnectWithoutLocalInput
+    connect?: AirportsWhereUniqueInput
+  }
+
+  export type AirportsUpdateOneRequiredWithoutLocalNestedInput = {
+    create?: XOR<AirportsCreateWithoutLocalInput, AirportsUncheckedCreateWithoutLocalInput>
+    connectOrCreate?: AirportsCreateOrConnectWithoutLocalInput
+    upsert?: AirportsUpsertWithoutLocalInput
+    connect?: AirportsWhereUniqueInput
+    update?: XOR<XOR<AirportsUpdateToOneWithWhereWithoutLocalInput, AirportsUpdateWithoutLocalInput>, AirportsUncheckedUpdateWithoutLocalInput>
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -4987,6 +5221,86 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type LocalsCreateWithoutAirportInput = {
+    city: string
+    image: string
+    active?: boolean
+  }
+
+  export type LocalsUncheckedCreateWithoutAirportInput = {
+    id?: number
+    city: string
+    image: string
+    active?: boolean
+  }
+
+  export type LocalsCreateOrConnectWithoutAirportInput = {
+    where: LocalsWhereUniqueInput
+    create: XOR<LocalsCreateWithoutAirportInput, LocalsUncheckedCreateWithoutAirportInput>
+  }
+
+  export type LocalsUpsertWithoutAirportInput = {
+    update: XOR<LocalsUpdateWithoutAirportInput, LocalsUncheckedUpdateWithoutAirportInput>
+    create: XOR<LocalsCreateWithoutAirportInput, LocalsUncheckedCreateWithoutAirportInput>
+    where?: LocalsWhereInput
+  }
+
+  export type LocalsUpdateToOneWithWhereWithoutAirportInput = {
+    where?: LocalsWhereInput
+    data: XOR<LocalsUpdateWithoutAirportInput, LocalsUncheckedUpdateWithoutAirportInput>
+  }
+
+  export type LocalsUpdateWithoutAirportInput = {
+    city?: StringFieldUpdateOperationsInput | string
+    image?: StringFieldUpdateOperationsInput | string
+    active?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type LocalsUncheckedUpdateWithoutAirportInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    city?: StringFieldUpdateOperationsInput | string
+    image?: StringFieldUpdateOperationsInput | string
+    active?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type AirportsCreateWithoutLocalInput = {
+    city: string
+    airportCode: string
+  }
+
+  export type AirportsUncheckedCreateWithoutLocalInput = {
+    id?: number
+    city: string
+    airportCode: string
+  }
+
+  export type AirportsCreateOrConnectWithoutLocalInput = {
+    where: AirportsWhereUniqueInput
+    create: XOR<AirportsCreateWithoutLocalInput, AirportsUncheckedCreateWithoutLocalInput>
+  }
+
+  export type AirportsUpsertWithoutLocalInput = {
+    update: XOR<AirportsUpdateWithoutLocalInput, AirportsUncheckedUpdateWithoutLocalInput>
+    create: XOR<AirportsCreateWithoutLocalInput, AirportsUncheckedCreateWithoutLocalInput>
+    where?: AirportsWhereInput
+  }
+
+  export type AirportsUpdateToOneWithWhereWithoutLocalInput = {
+    where?: AirportsWhereInput
+    data: XOR<AirportsUpdateWithoutLocalInput, AirportsUncheckedUpdateWithoutLocalInput>
+  }
+
+  export type AirportsUpdateWithoutLocalInput = {
+    city?: StringFieldUpdateOperationsInput | string
+    airportCode?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type AirportsUncheckedUpdateWithoutLocalInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    city?: StringFieldUpdateOperationsInput | string
+    airportCode?: StringFieldUpdateOperationsInput | string
   }
 
 

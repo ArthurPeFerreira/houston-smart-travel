@@ -44,13 +44,16 @@ export default function Locals() {
 
   return (
     <section className="bg-[#E6DCD1] w-full text-black">
-      <div className="py-8 px-4 max-w-6xl mx-auto">
+      <div className="py-8 px-4 max-w-7xl mx-auto">
         <Swiper
           // Define os módulos que serão utilizados no Swiper
           modules={[Navigation, Pagination, Autoplay]}
 
           // Configura a paginação automática
-          // autoplay={{ delay: 3000, disableOnInteraction: false }}
+          autoplay={{ delay: 5000, disableOnInteraction: false }}
+
+          // Ativa o Loop
+          loop
 
           // Configura a navegação personalizada com botões externos
           navigation={{
