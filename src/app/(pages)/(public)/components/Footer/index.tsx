@@ -2,13 +2,13 @@
 "use server";
 
 export default async function Footer() {
-    const divColumnsClassName = "flex flex-col gap-1";
+    const divColumnsClassName = "flex flex-col gap-1 text-[17px] sm:text-md";
     const h1ClassName = "font-bold"
     const h2ClassName = ""
 
     return (
       <footer className="text-white w-full h-auto bg-[#141414] flex flex-col items-center justify-between p-5">
-        <div className="w-full flex flex-row items-center justify-between px-5 text-white mb-4">
+        <div className="w-full flex flex-row items-start justify-between sm:justify-evenly px-5 text-white mb-4">
             <div className={divColumnsClassName}>
                 <h1 className={h1ClassName}>
                     Services

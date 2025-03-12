@@ -11,21 +11,21 @@ export default async function Navbar() {
     return (
       <nav className="text-white w-full h-20 bg-[#141414] flex items-center justify-between">
         <div className="w-full flex flex-row items-center justify-between px-5">
-            <Image src={logo} alt="Logo" height={60} />
-            <div className="flex flex-row items-center justify-center gap-5 text-2xl">
-                <Link href="/">
+            <Image src={logo} alt="Logo" height={50} />
+            <div className="flex flex-row items-center justify-center md:gap-5 text-xl whitespace-nowrap">
+                <Link href="/" className="invisible md:visible">
                     Home
                 </Link>
                 <Link href="/check-flights">
                     Check Flights
                 </Link>
-                <Link href="/about-us">
+                <Link href="/about-us" className="invisible md:visible">
                     About Us
                 </Link>
             </div>
-            <div className="flex flex-row gap-5">
-                <FaWhatsapp size={60}/>
-                <FaFacebookMessenger size={60}/>
+            <div className="flex flex-row gap-2 md:gap-5 text-[35px]">
+                <FaWhatsapp />
+                <FaFacebookMessenger />
             </div>
         </div>
       </nav>

@@ -1,0 +1,51 @@
+.swiper {
+padding-top: 3rem;
+padding-bottom: 3rem;
+}
+
+.custom-pagination {
+ width: fit-content;
+}
+
+.custom-pagination .swiper-pagination-bullet {
+  background: #ccc;
+  opacity: 1;
+}
+.custom-pagination .swiper-pagination-bullet-active {
+  background: #141414;
+}
+
+.custom-prev,
+.custom-next {
+  color: #141414;
+}
+.custom-prev:hover,
+.custom-next:hover {
+  color: #000;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+color: #333;
+transition: color 0.2s;
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+color: #000;
+}
+
+.swiper-button-next::after,
+.swiper-button-prev::after {
+font-size: 20px;
+font-weight: bold;
+}
+
+.swiper-pagination-bullet {
+background: #ccc;
+opacity: 1;
+}
+
+.swiper-pagination-bullet-active {
+background: #333;
+}
