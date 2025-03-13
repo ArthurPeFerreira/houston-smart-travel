@@ -1,10 +1,10 @@
 import { prismaClient } from "../prisma/prisma"; // Importa o cliente do Prisma para interagir com o banco de dados
-import { LocalType } from "./types"; // Importa o tipo LocalType para tipagem segura
+import { LocalType } from "./types"; // Importa o tipo LocalType para garantir a tipagem segura
 
-// Função para buscar um Local ou todos os locais no banco de dados
+// Função assíncrona para buscar um Local específico ou todos os Locais no banco de dados
 export async function getLocal(localId: number): Promise<LocalType[] | undefined> {
     try {
-        // Verifica se o localId é maior que 0 (ou seja, se um ID específico foi fornecido)
+        // Verifica se um ID específico foi fornecido (maior que 0)
         if (localId > 0) {
             // Busca um Local específico no banco de dados usando o Prisma
             const local = await prismaClient.locals.findUnique({
@@ -12,17 +12,18 @@ export async function getLocal(localId: number): Promise<LocalType[] | undefined
                     id: localId // Filtra pelo ID do Local
                 },
                 select: {
-                    id: true,
-                    city: true,
-                    image: true,
-                    active: true,
-                    airport: true,
+                    id: true, // Retorna o ID do Local
+                    city: true, // Retorna o nome da cidade
+                    image: true, // Retorna a URL da imagem
+                    active: true, // Retorna o status ativo/inativo do Local
+                    airport: true, // Retorna as informações do aeroporto associado
                 }
             });
 
-            // Se o Local não for encontrado, lança um erro
+            // Se o Local não for encontrado, retorna undefined
             if (!local) {
-                throw new Error("Failed to Find Local!");
+                console.error("Local not found!");
+                return undefined;
             }
 
             // Retorna o Local encontrado dentro de um array
@@ -34,28 +35,23 @@ export async function getLocal(localId: number): Promise<LocalType[] | undefined
                     id: "asc" // Ordena os locais pelo ID em ordem crescente
                 },
                 select: {
-                    id: true,
-                    city: true,
-                    image: true,
-                    active: true,
-                    airport: true,
+                    id: true, // Retorna o ID do Local
+                    city: true, // Retorna o nome da cidade
+                    image: true, // Retorna a URL da imagem
+                    active: true, // Retorna o status ativo/inativo do Local
+                    airport: true, // Retorna as informações do aeroporto associado
                 }
             });
 
-            // Se nenhum Local for encontrado, lança um erro
-            if (!locais) {
-                throw new Error("Failed to Find locais!");
-            }
-
-            // Retorna a lista de locais encontrados
+            // Retorna a lista de Locais encontrados
             return locais;
         }
-    } catch {
-        // Em caso de erro, exibe uma mensagem no console
-        console.error("Failed to Find locais!");
+    } catch (error) {
+        // Em caso de erro, exibe uma mensagem no console com detalhes
+        console.error("Failed to Find Locals!", error);
         return undefined; // Retorna undefined para indicar que a operação falhou
     } finally {
-        // Desconecta o cliente do Prisma após a operação, independentemente de sucesso ou falha
+        // Garante que a conexão com o Prisma seja encerrada após a operação
         await prismaClient.$disconnect();
     }
 }

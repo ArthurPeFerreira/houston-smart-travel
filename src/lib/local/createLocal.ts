@@ -1,37 +1,37 @@
 import { prismaClient } from "../prisma/prisma"; // Importa o cliente do Prisma para interagir com o banco de dados
 import { updateLocalCache } from "./cacheLocal"; // Importa a função para atualizar o cache após a criação
-import { CreateLocalType, LocalType } from "./types"; // Importa os tipos LocalType e CreateLocalType para tipagem segura
+import { CreateLocalType, LocalType } from "./types"; // Importa os tipos LocalType e CreateLocalType para garantir tipagem segura
 
-// Função para criar um novo Local no banco de dados
+// Função assíncrona para criar um novo Local no banco de dados
 export async function createLocal(localInfo: CreateLocalType): Promise<LocalType | undefined> {
     try { 
         // Cria um novo Local no banco de dados usando o Prisma
         const local = await prismaClient.locals.create({
             data: {
                 city: localInfo.city, // Define o nome da cidade do Local
-                image: localInfo.image, // Define o caminho da imagem do Local
-                airportId: localInfo.airportId // Define o id do aeroporto vinculado ao Local
+                image: localInfo.image, // Define a URL da imagem do Local
+                airportId: localInfo.airportId // Define o ID do aeroporto associado ao Local
             },
             select: {
-                id: true,
-                city: true,
-                image: true,
-                active: true,
-                airport: true,
+                id: true, // Seleciona o ID do Local recém-criado
+                city: true, // Seleciona o nome da cidade
+                image: true, // Seleciona a URL da imagem
+                active: true, // Seleciona o status de ativação do Local
+                airport: true, // Seleciona as informações do aeroporto associado
             }
         });
 
-        // Atualiza o Cache dos Locais para refletir a nova adição
+        // Atualiza o cache dos Locais para refletir a nova adição
         await updateLocalCache();
 
-        // Retorna o Local criado
+        // Retorna o Local recém-criado
         return local;
     } catch {
-        // Em caso de erro, exibe uma mensagem de erro no console
+        // Em caso de erro, exibe uma mensagem no console
         console.error("Failed to Create Local!");
-        return undefined; // Retorna undefined para indicar que a operação falhou
+        return undefined; // Retorna undefined para indicar falha na operação
     } finally {
-        // Desconecta o cliente do Prisma após a operação, independentemente de sucesso ou falha
+        // Garante que a conexão do Prisma seja fechada após a execução
         await prismaClient.$disconnect();
     }
 }

@@ -1,6 +1,6 @@
 import { prismaClient } from "../prisma/prisma"; // Importa o cliente do Prisma para interagir com o banco de dados
 import { updateLocalCache } from "./cacheLocal"; // Importa a função para atualizar o cache de Locais
-import { EditLocalType, LocalType } from "./types"; // Importa o tipo LocalType para garantir a tipagem correta
+import { EditLocalType, LocalType } from "./types"; // Importa os tipos EditLocalType e LocalType para tipagem segura
 
 // Função assíncrona para editar as informações de um Local no banco de dados
 export async function editLocal(localInfo: EditLocalType): Promise<LocalType | undefined> {
@@ -12,16 +12,16 @@ export async function editLocal(localInfo: EditLocalType): Promise<LocalType | u
             },
             data: {
                 city: localInfo.city, // Atualiza o nome da cidade do Local
-                image: localInfo.image,
-                active: localInfo.active,
-                airportId: localInfo.airportId,
+                image: localInfo.image, // Atualiza a URL da imagem do Local
+                active: localInfo.active, // Atualiza o status ativo/inativo do Local
+                airportId: localInfo.airportId, // Atualiza o ID do aeroporto associado ao Local
             },
             select: {
-                id: true,
-                city: true,
-                image: true,
-                active: true,
-                airport: true,
+                id: true, // Seleciona o ID do Local atualizado
+                city: true, // Seleciona o nome da cidade
+                image: true, // Seleciona a URL da imagem
+                active: true, // Seleciona o status ativo/inativo
+                airport: true, // Seleciona as informações do aeroporto associado
             }
         });
 
