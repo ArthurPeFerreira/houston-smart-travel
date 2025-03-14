@@ -137,7 +137,7 @@ export default function LocalBox(data: LocalBoxProps) {
             type="submit"
             className="mt-4 bg-blue-500 w-full text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600"
           >
-            Create
+            Createa
           </button>
         </form>
 
