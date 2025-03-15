@@ -10,6 +10,7 @@ import AirportBox from "./components/AirportBox";
 import LocalBox from "./components/LocalBox";
 import RouteBox from "./components/RouteBox";
 import { getAirportByCache } from "@/lib/airport/cacheAirport";
+import { getLocalByCache } from "@/lib/local/cacheLocal";
 
 // Definição dos metadados da página, configurando o título como "Admin Panel"
 export const metadata: Metadata = {
@@ -21,6 +22,7 @@ export default async function Admin() {
 
   // Puxa os Aeroportos
   const airports = await getAirportByCache(0);
+  const locals = await getLocalByCache(0);
 
   return (
     // O elemento <div> com uma classe Tailwind para definir o fundo escuro
@@ -33,7 +35,7 @@ export default async function Admin() {
         <AirportBox airportsInitialData={airports}/>
 
         {/* Componente LocalBox exibido na página */}
-        <LocalBox airportsInitialData={airports}/>
+        <LocalBox airportsInitialData={airports} localsInitialData={locals}/>
 
         {/* Componente RouteBox exibido na página */}
         <RouteBox />

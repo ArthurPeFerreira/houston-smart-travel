@@ -56,9 +56,9 @@ export default function AirportEdit({
   }
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-100">
+    <div className="fixed inset-0 flex items-center justify-center z-100 bg-gray-900">
          {/* Modal principal */}
-         <div className="bg-gray-800 p-6 rounded shadow-lg w-full max-w-md">
+         <div className="bg-gray-800 p-6 rounded shadow-lg w-full max-w-sm">
            <h2 className="text-xl font-bold mb-4 text-white">Edit Airport</h2>
            <form onSubmit={handleFormSubmit}>
              {/* Campo de cidade */}

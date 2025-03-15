@@ -33,7 +33,8 @@ export default function EditUserModal({
   const [active, setActive] = useState<boolean>(false);
 
   // Classe CSS reutilizável para os inputs
-  const inputs = "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white";
+  const inputs =
+    "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white";
 
   // Atualiza os estados com os dados do usuário sempre que userInfo mudar
   useEffect(() => {
@@ -59,7 +60,7 @@ export default function EditUserModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-opacity-50 z-50">
+    <div className="fixed inset-0 flex items-center justify-center bg-gray-900 z-50">
       {/* Modal principal */}
       <div className="bg-gray-800 p-6 rounded shadow-lg w-full max-w-md">
         <h2 className="text-xl font-bold mb-4 text-white">Edit User</h2>
@@ -103,7 +104,11 @@ export default function EditUserModal({
                   type="button"
                   className="text-gray-500 px-2 cursor-pointer"
                 >
-                  {showPassword ? <FaEye size={20} /> : <FaEyeSlash size={20} />}
+                  {showPassword ? (
+                    <FaEye size={20} />
+                  ) : (
+                    <FaEyeSlash size={20} />
+                  )}
                 </button>
               </div>
 
@@ -119,7 +124,10 @@ export default function EditUserModal({
                   }}
                   className="mr-2"
                 />
-                <label htmlFor="PasswordChange" className="text-white cursor-pointer">
+                <label
+                  htmlFor="PasswordChange"
+                  className="text-white cursor-pointer"
+                >
                   Change Password
                 </label>
               </div>

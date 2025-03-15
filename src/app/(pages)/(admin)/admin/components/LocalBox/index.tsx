@@ -14,33 +14,57 @@ import { toastConfigs } from "@/lib/toastify/toastify";
 import { AirportType } from "@/lib/airport/types";
 import { FaSpinner } from "react-icons/fa";
 import eventEmitter from "@/lib/event/eventEmmiter";
+import LocalsInfo from "./LocalInfo";
+import { LocalType } from "@/lib/local/types";
 
 interface LocalBoxProps {
   airportsInitialData: AirportType[] | undefined;
+  localsInitialData: LocalType[] | undefined;
 }
 
 // Componente principal que permite a criação de um local associado a um aeroporto
-export default function LocalBox(data: LocalBoxProps) {
+export default function LocalBox({
+  airportsInitialData,
+  localsInitialData,
+}: LocalBoxProps) {
   // Classe CSS reutilizável para os inputs
   const inputs =
     "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white";
 
   // Estados para armazenar dados dinâmicos do formulário
   const [airports, setAirports] = useState<AirportType[] | undefined>();
+  const [locals, setLocals] = useState<LocalType[] | undefined>();
   const [airportId, setAirportId] = useState<number>(0);
   const [city, setCity] = useState<string>("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [loadingLocalsInfoModal, setLoadingLocalsInfoModal] =
+    useState<boolean>(false);
+  const [showLocalsInfoModal, setShowLocalsInfoModal] =
+    useState<boolean>(false);
+  const [localToEdit, setLocalToEdit] = useState<LocalType>({
+    id: 0,
+    active: true,
+    airport: { id: 0, city: "", airportCode: "" },
+    city: "",
+    image: "",
+  });
+  const [showLocalsEditModal, setShowLocalsEditModal] =
+    useState<boolean>(false);
 
   useEffect(() => {
     // Inicializa os aeroportos com os dados recebidos via props
-    setAirports(data.airportsInitialData);
+    setAirports(airportsInitialData);
+    setLocals(localsInitialData);
 
     // Função para atualizar a lista de aeroportos ao receber um evento
     async function handleEvent() {
-      const response = await api.get("api/admin/airport");
-      setAirports(response.data);
+      const responseAirports = await api.get("api/admin/airport");
+      setAirports(responseAirports.data);
+
+      const responseLocals = await api.get("api/admin/local");
+      setLocals(responseLocals.data);
     }
 
     // Adiciona listeners para eventos de atualização de aeroportos
@@ -59,6 +83,8 @@ export default function LocalBox(data: LocalBoxProps) {
       setSelectedFile(file);
       // Cria um preview da imagem carregada
       setPreview(URL.createObjectURL(file));
+
+      e.target.value = "";
     }
   }
 
@@ -66,6 +92,12 @@ export default function LocalBox(data: LocalBoxProps) {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
+
+    if (airportId == 0) {
+      toast.error("Please select an airport.", toastConfigs);
+      setLoading(false);
+      return;
+    }
 
     // Verifica se um arquivo foi selecionado antes de prosseguir
     if (!selectedFile) {
@@ -100,8 +132,30 @@ export default function LocalBox(data: LocalBoxProps) {
       setAirportId(0);
       setCity("");
       setSelectedFile(null);
-      setPreview("");
+      setPreview(null);
+
+      const responseLocals = await api.get("api/admin/local");
+      setLocals(responseLocals.data);
     }
+  }
+
+  async function handleDeleteLocal(localId: number) {
+    try {
+      if (confirm("Are you sure you want to delete this local?")) {
+        await api.delete(`api/admin/local/${localId}`);
+
+        const response = await api.get("api/admin/local");
+        setLocals(response.data);
+
+        toast.success("Local deleted successfully!", toastConfigs);
+      }
+    } catch {
+      toast.error("Failed to delete Local!", toastConfigs);
+    }
+  }
+
+  function onCloseLocalsInfoModal() {
+    setShowLocalsInfoModal(false);
   }
 
   return (
@@ -119,10 +173,10 @@ export default function LocalBox(data: LocalBoxProps) {
             onChange={(e) => {
               setAirportId(Number(e.target.value));
             }}
+            value={airportId}
             required
-            defaultValue=""
           >
-            <option value="" key={0} disabled className="text-gray-400">
+            <option value={0} key={0} disabled className="text-gray-400">
               Select an airport
             </option>
             {airports?.map((airport) => {
@@ -137,7 +191,7 @@ export default function LocalBox(data: LocalBoxProps) {
               );
             })}
           </select>
-          
+
           {/* Input para nome da cidade */}
           <label className="block mb-1 text-white mt-4">City</label>
           <input
@@ -149,10 +203,9 @@ export default function LocalBox(data: LocalBoxProps) {
             className={inputs}
             required
           />
-          
+
           {/* Upload de imagem */}
           <div className="mt-4">
-            <label className="block mb-1 text-white">Send an Image</label>
             <input
               type="file"
               id="fileInput"
@@ -174,7 +227,7 @@ export default function LocalBox(data: LocalBoxProps) {
               />
             )}
           </div>
-          
+
           {/* Botão de envio */}
           <button
             type="submit"
@@ -187,7 +240,30 @@ export default function LocalBox(data: LocalBoxProps) {
             )}
           </button>
         </form>
+        <button
+          className="mt-2 w-full text-start text-blue-500 cursor-pointer hover:underline"
+          onClick={() => {
+            setShowLocalsInfoModal(true);
+          }}
+        >
+          See Locals
+        </button>
       </div>
+
+      <LocalsInfo
+        isOpen={showLocalsInfoModal}
+        onClose={onCloseLocalsInfoModal}
+        isLoading={loadingLocalsInfoModal}
+        locals={locals}
+        localToEdit={localToEdit}
+        setLocalToEdit={setLocalToEdit}
+        isOpenEditModal={showLocalsEditModal}
+        setIsOpenEditModal={setShowLocalsEditModal}
+        // onCloseEditModal={onCloseLocalsEditModal}
+        // isLoadingEditModal={loadingLocalsEditModal}
+        // onEditLocal={handleEditLocal}
+        onDeleteLocal={handleDeleteLocal}
+      />
     </div>
   );
 }

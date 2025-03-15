@@ -29,7 +29,8 @@ export default function CreateUserModal({
   const [name, setName] = useState<string>("");
 
   // Classe CSS reutilizável para os inputs
-  const inputs = "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white";
+  const inputs =
+    "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white";
 
   // Função chamada ao enviar o formulário de criação de usuário
   const handleSubmit = (e: React.FormEvent) => {
@@ -55,7 +56,7 @@ export default function CreateUserModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-opacity-10">
+    <div className="fixed inset-0 flex items-center bg-gray-900 justify-center bg-opacity-10">
       {/* Container do modal */}
       <div className="bg-gray-800 p-6 rounded shadow-lg w-full max-w-md">
         <h2 className="text-xl font-bold mb-4 text-white">Create User</h2>

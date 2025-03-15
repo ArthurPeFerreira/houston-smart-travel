@@ -21,6 +21,7 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 // Importa o hook useState do React
 import { useState } from "react";
+import { LocalType } from "@/lib/local/types";
 
 // Lista de destinos exibidos no carrossel
 const destinations = [
@@ -37,10 +38,18 @@ const destinations = [
   { name: "Ultimo", image: foto },
 ];
 
-export default function Locals() {
+interface LocalsProps {
+  locals: LocalType[] | undefined;
+}
+
+export default function Locals({ locals }: LocalsProps) {
   // Estados para controlar se está no início ou no final do carrossel
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
+
+  if(!locals || locals?.length == 0) {
+    return null;
+  }
 
   return (
     <section className="bg-[#E6DCD1] w-full text-black">
@@ -48,31 +57,25 @@ export default function Locals() {
         <Swiper
           // Define os módulos que serão utilizados no Swiper
           modules={[Navigation, Pagination, Autoplay]}
-
           // Configura a paginação automática
           autoplay={{ delay: 5000, disableOnInteraction: false }}
-
           // Ativa o Loop
-          loop
-
+          // loop
           // Configura a navegação personalizada com botões externos
           navigation={{
             nextEl: ".custom-next",
             prevEl: ".custom-prev",
           }}
-          
           // Configura a paginação personalizada com bolinhas clicáveis
           pagination={{
             el: ".custom-pagination",
             clickable: true,
           }}
-
           // Centraliza os slides
           centeredSlides={true}
-          
+          centerInsufficientSlides={true}
           // Ajusta o espaço entre slides
-          spaceBetween={5}
-
+          spaceBetween={10}
           // Configura o comportamento responsivo
           breakpoints={{
             0: { slidesPerView: 1 },
@@ -80,39 +83,47 @@ export default function Locals() {
             768: { slidesPerView: 3 },
             1024: { slidesPerView: 4 },
           }}
-
           // Atualiza os estados ao mudar de slide
           onSlideChange={(swiper) => {
             setIsBeginning(swiper.isBeginning);
             setIsEnd(swiper.isEnd);
           }}
         >
-          {destinations.map((destination, index) => (
-            <SwiperSlide key={index} className="flex flex-col items-center justify-center px-2">
-              <div className="w-[232px] h-[270px] flex">
-                {/* Exibe a imagem de cada destino */}
-                <Image
-                  src={destination.image}
-                  alt={destination.name}
-                  fill
-                  className="object-cover rounded-xl shadow-md"
-                />
-              </div>
-              {/* Nome do destino exibido abaixo da imagem */}
-              <span className="absolute bottom-[-13px] left-1/2 transform -translate-x-1/2 bg-[#141414] text-white px-4 py-1 rounded-full text-sm whitespace-nowrap">
-                {destination.name}
-              </span>
-            </SwiperSlide>
-          ))}
+          {locals.map((local) => (
+            local.active ? (
+              <SwiperSlide
+                key={local.id}
+                className="flex flex-col items-center justify-center w-fit  px-2"
+              >
+                <div className="w-[232px] h-[270px] relative">
+                  {/* Exibe a imagem de cada destino */}
+                  <Image
+                    src={local.image}
+                    alt={local.city}
+                    fill
+                    quality={100}
+                    className="rounded-xl shadow-md object-cover"
+                  />
+                  {/* Nome do destino exibido abaixo da imagem */}
+                  <span className="absolute bottom-[-13px] left-1/2 transform -translate-x-1/2 bg-[#141414] text-white px-4 py-1 rounded-full text-sm whitespace-nowrap">
+                    {local.city}
+                  </span>
+                </div>
+              </SwiperSlide>
+            ) : (null)
+          ))
+
+          }
         </Swiper>
-        
+
         {/* Controles personalizados: botões de navegação e paginação */}
         <div className="w-full flex items-center justify-center">
           <div className="w-fit flex items-center justify-center gap-4 mb-4">
-            
             {/* Botão para voltar ao slide anterior */}
             <button
-              className={`custom-prev p-2 cursor-pointer ${isBeginning ? "invisible" : ""}`}
+              className={`custom-prev p-2 cursor-pointer ${
+                isBeginning ? "invisible" : ""
+              }`}
             >
               <FaChevronLeft />
             </button>
@@ -122,7 +133,9 @@ export default function Locals() {
 
             {/* Botão para avançar para o próximo slide */}
             <button
-              className={`custom-next p-2 cursor-pointer ${isEnd ? "invisible" : ""}`}
+              className={`custom-next p-2 cursor-pointer ${
+                isEnd ? "invisible" : ""
+              }`}
             >
               <FaChevronRight />
             </button>

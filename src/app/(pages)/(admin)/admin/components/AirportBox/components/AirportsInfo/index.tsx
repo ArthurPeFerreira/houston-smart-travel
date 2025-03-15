@@ -48,7 +48,7 @@ export default function AirportsInfo({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 text-white flex items-center justify-center z-50 ">
+    <div className="fixed inset-0 text-white flex items-center justify-center z-50 bg-gray-900">
       {/* Modal principal */}
       <div className="bg-gray-800 p-6 rounded shadow-lg w-full max-w-md">
         <h1 className="text-center font-bold text-3xl mb-5">Airports</h1>

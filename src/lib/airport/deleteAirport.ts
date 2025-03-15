@@ -3,6 +3,7 @@ import path from "path"; // Importa path para manipulação de diretórios e cam
 import { prismaClient } from "../prisma/prisma"; // Importa o cliente do Prisma para interagir com o banco de dados
 import { updateAirportCache } from "./cacheAirport"; // Importa a função para atualizar o cache após a deleção
 import { AirportType } from "./types"; // Importa o tipo AirportType para tipagem
+import { updateLocalCache } from "../local/cacheLocal";
 
 // Função para deletar um Aeroporto do banco de dados com base no ID
 export async function deleteAirport(airportId: number): Promise<AirportType | undefined> {
@@ -18,6 +19,9 @@ export async function deleteAirport(airportId: number): Promise<AirportType | un
 
         // Atualiza o Cache dos Aeroportos para refletir a remoção
         await updateAirportCache();
+
+        // Atualiza o Cache dos Aeroportos para refletir a remoção
+        await updateLocalCache();
 
         if(airport.local){
             // Define o caminho do arquivo de imagem a ser deletado
