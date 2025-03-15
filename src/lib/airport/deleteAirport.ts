@@ -1,3 +1,5 @@
+import { promises as fs } from "fs"; // Importa fs.promises para operações assíncronas
+import path from "path"; // Importa path para manipulação de diretórios e caminhos
 import { prismaClient } from "../prisma/prisma"; // Importa o cliente do Prisma para interagir com o banco de dados
 import { updateAirportCache } from "./cacheAirport"; // Importa a função para atualizar o cache após a deleção
 import { AirportType } from "./types"; // Importa o tipo AirportType para tipagem
@@ -6,17 +8,25 @@ import { AirportType } from "./types"; // Importa o tipo AirportType para tipage
 export async function deleteAirport(airportId: number): Promise<AirportType | undefined> {
     try {
         // Deleta o Aeroporto do banco de dados usando o Prisma
-        const Airport = await prismaClient.airports.delete({
+        const airport = await prismaClient.airports.delete({
             where: {
                 id: airportId // Filtra o Aeroporto a ser deletado pelo ID
+            },include: {
+                local:true
             }
         });
 
         // Atualiza o Cache dos Aeroportos para refletir a remoção
         await updateAirportCache();
 
+        if(airport.local){
+            // Define o caminho do arquivo de imagem a ser deletado
+            const imagePath = path.join(process.cwd(), "public/locals/images", `${airport.id}.jpg`);
+            await fs.unlink(imagePath); 
+        } 
+
         // Retorna o Aeroporto deletado para referência
-        return Airport;
+        return airport;
     } catch {
         // Em caso de erro, exibe uma mensagem no console
         console.error("Failed to Delete Airport!");

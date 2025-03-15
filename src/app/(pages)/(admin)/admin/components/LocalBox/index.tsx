@@ -1,10 +1,6 @@
 // Indica que este é um componente do lado do cliente no Next.js (App Router)
 "use client";
 
-// Importação de ícones do React Icons para exibição de status ativo/inativo
-import { MdOutlineExpandCircleDown } from "react-icons/md";
-import { GoXCircle } from "react-icons/go";
-
 // Importação da API configurada para chamadas HTTP
 import { api } from "@/lib/api/api";
 
@@ -12,10 +8,12 @@ import { api } from "@/lib/api/api";
 import { useEffect, useState } from "react";
 
 // Importação do Toastify para notificações
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { toastConfigs } from "@/lib/toastify/toastify";
 import { AirportType } from "@/lib/airport/types";
+import { FaSpinner } from "react-icons/fa";
+import eventEmitter from "@/lib/event/eventEmmiter";
 
 interface LocalBoxProps {
   airportsInitialData: AirportType[] | undefined;
@@ -26,10 +24,31 @@ export default function LocalBox(data: LocalBoxProps) {
   const inputs =
     "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white";
 
-  const [airportId, setAirportId] = useState<number | null>(null);
+  const [airports, setAirports] = useState<AirportType[] | undefined>();
+
+  const [airportId, setAirportId] = useState<number>(0);
   const [city, setCity] = useState<string>("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    setAirports(data.airportsInitialData);
+
+    // Lida com eventos de categorias de pontos
+    async function handleEvent() {
+      const response = await api.get("api/admin/airport");
+      setAirports(response.data);
+    }
+
+    // Adiciona listeners para eventos de criação e deleção
+    eventEmitter.on("updateAirports", handleEvent);
+
+    // Remove listeners ao desmontar
+    return () => {
+      eventEmitter.off("updateAirports", handleEvent);
+    };
+  }, []);
 
   // Atualiza estado quando o usuário seleciona um arquivo
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -41,30 +60,39 @@ export default function LocalBox(data: LocalBoxProps) {
     }
   }
 
-  // Envia o arquivo para a rota /api/upload
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setLoading(true);
     if (!selectedFile) {
+      toast.error("Please select an image to upload.", toastConfigs);
+      setLoading(false);
       return;
     }
 
-    // Cria um formData e anexa o arquivo
+    // Criando um FormData para enviar os dados corretamente
     const formData = new FormData();
-    formData.append("file", selectedFile);
+    formData.append("airportId", airportId.toString()); // Converte para string
+    formData.append("city", city);
+    formData.append("image", selectedFile);
 
     try {
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
+      const response = await api.post("api/admin/local", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
 
-      if (!res.ok) {
-        throw new Error("Erro no upload");
+      if (response.status === 200) {
+        toast.success("Local created successfully!", toastConfigs);
       }
-
-      const data = await res.json();
-    } catch (error) {
-      console.error(error);
+    } catch {
+      toast.error("Failed to create local!", toastConfigs);
+    } finally {
+      setLoading(false);
+      setAirportId(0);
+      setCity("");
+      setSelectedFile(null);
+      setPreview("");
     }
   }
 
@@ -73,7 +101,7 @@ export default function LocalBox(data: LocalBoxProps) {
       <div className="bg-gray-800 w-fit p-5 rounded-2xl flex flex-col items-center justify-center text-white">
         {/* Título e botão para criar usuário */}
         <h1 className="text-center font-bold text-3xl">Create New Local</h1>
-        <form className="w-full mt-4">
+        <form className="w-full mt-4" onSubmit={handleSubmit}>
           <label className="block mb-1 text-white">Airport</label>
           <select
             name="airports"
@@ -88,7 +116,7 @@ export default function LocalBox(data: LocalBoxProps) {
             <option value="" key={0} disabled className="text-gray-400">
               Select an airport
             </option>
-            {data.airportsInitialData?.map((airport) => {
+            {airports?.map((airport) => {
               return (
                 <option
                   value={airport.id}
@@ -111,7 +139,7 @@ export default function LocalBox(data: LocalBoxProps) {
             required
           />
           <div className="mt-4">
-          <label className="block mb-1 text-white">Send an Image</label>
+            <label className="block mb-1 text-white">Send an Image</label>
             <input
               type="file"
               id="fileInput"
@@ -125,19 +153,23 @@ export default function LocalBox(data: LocalBoxProps) {
             >
               Upload Image
             </label>
+            {preview && (
+              <img
+                src={preview}
+                alt="Preview"
+                className="w-full h-30 mt-2 object-cover"
+              />
+            )}
           </div>
-          {preview && (
-            <img
-              src={preview}
-              alt="Preview"
-              className="w-48 h-auto mt-2 object-cover"
-            />
-          )}
           <button
             type="submit"
-            className="mt-4 bg-blue-500 w-full text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600"
+            className="mt-4 bg-blue-500 w-full flex items-center justify-center text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600"
           >
-            Createa
+            {loading ? (
+              <FaSpinner className="animate-spin" size={24} />
+            ) : (
+              "Create"
+            )}
           </button>
         </form>
 
