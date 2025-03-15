@@ -1,9 +1,9 @@
 import { prismaClient } from "../prisma/prisma"; // Importa o cliente do Prisma para interagir com o banco de dados
 import { updateAirportCache } from "./cacheAirport"; // Importa a função para atualizar o cache após a criação
-import { AirportType, CreateAirportType } from "./types"; // Importa os tipos AirportType e CreateAirportType para tipagem segura
+import { AirportType, CreateAndEditAirportType } from "./types"; // Importa os tipos AirportType e CreateAirportType para tipagem segura
 
 // Função para criar um novo Aeroporto no banco de dados
-export async function createAirport(airportInfo: CreateAirportType): Promise<AirportType | undefined> {
+export async function createAirport(airportInfo: CreateAndEditAirportType): Promise<AirportType | undefined> {
     try { 
         // Cria um novo Aeroporto no banco de dados usando o Prisma
         const airport = await prismaClient.airports.create({

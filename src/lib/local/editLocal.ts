@@ -8,7 +8,7 @@ export async function editLocal(localInfo: EditLocalType): Promise<LocalType | u
         // Atualiza as informações do Local no banco de dados usando o Prisma
         let localEdited = await prismaClient.locals.update({
             where: {
-                id: localInfo.id // Localiza o Local pelo ID fornecido
+                airportId: localInfo.airportId // Localiza o Local pelo ID fornecido
             },
             data: {
                 city: localInfo.city, // Atualiza o nome da cidade do Local
