@@ -1,8 +1,7 @@
 "use client";
 
 import Image from "next/image";
-// Importe a imagem desejada (ou use um path /public/...)
-import viagem from "@/public/locals/images/imagem.jpg";
+import adventure from "@/../public/static/Imagem Aventura.jpg";
 import Link from "next/link";
 
 export default function CTASection() {
@@ -11,7 +10,7 @@ export default function CTASection() {
       <div className="max-w-7xl flex flex-col items-center gap-8 md:flex-row">
         {/* Texto */}
         <div className="w-full md:w-1/2">
-          <h1 className="text-3xl md:text-5xl font-bold text-gray-900 mb-4">
+          <h1 className="text-2xl md:text-5xl font-bold text-gray-900 mb-4">
             Find Your Next Adventure
           </h1>
           <p className="text-gray-700 text-base md:text-lg mb-5 [text-align:justify]">
@@ -34,9 +33,9 @@ export default function CTASection() {
 
         {/* Imagem */}
         <div className="w-full md:w-1/2 flex justify-center">
-          <div className="w-[300px] h-[400px] md:w-[400px] md:h-[500px] relative">
+          <div className="w-[300px] h-[450px] md:w-[400px] md:h-[600px] relative">
             <Image
-              src={viagem}
+              src={adventure}
               alt="Pessoa viajando"
               fill
               className="object-cover rounded-xl shadow-lg"

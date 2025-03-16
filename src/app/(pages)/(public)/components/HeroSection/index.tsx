@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import background from "@/public/static/Imagem Fundo.png"
+import background from "@/../public/static/Imagem Fundo.png"
 
 export default function HeroSection() {
   return (

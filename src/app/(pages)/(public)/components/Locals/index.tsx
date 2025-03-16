@@ -14,7 +14,6 @@ import "./styles.css";
 
 // Importa o componente de imagem do Next.js e a imagem utilizada
 import Image from "next/image";
-import foto from "@/public/locals/images/imagem.jpg";
 
 // Importa os ícones de setas do React Icons
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
@@ -22,21 +21,6 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 // Importa o hook useState do React
 import { useState } from "react";
 import { LocalType } from "@/lib/local/types";
-
-// Lista de destinos exibidos no carrossel
-const destinations = [
-  { name: "Primeiro", image: foto },
-  { name: "Veneza", image: foto },
-  { name: "Machu Picchu", image: foto },
-  { name: "Paris", image: foto },
-  { name: "Paris", image: foto },
-  { name: "Paris", image: foto },
-  { name: "Paris", image: foto },
-  { name: "Paris", image: foto },
-  { name: "Paris", image: foto },
-  { name: "Paris", image: foto },
-  { name: "Ultimo", image: foto },
-];
 
 interface LocalsProps {
   locals: LocalType[] | undefined;
@@ -59,8 +43,6 @@ export default function Locals({ locals }: LocalsProps) {
           modules={[Navigation, Pagination, Autoplay]}
           // Configura a paginação automática
           autoplay={{ delay: 5000, disableOnInteraction: false }}
-          // Ativa o Loop
-          // loop
           // Configura a navegação personalizada com botões externos
           navigation={{
             nextEl: ".custom-next",
@@ -72,16 +54,14 @@ export default function Locals({ locals }: LocalsProps) {
             clickable: true,
           }}
           // Centraliza os slides
-          centeredSlides={true}
-          centerInsufficientSlides={true}
+          centeredSlides={false}
           // Ajusta o espaço entre slides
           spaceBetween={10}
           // Configura o comportamento responsivo
           breakpoints={{
-            0: { slidesPerView: 1 },
-            640: { slidesPerView: 2 },
-            768: { slidesPerView: 3 },
-            1024: { slidesPerView: 4 },
+            480: { slidesPerView: 2 },
+            690: { slidesPerView: 3 },
+            900: { slidesPerView: 4 },
           }}
           // Atualiza os estados ao mudar de slide
           onSlideChange={(swiper) => {
@@ -93,9 +73,9 @@ export default function Locals({ locals }: LocalsProps) {
             local.active ? (
               <SwiperSlide
                 key={local.id}
-                className="flex flex-col items-center justify-center w-fit  px-2"
+                className="w-fit px-2"
               >
-                <div className="w-[232px] h-[270px] relative">
+                <div className="xl:w-[300px]  xl:h-[500px] w-[210px] h-[350px] relative">
                   {/* Exibe a imagem de cada destino */}
                   <Image
                     src={local.image}

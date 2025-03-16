@@ -33,6 +33,7 @@ export default function LocalBox({
 
   // Estados para armazenar dados dinâmicos do formulário
   const [airports, setAirports] = useState<AirportType[] | undefined>();
+  const [airportsToShow, setAirportsToShow] = useState<AirportType[] | undefined>();
   const [locals, setLocals] = useState<LocalType[] | undefined>();
   const [airportId, setAirportId] = useState<number>(0);
   const [city, setCity] = useState<string>("");
@@ -55,8 +56,8 @@ export default function LocalBox({
 
   useEffect(() => {
     // Inicializa os aeroportos com os dados recebidos via props
-    setAirports(airportsInitialData);
     setLocals(localsInitialData);
+    setAirports(airportsInitialData);
 
     // Função para atualizar a lista de aeroportos ao receber um evento
     async function handleEvent() {
@@ -75,6 +76,28 @@ export default function LocalBox({
       eventEmitter.off("updateAirports", handleEvent);
     };
   }, []);
+
+  useEffect(() => {
+    if (!airports) {
+      setAirportsToShow(undefined);
+      return;
+    }
+  
+    if (!locals) {
+      setAirportsToShow(airports);
+      return;
+    }
+  
+    // Cria um Set com os IDs dos aeroportos que já possuem locais
+    const localAirportIds = new Set(locals.map((local) => local.airport.id));
+  
+    // Filtra os aeroportos que não estão presentes no Set
+    const filteredAirports = airports.filter(
+      (airport) => !localAirportIds.has(airport.id)
+    );
+  
+    setAirportsToShow(filteredAirports);
+  }, [airports, locals]);
 
   // Atualiza estado quando o usuário seleciona um arquivo
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -179,7 +202,7 @@ export default function LocalBox({
             <option value={0} key={0} disabled className="text-gray-400">
               Select an airport
             </option>
-            {airports?.map((airport) => {
+            {airportsToShow?.map((airport) => {
               return (
                 <option
                   value={airport.id}

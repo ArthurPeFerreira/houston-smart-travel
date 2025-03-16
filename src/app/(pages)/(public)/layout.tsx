@@ -4,7 +4,6 @@ import Footer from "./components/Footer";
 import "../globals.css";
 
 export const metadata: Metadata = {
-  title: "Home",
   description: "",
 };
 
@@ -15,10 +14,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
-          <Navbar />
-          {children}
-          <Footer />
+      <body className="min-h-screen flex flex-col bg-[#E1E1E1]">
+        <Navbar />
+        {/* <main className="flex-1">{children}</main> */}
+        {children}
+        <Footer />
       </body>
     </html>
   );
