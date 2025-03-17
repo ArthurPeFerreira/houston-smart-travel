@@ -23,14 +23,13 @@ export interface CreateLocalTypeFile {
 
 export interface EditLocalType {
   city: string; 
-  image: string; 
   active: boolean;
   airportId: number;
 }
 
 export interface EditLocalTypeFile {
+  airportId: number;
   city: string; 
   image: File; 
   active: boolean;
-  airportId: number;
 }

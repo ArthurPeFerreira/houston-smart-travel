@@ -12,9 +12,7 @@ export async function editLocal(localInfo: EditLocalType): Promise<LocalType | u
             },
             data: {
                 city: localInfo.city, // Atualiza o nome da cidade do Local
-                image: localInfo.image, // Atualiza a URL da imagem do Local
                 active: localInfo.active, // Atualiza o status ativo/inativo do Local
-                airportId: localInfo.airportId, // Atualiza o ID do aeroporto associado ao Local
             },
             select: {
                 id: true, // Seleciona o ID do Local atualizado

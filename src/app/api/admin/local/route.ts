@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
         }
 
         // Converte o ID do aeroporto para número inteiro
-        const airportIdNumber = parseInt(airportId.toString(), 10);
+        const airportIdNumber = Number(airportId);
 
         // Busca todos os Locais no cache
         const locals = await getLocalByCache(0);

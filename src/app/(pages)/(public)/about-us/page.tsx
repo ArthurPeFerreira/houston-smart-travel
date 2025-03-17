@@ -20,8 +20,8 @@ export default function AboutUs() {
         backgroundImage: 'url("static/Mar Fundo About Us.png")',
       }}
     >
-      <div className="max-w-7xl w-full flex flex-col xl:flex-row items-center justify-center h-[1000px]">
-        <div className=" bg-[#E1E1E1] w-4/12 flex flex-row rounded shadow-md p-6 mr-5 h-fit">
+      <div className="max-w-7xl w-full flex flex-col xl:flex-row items-center justify-center h-full">
+        <div className=" bg-[#E1E1E1] flex flex-row rounded shadow-md p-6 h-fit mb-5 xl:mr-5 w-full md:w-[500px] xl:w-4/12">
           <div className="[text-align:justify]">
             {/* Seção de texto */}
             <h1 className="text-3xl font-bold text-center mb-4">About Us</h1>
@@ -53,9 +53,9 @@ export default function AboutUs() {
             </div>
           </div>
         </div>
-        <div className="relative w-[750px] h-full">
+        <div className="flex flex-col items-center justify-center gap-5 w-full md:relative md:w-[720px] xl:w-[750px] md:h-[1000px]">
           {/* Seção de imagens */}
-          <div className="absolute inset-0">
+          <div className="md:absolute md:inset-0">
             <Image
               src={image01}
               alt="Couple 1"
@@ -66,7 +66,7 @@ export default function AboutUs() {
             />
           </div>
 
-          <div className="absolute top-100 left-[350px]">
+          <div className="md:absolute md:top-100 md:left-[320px] xl:left-[350px]">
             <Image
               src={image02}
               alt="Couple 2"
