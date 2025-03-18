@@ -15,7 +15,7 @@ import { AirportType } from "@/lib/airport/types";
 import { FaSpinner } from "react-icons/fa";
 import eventEmitter from "@/lib/event/eventEmmiter";
 import LocalsInfo from "./LocalInfo";
-import { LocalType } from "@/lib/local/types";
+import { EditLocalType, LocalType } from "@/lib/local/types";
 
 interface LocalBoxProps {
   airportsInitialData: AirportType[] | undefined;
@@ -33,7 +33,9 @@ export default function LocalBox({
 
   // Estados para armazenar dados dinâmicos do formulário
   const [airports, setAirports] = useState<AirportType[] | undefined>();
-  const [airportsToShow, setAirportsToShow] = useState<AirportType[] | undefined>();
+  const [airportsToShow, setAirportsToShow] = useState<
+    AirportType[] | undefined
+  >();
   const [locals, setLocals] = useState<LocalType[] | undefined>();
   const [airportId, setAirportId] = useState<number>(0);
   const [city, setCity] = useState<string>("");
@@ -41,6 +43,8 @@ export default function LocalBox({
   const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingLocalsInfoModal, setLoadingLocalsInfoModal] =
+    useState<boolean>(false);
+  const [loadingLocalsEditModal, setLoadingLocalsEditoModal] =
     useState<boolean>(false);
   const [showLocalsInfoModal, setShowLocalsInfoModal] =
     useState<boolean>(false);
@@ -82,20 +86,20 @@ export default function LocalBox({
       setAirportsToShow(undefined);
       return;
     }
-  
+
     if (!locals) {
       setAirportsToShow(airports);
       return;
     }
-  
+
     // Cria um Set com os IDs dos aeroportos que já possuem locais
     const localAirportIds = new Set(locals.map((local) => local.airport.id));
-  
+
     // Filtra os aeroportos que não estão presentes no Set
     const filteredAirports = airports.filter(
       (airport) => !localAirportIds.has(airport.id)
     );
-  
+
     setAirportsToShow(filteredAirports);
   }, [airports, locals]);
 
@@ -180,6 +184,10 @@ export default function LocalBox({
   function onCloseLocalsInfoModal() {
     setShowLocalsInfoModal(false);
   }
+
+  function onCloseLocalsEditModal() {}
+
+  function handleEditLocal(data: EditLocalType) {}
 
   return (
     <div className="mt-10 flex items-center justify-center">
@@ -282,9 +290,9 @@ export default function LocalBox({
         setLocalToEdit={setLocalToEdit}
         isOpenEditModal={showLocalsEditModal}
         setIsOpenEditModal={setShowLocalsEditModal}
-        // onCloseEditModal={onCloseLocalsEditModal}
-        // isLoadingEditModal={loadingLocalsEditModal}
-        // onEditLocal={handleEditLocal}
+        onCloseEditModal={onCloseLocalsEditModal}
+        isLoadingEditModal={loadingLocalsEditModal}
+        onEditLocal={handleEditLocal}
         onDeleteLocal={handleDeleteLocal}
       />
     </div>

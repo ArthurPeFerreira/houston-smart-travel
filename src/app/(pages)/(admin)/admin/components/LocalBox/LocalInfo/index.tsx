@@ -2,7 +2,7 @@
 "use client";
 
 // Importação dos tipos para representar Locais
-import { LocalType } from "@/lib/local/types";
+import { EditLocalType, LocalType } from "@/lib/local/types";
 
 // Importação dos hooks do React para gerenciamento de estado
 import React, { useState } from "react";
@@ -13,6 +13,7 @@ import SeeImage from "./components/SeeImage";
 import { FaSpinner } from "react-icons/fa";
 import { GoXCircle } from "react-icons/go";
 import { MdOutlineExpandCircleDown } from "react-icons/md";
+import LocalEdit from "../LocalEdit";
 
 // Definição da interface das propriedades do modal de informações de Locais
 interface LocalsInfoModalProps {
@@ -24,9 +25,9 @@ interface LocalsInfoModalProps {
   setLocalToEdit: (Local: LocalType) => void; // Define o Local a ser editado
   isOpenEditModal: boolean; // Estado do modal de edição
   setIsOpenEditModal: (state: boolean) => void; // Função para controlar a abertura do modal de edição
-  //   onCloseEditModal: () => void; // Função para fechar o modal de edição
-  //   isLoadingEditModal: boolean; // Indica se o modal de edição está carregando
-  //   onEditLocal: (data: LocalType) => void; // Função para edição de Local
+  onCloseEditModal: () => void; // Função para fechar o modal de edição
+  isLoadingEditModal: boolean; // Indica se o modal de edição está carregando
+  onEditLocal: (data: EditLocalType) => void; // Função para edição de Local
   onDeleteLocal: (LocalId: number) => void; // Função para excluir um Local
 }
 
@@ -40,9 +41,9 @@ export default function LocalsInfo({
   setLocalToEdit,
   isOpenEditModal,
   setIsOpenEditModal,
-  //   onCloseEditModal,
-  //   isLoadingEditModal,
-  //   onEditLocal,
+  onCloseEditModal,
+  isLoadingEditModal,
+  onEditLocal,
   onDeleteLocal,
 }: LocalsInfoModalProps) {
   // Se o modal não estiver aberto, retorna null para não renderizar nada
@@ -142,14 +143,6 @@ export default function LocalsInfo({
             </div>
           )}
         </div>
-
-        {/* Botão para fechar o modal */}
-        <button
-          onClick={onClose}
-          className="w-full p-2 mt-3 rounded bg-red-500 cursor-pointer"
-        >
-          Close
-        </button>
       </div>
 
       <SeeImage
@@ -161,15 +154,17 @@ export default function LocalsInfo({
       />
 
       {/* Modal de edição de Local */}
-      {/* {isOpenEditModal && LocalToEdit && (
-        <LocalEdit 
-          isOpen={isOpenEditModal} 
-          isLoading={isLoadingEditModal} 
-          Local={LocalToEdit} 
-          onClose={onCloseEditModal} 
-          onEditLocal={onEditLocal} 
-        />
-      )} */}
+
+      <LocalEdit
+        isOpen={isOpenEditModal && localToEdit !== null}
+        onClose={() => {
+          setIsOpenEditModal(false);
+        }}
+        isLoading={isLoadingEditModal}
+        local={localToEdit}
+        handleCancel={onCloseEditModal}
+        handleEditLocal={onEditLocal}
+      />
     </div>
   );
 }
