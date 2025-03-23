@@ -29,12 +29,12 @@ interface LocalsInfoModalProps {
   isOpenEditModal: boolean; // Controla a exibição do modal de edição
   setIsOpenEditModal: (state: boolean) => void; // Atualiza o estado de exibição do modal de edição
   isLoadingEditModal: boolean; // Indica se a edição do local está em carregamento
-  isLoadingEditLocalsOrder: boolean;
+  isLoadingEditLocalsOrder: boolean; // Indica se a atualização da ordem dos locais está em carregamento
   onEditLocal: (
     e: React.FormEvent<HTMLFormElement>,
     data: EditLocalTypeFile
   ) => void; // Função para submeter a edição do local
-  onEditLocalsOrder: (data: LocalType[]) => void;
+  onEditLocalsOrder: (data: LocalType[]) => void; // Função para salvar nova ordem dos locais
   onDeleteLocal: (LocalId: number) => void; // Função para deletar um local
 }
 
@@ -54,26 +54,27 @@ export default function LocalsInfo({
   onDeleteLocal,
   onEditLocalsOrder,
 }: LocalsInfoModalProps) {
-  // Retorna null caso o modal principal esteja fechado
+  // Caso o modal não esteja aberto, não renderiza nada
   if (!isOpen) return null;
 
-  // Estado para controlar qual imagem será visualizada no modal de imagem
+  // Estado que define qual imagem será visualizada no modal
   const [imageToSee, setImageToSee] = useState<string>("");
 
-  // Estado que controla a exibição do modal de visualização de imagem
+  // Estado que controla a exibição do modal de imagem
   const [showSeeImageModal, setShowSeeImageModal] = useState<boolean>(false);
 
+  // Estado local que mantém os dados dos locais, permitindo alterações temporárias como reordenação
   const [localsData, setLocalsData] = useState<LocalType[]>(
     locals ? locals : []
   );
 
-  // Classe CSS comum para as células da tabela
+  // Classe padrão para células da tabela
   const classItens = "border border-gray-800 p-2 text-center";
 
+  // Move um local para cima na lista (alterando a ordem)
   function moveItemUp(index: number) {
     setLocalsData((prevLocals) => {
       const newLocals = [...prevLocals];
-      // Troca de posição com o item anterior
       const temp = newLocals[index - 1];
       newLocals[index - 1] = newLocals[index];
       newLocals[index] = temp;
@@ -81,10 +82,10 @@ export default function LocalsInfo({
     });
   }
 
+  // Move um local para baixo na lista (alterando a ordem)
   function moveItemDown(index: number) {
     setLocalsData((prevLocals) => {
       const newLocals = [...prevLocals];
-      // Troca de posição com o item seguinte
       const temp = newLocals[index + 1];
       newLocals[index + 1] = newLocals[index];
       newLocals[index] = temp;
@@ -93,38 +94,37 @@ export default function LocalsInfo({
   }
 
   return (
-    // Container do modal principal com fundo escuro e centralização
+    // Container geral do modal, cobrindo toda a tela
     <div className="fixed inset-0 text-white flex items-center justify-center z-50 w-full h-full bg-gray-900">
-      {/* Corpo do modal */}
+      {/* Área principal do modal */}
       <div className="bg-gray-800 p-6 rounded shadow-lg w-10/12 h-fit ">
-        {/* Título do modal */}
-        <h1 className="text-center font-bold text-3xl mb-5 relative">Locals
-
-        <div className="absolute top-0 left-0 text-sm md:text-lg font-normal">
-          <button
-            onClick={() => {
-              onEditLocalsOrder(localsData);
-            }}
-            className="bg-yellow-500 py-2 px-5 rounded cursor-pointer hover:bg-yellow-600"
-          >
-            {isLoadingEditLocalsOrder ? (
-              <FaSpinner className="animate-spin" size={24} />
-            ) : (
-              "Save New Order"
-            )}
-          </button>
-        </div>
-
+        {/* Cabeçalho com título e botão para salvar nova ordem */}
+        <h1 className="text-center font-bold text-3xl mb-5 relative">
+          Locals
+          <div className="absolute top-0 left-0 text-sm md:text-lg font-normal">
+            <button
+              onClick={() => {
+                onEditLocalsOrder(localsData);
+              }}
+              className="bg-yellow-500 py-2 px-5 rounded cursor-pointer hover:bg-yellow-600"
+            >
+              {isLoadingEditLocalsOrder ? (
+                <FaSpinner className="animate-spin" size={24} />
+              ) : (
+                "Save New Order"
+              )}
+            </button>
+          </div>
         </h1>
-        {/* Seção de conteúdo com rolagem */}
+
+        {/* Conteúdo com rolagem para exibir a lista */}
         <div className="max-h-96 h-fit min-w-full overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
-          {/* Exibe spinner enquanto os dados estão carregando */}
+          {/* Exibição de carregamento ou tabela de locais */}
           {isLoading ? (
             <div className="text-white w-full flex items-center justify-center px-4 py-2 rounded">
               <FaSpinner className="animate-spin" size={24} />
             </div>
           ) : localsData && localsData.length > 0 ? (
-            // Tabela com os dados dos locais
             <table className="w-full text-sm md:text-lg">
               <thead>
                 <tr className="bg-gray-700">
@@ -138,9 +138,10 @@ export default function LocalsInfo({
                 </tr>
               </thead>
               <tbody>
-                {/* Mapeamento de cada local para uma linha da tabela */}
+                {/* Renderiza cada local como uma linha da tabela */}
                 {localsData.map((local, index) => (
                   <tr key={local.id} className="text-center bg-gray-600">
+                    {/* Coluna de ordem com botões de mover */}
                     <td className={classItens}>
                       <div className="flex flex-col items-center justify-center">
                         {index > 0 ? (
@@ -161,6 +162,8 @@ export default function LocalsInfo({
                         ) : null}
                       </div>
                     </td>
+
+                    {/* Coluna de informações do aeroporto */}
                     <td className={classItens}>
                       <div className="flex flex-col">
                         <label className="font-semibold">
@@ -171,9 +174,11 @@ export default function LocalsInfo({
                         </label>
                       </div>
                     </td>
+
+                    {/* Coluna com o nome da cidade */}
                     <td className={classItens}>{local.city}</td>
 
-                    {/* Botão para abrir o modal de imagem */}
+                    {/* Botão para visualizar a imagem do local */}
                     <td className={classItens}>
                       <button
                         onClick={() => {
@@ -186,7 +191,7 @@ export default function LocalsInfo({
                       </button>
                     </td>
 
-                    {/* Ícone que representa se o local está ativo */}
+                    {/* Coluna que mostra se o local está ativo/inativo */}
                     <td className={classItens}>
                       <div className="flex items-center justify-center">
                         {local.active ? (
@@ -196,8 +201,6 @@ export default function LocalsInfo({
                         )}
                       </div>
                     </td>
-
-                  
 
                     {/* Botão para abrir o modal de edição */}
                     <td className={classItens}>
@@ -226,14 +229,14 @@ export default function LocalsInfo({
               </tbody>
             </table>
           ) : (
-            // Mensagem caso a lista de locais esteja vazia
+            // Exibe mensagem caso não existam locais
             <div className="flex items-center justify-center">
               No Locals Found
             </div>
           )}
         </div>
 
-        {/* Botão para fechar o modal */}
+        {/* Botão para fechar o modal principal */}
         <button
           onClick={onClose}
           className="w-full p-2 mt-3 rounded bg-red-500 hover:bg-red-600 transition cursor-pointer"
@@ -242,7 +245,7 @@ export default function LocalsInfo({
         </button>
       </div>
 
-      {/* Modal para visualização de imagem */}
+      {/* Modal para visualização da imagem do local */}
       <SeeImage
         image={imageToSee}
         isOpen={showSeeImageModal}
@@ -251,7 +254,7 @@ export default function LocalsInfo({
         }}
       />
 
-      {/* Modal de edição de Local */}
+      {/* Modal para edição de local */}
       <LocalEdit
         isOpen={isOpenEditModal && localToEdit !== null}
         onClose={() => {
