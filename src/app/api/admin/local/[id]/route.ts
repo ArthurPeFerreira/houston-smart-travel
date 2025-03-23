@@ -112,15 +112,16 @@ export async function PUT(
       );
     }
 
+    
     // Obtém os dados do formulário enviado na requisição
     const formData = await req.formData();
-
+    
     // Extrai os valores dos campos do formulário
     const city = formData.get("city"); // Obtém o valor do campo "city"
     const airportId = formData.get("airportId"); // Obtém o valor do campo "airportId"
     const active = formData.get("active"); // Obtém o valor do campo "active"
     const image = formData.get("image") as File | null; // Obtém o arquivo enviado no campo "image"
-
+    
     // Verifica se todos os campos obrigatórios foram fornecidos
     if (!city || !image || !airportId || active === undefined) {
       return NextResponse.json(
@@ -128,7 +129,7 @@ export async function PUT(
         { status: 400 } // Status HTTP 400 (Bad Request)
       );
     }
-
+    
     const activeValue = active ? active.toString() === "true" : false;
 
     const localInfo: EditLocalTypeFile = {

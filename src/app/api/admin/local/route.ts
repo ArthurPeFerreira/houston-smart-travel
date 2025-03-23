@@ -1,106 +1,164 @@
-import { getLocalByCache } from "@/lib/local/cacheLocal"; // Importa a função para buscar Locais no cache
-import { createLocal } from "@/lib/local/createLocal"; // Importa a função para criar um Local
-import { CreateLocalType, CreateLocalTypeFile } from "@/lib/local/types"; // Importa os tipos para tipagem
-import { NextRequest, NextResponse } from "next/server"; // Importa NextRequest e NextResponse do Next.js para manipulação de requisições e respostas
-import { promises as fs } from "fs"; // Importa o módulo fs para manipulação de arquivos de forma assíncrona
-import path from "path"; // Importa o módulo path para manipulação de caminhos de diretórios e arquivos
+// Importa a função para obter dados de locais armazenados em cache
+import { getLocalByCache } from "@/lib/local/cacheLocal";
 
-// Função GET para buscar todos os Locais
+// Importa a função responsável por criar um novo local
+import { createLocal } from "@/lib/local/createLocal";
+
+// Importa os tipos utilizados para tipagem dos dados de Local
+import { CreateLocalType, CreateLocalTypeFile, LocalType } from "@/lib/local/types";
+
+// Importa tipos do Next.js para manipular requisições e respostas
+import { NextRequest, NextResponse } from "next/server";
+
+// Importa o módulo 'fs' (filesystem) de forma assíncrona para manipular arquivos
+import { promises as fs } from "fs";
+
+// Importa o módulo 'path' para construir caminhos de arquivos de forma segura
+import path from "path";
+
+// Importa função para editar a ordem dos Locais
+import { editLocalsOrder } from "@/lib/local/editLocalsOrder";
+
+// Função HTTP GET — Responsável por retornar todos os locais existentes
 export async function GET() {
     try {
-        // Busca todos os Locais no cache, passando 0 como argumento (talvez indicando um limite ou todos)
+        // Recupera todos os locais armazenados em cache (passando 0 como argumento)
         const locals = await getLocalByCache(0);
 
-        // Se não houver Locais, retorna um erro 400
+        // Caso nenhum local seja encontrado, retorna erro 400
         if (!locals) {
             return NextResponse.json(
-                { message: "Failed to Find Locals!" }, // Mensagem de erro
-                { status: 400 } // Status HTTP 400 (Bad Request)
+                { message: "Failed to Find Locals!" },
+                { status: 400 }
             );
         }
 
-        // Retorna a lista de Locais encontrados
+        // Retorna os locais encontrados como resposta em JSON
         return NextResponse.json(locals);
     } catch {
-        // Em caso de erro, retorna um erro 500
+        // Em caso de erro inesperado, retorna erro 500
         return NextResponse.json(
-            { error: "Failed to Find Locals!" }, // Mensagem de erro
-            { status: 500 } // Status HTTP 500 (Internal Server Error)
+            { error: "Failed to Find Locals!" },
+            { status: 500 }
         );
     }
 }
 
-// Função POST para criar um novo Local
+// Função HTTP POST — Responsável por criar um novo local com imagem
 export async function POST(req: NextRequest) {
     try {
-        // Obtém os dados do formulário enviado na requisição
+        // Obtém os dados do formulário multipart enviado na requisição
         const formData = await req.formData();
 
-        // Extrai os valores dos campos do formulário
-        const city = formData.get("city"); // Obtém o valor do campo "city"
-        const airportId = formData.get("airportId"); // Obtém o valor do campo "airportId"
-        const file = formData.get("image") as File | null; // Obtém o arquivo enviado no campo "image"
+        // Extrai os campos específicos do formulário
+        const city = formData.get("city"); // Nome da cidade
+        const airportId = formData.get("airportId"); // ID do aeroporto
+        const file = formData.get("image") as File | null; // Arquivo de imagem
 
-        // Verifica se todos os campos obrigatórios foram fornecidos
+        // Valida se todos os campos obrigatórios foram preenchidos
         if (!city || !airportId || !file) {
             return NextResponse.json(
-                { error: "Missing Required Fields!" }, // Mensagem de erro informando campos ausentes
-                { status: 400 } // Status HTTP 400 (Bad Request)
+                { error: "Missing Required Fields!" },
+                { status: 400 }
             );
         }
 
-        // Converte o ID do aeroporto para número inteiro
+        // Converte o ID do aeroporto para número
         const airportIdNumber = Number(airportId);
 
-        // Busca todos os Locais no cache
+        // Busca todos os locais existentes no cache
         const locals = await getLocalByCache(0);
 
-        // Se houver Locais no cache, verifica se o Local já existe
+        // Verifica se já existe um local com o mesmo ID de aeroporto
         if (locals) {
             const filterLocal = locals.find((local) => {
-                return local.airport.id === airportIdNumber; // Compara o ID do aeroporto do Local
+                return local.airport.id === airportIdNumber;
             });
 
-            // Se o Local já existir, retorna um erro 400
+            // Impede a criação duplicada do local
             if (filterLocal) {
                 return NextResponse.json(
-                    { error: "This Local Already Exists!" }, // Mensagem de erro informando que já existe
-                    { status: 400 } // Status HTTP 400 (Bad Request)
+                    { error: "This Local Already Exists!" },
+                    { status: 400 }
                 );
             }
         }
 
-        // Converte o arquivo de imagem para um buffer
+        // Converte o arquivo da imagem para um buffer (binário)
         const arrayBuffer = await file.arrayBuffer();
         const buffer = Buffer.from(arrayBuffer);
 
-        // Define os caminhos do diretório e do arquivo onde a imagem será armazenada
+        // Define o diretório e caminho onde a imagem será salva localmente
         const dirPath = path.join(process.cwd(), "public/locals/images");
         const filePath = path.join(dirPath, `${airportIdNumber}.jpg`);
 
-        // Cria o diretório caso não exista
+        // Cria o diretório, caso ainda não exista
         await fs.mkdir(dirPath, { recursive: true });
-        
-        // Salva a imagem no diretório especificado
+
+        // Salva a imagem no caminho especificado
         await fs.writeFile(filePath, buffer);
 
-        // Cria o objeto com os dados para salvar no banco
+        // Cria o objeto com os dados para persistência no banco
         const localToCreate: CreateLocalType = {
-            city: city.toString(), // Converte a cidade para string e atribui ao objeto
-            airportId: airportIdNumber, // Usa o ID do aeroporto convertido
-            image: `/locals/images/${airportIdNumber}.jpg` // Define o caminho da imagem salva
+            city: city.toString(),
+            airportId: airportIdNumber,
+            image: `/locals/images/${airportIdNumber}.jpg`
         };
 
-        // Cria o Local no banco de dados
+        // Executa a criação do local no banco
         const localCreated = await createLocal(localToCreate);
 
-        // Retorna o Local criado como resposta
+        // Retorna os dados do local recém-criado
         return NextResponse.json(localCreated);
     } catch {
-        // Em caso de erro, retorna um erro 500
+        // Em caso de erro interno, retorna status 500
         return NextResponse.json(
-            { error: "Failed to Create Local!" }, // Mensagem de erro
-            { status: 500 } // Status HTTP 500 (Internal Server Error)
+            { error: "Failed to Create Local!" },
+            { status: 500 }
+        );
+    }
+}
+
+// Função HTTP PUT — Responsável por atualizar a ordem dos locais
+export async function PUT(req: NextRequest) {
+    try {
+        // Extrai o novo array de locais (com nova ordem) do corpo da requisição
+        const newLocalsOrder: LocalType[] = await req.json();
+
+        // Valida se o array foi corretamente enviado
+        if (!newLocalsOrder) {
+            return NextResponse.json(
+                { error: "Missing Required Fields!" },
+                { status: 400 }
+            );
+        }
+
+        // Busca os locais atuais no cache
+        const locals = await getLocalByCache(0);
+
+        // Valida se todos os locais ainda existem e se não há discrepâncias no array
+        if (
+            locals?.length !== newLocalsOrder.length ||
+            !locals.every((oldLocal) =>
+                newLocalsOrder.some((newLocal) => newLocal.id === oldLocal.id)
+            )
+        ) {
+            return NextResponse.json(
+                { error: "Some Locals are missing or the new array has extra items!" },
+                { status: 400 }
+            );
+        }
+
+        // Atualiza a ordem dos locais no banco
+        const localCreated = await editLocalsOrder(newLocalsOrder);
+
+        // Retorna a nova ordenação salva
+        return NextResponse.json(localCreated);
+    } catch {
+        // Em caso de erro interno, retorna erro 500
+        return NextResponse.json(
+            { error: "Failed to Edit Locals Order!" },
+            { status: 500 }
         );
     }
 }

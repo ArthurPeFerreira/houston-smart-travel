@@ -1,53 +1,74 @@
 // Indica que este é um componente do lado do cliente no Next.js (App Router)
 "use client";
 
-// Importação da API configurada para chamadas HTTP
+// Importação da instância da API para chamadas HTTP
 import { api } from "@/lib/api/api";
 
-// Importação de hooks do React
+// Importação dos hooks do React
 import { useEffect, useState } from "react";
 
-// Importação do Toastify para notificações
+// Importações relacionadas ao sistema de notificações (Toastify)
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { toastConfigs } from "@/lib/toastify/toastify";
-import { AirportType } from "@/lib/airport/types";
-import { FaSpinner } from "react-icons/fa";
-import eventEmitter from "@/lib/event/eventEmmiter";
-import LocalsInfo from "./LocalInfo";
-import { EditLocalType, LocalType } from "@/lib/local/types";
 
+// Tipagem dos dados de aeroporto
+import { AirportType } from "@/lib/airport/types";
+
+// Ícone de carregamento
+import { FaSpinner } from "react-icons/fa";
+
+// Event emitter para comunicação global
+import eventEmitter from "@/lib/event/eventEmmiter";
+
+// Componente que exibe lista e modais relacionados aos locais
+import LocalsInfo from "./components/LocalInfo";
+
+// Tipos relacionados aos locais
+import { EditLocalTypeFile, LocalType } from "@/lib/local/types";
+
+// Interface que define as props iniciais do componente
 interface LocalBoxProps {
   airportsInitialData: AirportType[] | undefined;
   localsInitialData: LocalType[] | undefined;
 }
 
-// Componente principal que permite a criação de um local associado a um aeroporto
+// Componente principal para criação e gerenciamento de locais
 export default function LocalBox({
   airportsInitialData,
   localsInitialData,
 }: LocalBoxProps) {
-  // Classe CSS reutilizável para os inputs
+  // Classe base reaproveitável para inputs
   const inputs =
     "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white";
 
-  // Estados para armazenar dados dinâmicos do formulário
+  // Estados para armazenar os dados de aeroportos e locais
   const [airports, setAirports] = useState<AirportType[] | undefined>();
   const [airportsToShow, setAirportsToShow] = useState<
     AirportType[] | undefined
   >();
   const [locals, setLocals] = useState<LocalType[] | undefined>();
+
+  // Estados do formulário de criação
   const [airportId, setAirportId] = useState<number>(0);
   const [city, setCity] = useState<string>("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+
+  // Estados relacionados aos modais
   const [loadingLocalsInfoModal, setLoadingLocalsInfoModal] =
     useState<boolean>(false);
-  const [loadingLocalsEditModal, setLoadingLocalsEditoModal] =
+  const [loadingLocalsEditModal, setLoadingLocalsEditModal] =
+    useState<boolean>(false);
+  const [loadingEditLocalsOrder, setLoadingEditLocalsOrder] =
     useState<boolean>(false);
   const [showLocalsInfoModal, setShowLocalsInfoModal] =
     useState<boolean>(false);
+  const [showLocalsEditModal, setShowLocalsEditModal] =
+    useState<boolean>(false);
+
+  // Estado que guarda o local atualmente selecionado para edição
   const [localToEdit, setLocalToEdit] = useState<LocalType>({
     id: 0,
     active: true,
@@ -55,15 +76,13 @@ export default function LocalBox({
     city: "",
     image: "",
   });
-  const [showLocalsEditModal, setShowLocalsEditModal] =
-    useState<boolean>(false);
 
+  // Efeito para inicializar dados e registrar listener de atualização
   useEffect(() => {
-    // Inicializa os aeroportos com os dados recebidos via props
     setLocals(localsInitialData);
     setAirports(airportsInitialData);
 
-    // Função para atualizar a lista de aeroportos ao receber um evento
+    // Função chamada ao disparar evento global para atualizar os dados
     async function handleEvent() {
       const responseAirports = await api.get("api/admin/airport");
       setAirports(responseAirports.data);
@@ -72,15 +91,14 @@ export default function LocalBox({
       setLocals(responseLocals.data);
     }
 
-    // Adiciona listeners para eventos de atualização de aeroportos
+    // Registra e limpa o listener
     eventEmitter.on("updateAirports", handleEvent);
-
-    // Remove os listeners ao desmontar o componente
     return () => {
       eventEmitter.off("updateAirports", handleEvent);
     };
   }, []);
 
+  // Efeito para filtrar aeroportos que ainda não possuem locais
   useEffect(() => {
     if (!airports) {
       setAirportsToShow(undefined);
@@ -92,10 +110,10 @@ export default function LocalBox({
       return;
     }
 
-    // Cria um Set com os IDs dos aeroportos que já possuem locais
+    // Cria um conjunto com IDs de aeroportos que já têm locais
     const localAirportIds = new Set(locals.map((local) => local.airport.id));
 
-    // Filtra os aeroportos que não estão presentes no Set
+    // Filtra apenas os aeroportos disponíveis para novos locais
     const filteredAirports = airports.filter(
       (airport) => !localAirportIds.has(airport.id)
     );
@@ -103,77 +121,70 @@ export default function LocalBox({
     setAirportsToShow(filteredAirports);
   }, [airports, locals]);
 
-  // Atualiza estado quando o usuário seleciona um arquivo
+  // Manipulador de mudança de arquivo (imagem)
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
       setSelectedFile(file);
-      // Cria um preview da imagem carregada
-      setPreview(URL.createObjectURL(file));
-
-      e.target.value = "";
+      setPreview(URL.createObjectURL(file)); // Gera preview da imagem
+      e.target.value = ""; // Reseta input para permitir novo envio
     }
   }
 
-  // Envio do formulário para criação de um novo local
+  // Submissão do formulário de criação de local
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
 
-    if (airportId == 0) {
+    if (airportId === 0) {
       toast.error("Please select an airport.", toastConfigs);
       setLoading(false);
       return;
     }
 
-    // Verifica se um arquivo foi selecionado antes de prosseguir
     if (!selectedFile) {
       toast.error("Please select an image to upload.", toastConfigs);
       setLoading(false);
       return;
     }
 
-    // Cria um FormData para envio dos dados ao backend
+    // Monta objeto FormData para envio multipart
     const formData = new FormData();
-    formData.append("airportId", airportId.toString()); // Converte ID para string
+    formData.append("airportId", airportId.toString());
     formData.append("city", city);
     formData.append("image", selectedFile);
 
     try {
       const response = await api.post("api/admin/local", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+        headers: { "Content-Type": "multipart/form-data" },
       });
 
-      // Exibe mensagem de sucesso se a requisição for bem-sucedida
       if (response.status === 200) {
         toast.success("Local created successfully!", toastConfigs);
       }
     } catch {
-      // Exibe mensagem de erro em caso de falha
       toast.error("Failed to create local!", toastConfigs);
     } finally {
-      // Reseta os estados do formulário após o envio
+      // Limpa e reseta o formulário
       setLoading(false);
       setAirportId(0);
       setCity("");
       setSelectedFile(null);
       setPreview(null);
 
+      // Recarrega os dados atualizados
       const responseLocals = await api.get("api/admin/local");
       setLocals(responseLocals.data);
     }
   }
 
+  // Função para deletar local específico
   async function handleDeleteLocal(localId: number) {
     try {
       if (confirm("Are you sure you want to delete this local?")) {
         await api.delete(`api/admin/local/${localId}`);
-
         const response = await api.get("api/admin/local");
         setLocals(response.data);
-
         toast.success("Local deleted successfully!", toastConfigs);
       }
     } catch {
@@ -181,52 +192,109 @@ export default function LocalBox({
     }
   }
 
+  // Fecha o modal de informações
   function onCloseLocalsInfoModal() {
     setShowLocalsInfoModal(false);
   }
 
-  function onCloseLocalsEditModal() {}
+  // Manipulador para edição de um local
+  async function handleEditLocal(
+    e: React.FormEvent<HTMLFormElement>,
+    data: EditLocalTypeFile
+  ) {
+    e.preventDefault();
+    setLoadingLocalsEditModal(true);
 
-  function handleEditLocal(data: EditLocalType) {}
+    if (!data.image) {
+      toast.error("Please select an image to upload.", toastConfigs);
+      setLoading(false);
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("airportId", data.airportId.toString());
+    formData.append("city", data.city);
+    formData.append("active", data.active.toString());
+    formData.append("image", data.image);
+
+    try {
+      const response = await api.put(
+        `api/admin/local/${localToEdit.id}`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+
+      if (response.status === 200) {
+        toast.success("Local edited successfully!", toastConfigs);
+      }
+    } catch {
+      toast.error("Failed to edit local!", toastConfigs);
+    } finally {
+      const responseLocals = await api.get("api/admin/local");
+      setLocals(responseLocals.data);
+      setLoadingLocalsEditModal(false);
+      setShowLocalsEditModal(false);
+    }
+  }
+
+  async function handleEditLocalsOrder(
+    data: LocalType[]
+  ) {
+    setLoadingEditLocalsOrder(true);
+
+    try {
+      const response = await api.put(`api/admin/local`, data);
+
+      if (response.status === 200) {
+        toast.success("Locals order edited successfully!", toastConfigs);
+      }
+    } catch {
+      toast.error("Failed to edit locals order!", toastConfigs);
+    } finally {
+      const responseLocals = await api.get("api/admin/local");
+      setLocals(responseLocals.data);
+      setLoadingEditLocalsOrder(false);
+    }
+  }
 
   return (
     <div className="mt-10 flex items-center justify-center">
       <div className="bg-gray-800 w-fit p-5 rounded-2xl flex flex-col items-center justify-center text-white">
         {/* Título do formulário */}
         <h1 className="text-center font-bold text-3xl">Create New Local</h1>
+
+        {/* Formulário de criação */}
         <form className="w-full mt-4" onSubmit={handleSubmit}>
-          {/* Selecionar aeroporto */}
+          {/* Dropdown de aeroportos disponíveis */}
           <label className="block mb-1 text-white">Airport</label>
           <select
             name="airports"
             id="airports"
             className={`${inputs} invalid:text-gray-500`}
-            onChange={(e) => {
-              setAirportId(Number(e.target.value));
-            }}
+            onChange={(e) => setAirportId(Number(e.target.value))}
             value={airportId}
             required
           >
-            <option value={0} key={0} disabled className="text-gray-400">
+            <option value={0} disabled className="text-gray-400">
               Select an airport
             </option>
-            {airportsToShow?.map((airport) => {
-              return (
-                <option
-                  value={airport.id}
-                  key={airport.id}
-                  className="text-white"
-                >
-                  {airport.city} - {airport.airportCode}
-                </option>
-              );
-            })}
+            {airportsToShow?.map((airport) => (
+              <option
+                value={airport.id}
+                key={airport.id}
+                className="text-white"
+              >
+                {airport.city} - {airport.airportCode}
+              </option>
+            ))}
           </select>
 
-          {/* Input para nome da cidade */}
+          {/* Campo para nome da cidade */}
           <label className="block mb-1 text-white mt-4">City</label>
           <input
-            id="city"
+            id="local city"
             type="text"
             value={city}
             placeholder="Type airport city"
@@ -259,7 +327,7 @@ export default function LocalBox({
             )}
           </div>
 
-          {/* Botão de envio */}
+          {/* Botão de submissão com spinner de carregamento */}
           <button
             type="submit"
             className="mt-4 bg-blue-500 w-full flex items-center justify-center text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600"
@@ -271,6 +339,8 @@ export default function LocalBox({
             )}
           </button>
         </form>
+
+        {/* Ação para abrir modal de locais cadastrados */}
         <button
           className="mt-2 w-full text-start text-blue-500 cursor-pointer hover:underline"
           onClick={() => {
@@ -281,6 +351,7 @@ export default function LocalBox({
         </button>
       </div>
 
+      {/* Modal de visualização e gerenciamento de locais */}
       <LocalsInfo
         isOpen={showLocalsInfoModal}
         onClose={onCloseLocalsInfoModal}
@@ -290,10 +361,11 @@ export default function LocalBox({
         setLocalToEdit={setLocalToEdit}
         isOpenEditModal={showLocalsEditModal}
         setIsOpenEditModal={setShowLocalsEditModal}
-        onCloseEditModal={onCloseLocalsEditModal}
         isLoadingEditModal={loadingLocalsEditModal}
         onEditLocal={handleEditLocal}
         onDeleteLocal={handleDeleteLocal}
+        onEditLocalsOrder={handleEditLocalsOrder}
+        isLoadingEditLocalsOrder={loadingEditLocalsOrder}
       />
     </div>
   );

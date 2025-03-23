@@ -105,7 +105,7 @@ export default function AirportsInfo({
         {/* Botão para fechar o modal */}
         <button
           onClick={onClose}
-          className="w-full p-2 mt-3 rounded bg-red-500 cursor-pointer"
+          className="w-full p-2 mt-3 rounded bg-red-500 hover:bg-red-600 transition cursor-pointer"
         >
           Close
         </button>

@@ -148,7 +148,7 @@ export default function AirportBox(data: AirportBoxProps) {
         <form className="w-full mt-4" onSubmit={handleSubmitForm}>
           <label className="block mb-1 text-white">City</label>
           <input
-            id="city"
+            id="airport city"
             type="text"
             value={city}
             placeholder="Type airport city"
@@ -158,7 +158,7 @@ export default function AirportBox(data: AirportBoxProps) {
           />
           <label className="block mb-1 text-white mt-4">Airport Code</label>
           <input
-            id="code"
+            id="aiport code"
             type="text"
             value={airportCode}
             placeholder="Type airport code"

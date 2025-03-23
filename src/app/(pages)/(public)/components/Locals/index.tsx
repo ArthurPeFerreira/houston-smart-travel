@@ -75,7 +75,7 @@ export default function Locals({ locals }: LocalsProps) {
                 key={local.id}
                 className="w-fit px-2"
               >
-                <div className="xl:w-[300px]  xl:h-[500px] w-[210px] h-[350px] relative">
+                <div className="xl:w-[300px] xl:h-[500px] w-[210px] h-[350px] relative">
                   {/* Exibe a imagem de cada destino */}
                   <Image
                     src={local.image}
