@@ -5,7 +5,7 @@ import { getLocalByCache } from "@/lib/local/cacheLocal";
 import { createLocal } from "@/lib/local/createLocal";
 
 // Importa os tipos utilizados para tipagem dos dados de Local
-import { CreateLocalType, CreateLocalTypeFile, LocalType } from "@/lib/local/types";
+import { CreateLocalType, LocalType } from "@/lib/local/types";
 
 // Importa tipos do Next.js para manipular requisições e respostas
 import { NextRequest, NextResponse } from "next/server";
@@ -140,7 +140,7 @@ export async function PUT(req: NextRequest) {
         if (
             locals?.length !== newLocalsOrder.length ||
             !locals.every((oldLocal) =>
-                newLocalsOrder.some((newLocal) => newLocal.id === oldLocal.id)
+                newLocalsOrder.some((newLocal) => newLocal.airport.id === oldLocal.airport.id)
             )
         ) {
             return NextResponse.json(

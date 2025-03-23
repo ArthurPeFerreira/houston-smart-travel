@@ -19,7 +19,6 @@ export const metadata: Metadata = {
 
 // Componente principal da página de administração
 export default async function Admin() {
-
   // Puxa os Aeroportos
   const airports = await getAirportByCache(0);
   const locals = await getLocalByCache(0);
@@ -30,16 +29,15 @@ export default async function Admin() {
       {/* Componente Navbar exibido na página */}
       <Navbar />
 
-    <div className="w-11/12 grid grid-cols-1 items-center justify-center gap-4 lg:flex lg:flex-row">  
+      <div className="w-11/12 grid grid-cols-1 items-center justify-center gap-4 lg:flex lg:flex-row">
         {/* Componente AirportBox exibido na página */}
-        <AirportBox airportsInitialData={airports}/>
-
-        {/* Componente LocalBox exibido na página */}
-        <LocalBox airportsInitialData={airports} localsInitialData={locals}/>
+        <AirportBox airportsInitialData={airports} />
 
         {/* Componente RouteBox exibido na página */}
-        <RouteBox />
+        <RouteBox airportsInitialData={airports} />
 
+        {/* Componente LocalBox exibido na página */}
+        <LocalBox airportsInitialData={airports} localsInitialData={locals} />
       </div>
 
       {/* Componente UserTable exibido na página */}

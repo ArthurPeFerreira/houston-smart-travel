@@ -16,7 +16,7 @@ export async function updateAirportCache(): Promise<AirportType[] | undefined> {
 
     // Retorna os aeroportos buscados
     return airports;
-  } catch (error) {
+  } catch {
     // Em caso de erro ao atualizar o cache, exibe uma mensagem de erro no console
     console.error("Failed to Update Airports Cache!");
     return undefined; // Retorna undefined para indicar que a operação falhou
@@ -62,7 +62,7 @@ export async function getAirportByCache(AirportId: number): Promise<AirportType[
       // Se o AirportId for inválido (<= 0), retorna todos os aeroportos disponíveis
       return airports;
     }
-  } catch (error) {
+  } catch {
     // Em caso de erro ao buscar os aeroportos, exibe uma mensagem de erro no console
     console.error("Failed to Find Airports!");
     return undefined; // Retorna undefined para indicar que a operação falhou

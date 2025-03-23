@@ -16,7 +16,7 @@ export async function updateUserCache(): Promise<UserType[] | undefined> {
 
     // Retorna os usuários buscados
     return users;
-  } catch (error) {
+  } catch {
     // Em caso de erro, loga uma mensagem de erro no console
     console.error("Failed to Update User Cache!");
     return undefined; // Retorna undefined para indicar que a operação falhou
@@ -62,7 +62,7 @@ export async function getUserByCache(userId: number): Promise<UserType[] | undef
       // Se o userId não for válido (<= 0), retorna todos os usuários
       return users;
     }
-  } catch (error) {
+  } catch {
     // Em caso de erro, loga uma mensagem de erro no console
     console.error("Failed to Find Users!");
     return undefined; // Retorna undefined para indicar que a operação falhou

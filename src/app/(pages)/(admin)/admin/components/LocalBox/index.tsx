@@ -44,7 +44,9 @@ export default function LocalBox({
 
   // Estados para armazenar os dados de aeroportos e locais
   const [airports, setAirports] = useState<AirportType[] | undefined>();
-  const [airportsToShow, setAirportsToShow] = useState<AirportType[] | undefined>();
+  const [airportsToShow, setAirportsToShow] = useState<
+    AirportType[] | undefined
+  >();
   const [locals, setLocals] = useState<LocalType[] | undefined>();
 
   // Estados para o formulário de criação de local
@@ -55,11 +57,16 @@ export default function LocalBox({
   const [loading, setLoading] = useState<boolean>(false);
 
   // Estados para controlar modais e carregamentos relacionados
-  const [loadingLocalsInfoModal, setLoadingLocalsInfoModal] = useState<boolean>(false);
-  const [loadingLocalsEditModal, setLoadingLocalsEditModal] = useState<boolean>(false);
-  const [loadingEditLocalsOrder, setLoadingEditLocalsOrder] = useState<boolean>(false);
-  const [showLocalsInfoModal, setShowLocalsInfoModal] = useState<boolean>(false);
-  const [showLocalsEditModal, setShowLocalsEditModal] = useState<boolean>(false);
+  const [loadingLocalsInfoModal, setLoadingLocalsInfoModal] =
+    useState<boolean>(true);
+  const [loadingLocalsEditModal, setLoadingLocalsEditModal] =
+    useState<boolean>(false);
+  const [loadingEditLocalsOrder, setLoadingEditLocalsOrder] =
+    useState<boolean>(false);
+  const [showLocalsInfoModal, setShowLocalsInfoModal] =
+    useState<boolean>(false);
+  const [showLocalsEditModal, setShowLocalsEditModal] =
+    useState<boolean>(false);
 
   // Estado que armazena o local que está sendo editado
   const [localToEdit, setLocalToEdit] = useState<LocalType>({
@@ -74,6 +81,7 @@ export default function LocalBox({
   useEffect(() => {
     setLocals(localsInitialData);
     setAirports(airportsInitialData);
+    setLoadingLocalsInfoModal(false);
 
     // Função executada ao disparar evento global "updateAirports"
     async function handleEvent() {
@@ -89,7 +97,7 @@ export default function LocalBox({
     return () => {
       eventEmitter.off("updateAirports", handleEvent);
     };
-  }, []);
+  }, [localsInitialData, airportsInitialData]);
 
   // useEffect que filtra os aeroportos que ainda não têm locais associados
   useEffect(() => {
@@ -312,6 +320,7 @@ export default function LocalBox({
               Upload Image
             </label>
             {preview && (
+              // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={preview}
                 alt="Preview"

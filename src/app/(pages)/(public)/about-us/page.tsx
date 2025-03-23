@@ -36,7 +36,7 @@ export default function AboutUs() {
                 while ensuring a seamless and cost-effective experience.
               </p>
               <p className="mb-4">
-                For them, traveling is more than just visiting new places—it's
+                For them, traveling is more than just visiting new places—it&apos;s
                 about discovery, meaningful connections, and creating memories
                 that last a lifetime. With extensive knowledge in smart travel
                 strategies, they have built solutions travelers trust to plan
@@ -45,7 +45,7 @@ export default function AboutUs() {
               <p>
                 Houston Smart Travel is committed to offering personalized
                 itineraries, insights, and the kind of support that go beyond
-                traditional travel planning. Whether it's a family planning
+                traditional travel planning. Whether it&apos;s a family planning
                 their first international adventure, a couple seeking a romantic
                 getaway, or a solo traveler looking for new horizons, Houston
                 Smart Travel is here to make every journey extraordinary.

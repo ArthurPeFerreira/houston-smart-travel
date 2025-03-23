@@ -14,7 +14,7 @@ export const cabins: Record<CabinKey, Cabin> = {
   },
   premium: {
     key: "premium",
-    label: "Premium Economy",
+    label: "Premium",
     code: "W",
   },
   business: {

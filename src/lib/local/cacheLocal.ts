@@ -16,7 +16,7 @@ export async function updateLocalCache(): Promise<LocalType[] | undefined> {
 
     // Retorna a lista de locais obtida do banco de dados
     return locals;
-  } catch (error) {
+  } catch {
     // Em caso de erro ao atualizar o cache, exibe uma mensagem de erro no console
     console.error("Failed to Update Locals Cache!");
     return undefined; // Retorna undefined para indicar que a operação falhou
@@ -62,7 +62,7 @@ export async function getLocalByCache(LocalId: number): Promise<LocalType[] | un
       // Se LocalId for 0 ou um valor inválido, retorna todos os locais disponíveis
       return locals;
     }
-  } catch (error) {
+  } catch {
     // Em caso de erro ao buscar os locais, exibe uma mensagem no console
     console.error("Failed to Find Locals!");
     return undefined; // Retorna undefined para indicar que a operação falhou

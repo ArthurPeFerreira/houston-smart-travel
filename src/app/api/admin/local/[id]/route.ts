@@ -1,13 +1,16 @@
 import { getLocalByCache } from "@/lib/local/cacheLocal"; // Importa a função para buscar Locais no cache
 import { deleteLocal } from "@/lib/local/deleteLocal"; // Importa a função para deletar um Local
 import { editLocal } from "@/lib/local/editLocal"; // Importa a função para editar um Local
-import { LocalType, EditLocalType, EditLocalTypeFile } from "@/lib/local/types";
+import { EditLocalType, EditLocalTypeFile } from "@/lib/local/types";
 import { NextRequest, NextResponse } from "next/server"; // Importa NextRequest e NextResponse do Next.js para manipulação de requisições e respostas
 import { promises as fs } from "fs";
 import path from "path";
 
 // Função GET para buscar um Local específico pelo ID
-export async function GET({ params }: { params: { id: string } }) {
+export async function GET(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     // Converte o ID da string para número
     const { id } = await params;
@@ -46,7 +49,7 @@ export async function GET({ params }: { params: { id: string } }) {
 // Função DELETE para deletar um Local pelo ID
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Converte o ID da string para número
@@ -97,7 +100,7 @@ export async function DELETE(
 // Função PUT para editar um Local pelo ID
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Converte o ID da string para número
@@ -112,16 +115,15 @@ export async function PUT(
       );
     }
 
-    
     // Obtém os dados do formulário enviado na requisição
     const formData = await req.formData();
-    
+
     // Extrai os valores dos campos do formulário
     const city = formData.get("city"); // Obtém o valor do campo "city"
     const airportId = formData.get("airportId"); // Obtém o valor do campo "airportId"
     const active = formData.get("active"); // Obtém o valor do campo "active"
     const image = formData.get("image") as File | null; // Obtém o arquivo enviado no campo "image"
-    
+
     // Verifica se todos os campos obrigatórios foram fornecidos
     if (!city || !image || !airportId || active === undefined) {
       return NextResponse.json(
@@ -129,7 +131,7 @@ export async function PUT(
         { status: 400 } // Status HTTP 400 (Bad Request)
       );
     }
-    
+
     const activeValue = active ? active.toString() === "true" : false;
 
     const localInfo: EditLocalTypeFile = {

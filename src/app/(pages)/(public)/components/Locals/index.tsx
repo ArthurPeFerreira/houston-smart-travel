@@ -82,6 +82,7 @@ export default function Locals({ locals }: LocalsProps) {
                     alt={local.city}
                     fill
                     quality={100}
+                    unoptimized
                     className="rounded-xl shadow-md object-cover"
                   />
                   {/* Nome do destino exibido abaixo da imagem */}

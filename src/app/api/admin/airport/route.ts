@@ -1,6 +1,6 @@
 import { getAirportByCache } from "@/lib/airport/cacheAirport"; // Importa a função para buscar Aeroportos no cache
 import { createAirport } from "@/lib/airport/createAirport"; // Importa a função para criar um Aeroporto
-import { CreateAirportType } from "@/lib/airport/types"; // Importa o tipo CreateAirportType para tipagem
+import { CreateAndEditAirportType } from "@/lib/airport/types"; // Importa o tipo CreateAirportType para tipagem
 import { NextRequest, NextResponse } from "next/server"; // Importa NextRequest e NextResponse do Next.js para manipulação de requisições e respostas
 
 // Função GET para buscar todos os Aeroportos
@@ -32,7 +32,7 @@ export async function GET() {
 export async function POST(req: NextRequest) {
     try {
         // Extrai as informações do Aeroporto do corpo da requisição
-        const airportInfo: CreateAirportType = await req.json();  
+        const airportInfo: CreateAndEditAirportType = await req.json();  
 
         // Verifica se todos os campos obrigatórios foram fornecidos
         if(!airportInfo.city || !airportInfo.airportCode){

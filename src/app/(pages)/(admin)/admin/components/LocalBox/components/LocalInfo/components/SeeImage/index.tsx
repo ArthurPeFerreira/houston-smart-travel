@@ -22,6 +22,7 @@ export default function SeeImage({ image, isOpen, onClose }: SeeImageProps) {
         {/* Título centralizado do modal */}
         <h1 className="text-center font-bold text-3xl mb-4">Image</h1>
         {/* Imagem exibida no modal, com ajuste para caber proporcionalmente no espaço */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           alt="Local Image"
           src={image}

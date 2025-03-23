@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { FaSpinner } from "react-icons/fa";
+// import { FaSpinner } from "react-icons/fa";
 import CheckFlightsBox from "./components/CheckFlightsBox";
 
 export const metadata: Metadata = {
@@ -8,13 +8,9 @@ export const metadata: Metadata = {
 
 export default function CheckFlights() {
   
+  // function handleSubmit(){
 
-  const inputs =
-  "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white";
-
-  function handleSubmit(){
-
-  }
+  // }
 
   return (
       <main

@@ -6,7 +6,7 @@ import { EditLocalType, LocalType } from "./types"; // Importa os tipos EditLoca
 export async function editLocal(localInfo: EditLocalType): Promise<LocalType | undefined> {
     try {
         // Atualiza as informações do Local no banco de dados usando o Prisma
-        let localEdited = await prismaClient.locals.update({
+        const localEdited = await prismaClient.locals.update({
             where: {
                 airportId: localInfo.airportId // Localiza o Local pelo ID fornecido
             },

@@ -26,7 +26,7 @@ export interface MileageProgram {
     },
     american: {
       key: "american",
-      label: "American mileageProgramsLogoslines",
+      label: "American Airlines",
       iataCode: "AA",
       logoUrl: "/static/mileageProgramsLogos/AA.png",
     },
@@ -56,7 +56,7 @@ export interface MileageProgram {
     },
     aeroplan: {
       key: "aeroplan",
-      label: "mileageProgramsLogos Canada Aeroplan",
+      label: "Air Canada Aeroplan",
       iataCode: "AC",
       logoUrl: "/static/mileageProgramsLogos/AC.png",
     },
@@ -98,7 +98,7 @@ export interface MileageProgram {
     },
     flyingblue: {
       key: "flyingblue",
-      label: "mileageProgramsLogos France/KLM Flying Blue",
+      label: "Air France/KLM Flying Blue",
       iataCode: "AF",
       logoUrl: "/static/mileageProgramsLogos/AF.png",
     },

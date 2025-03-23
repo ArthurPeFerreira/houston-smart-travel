@@ -54,9 +54,6 @@ export default function LocalsInfo({
   onDeleteLocal,
   onEditLocalsOrder,
 }: LocalsInfoModalProps) {
-  // Caso o modal não esteja aberto, não renderiza nada
-  if (!isOpen) return null;
-
   // Estado que define qual imagem será visualizada no modal
   const [imageToSee, setImageToSee] = useState<string>("");
 
@@ -92,6 +89,9 @@ export default function LocalsInfo({
       return newLocals;
     });
   }
+
+  // Caso o modal não esteja aberto, não renderiza nada
+  if (!isOpen) return null;
 
   return (
     // Container geral do modal, cobrindo toda a tela

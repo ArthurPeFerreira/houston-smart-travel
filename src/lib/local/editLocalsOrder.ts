@@ -6,7 +6,7 @@ import { CreateLocalType, LocalType } from "./types"; // Importa os tipos para g
 export async function editLocalsOrder(localInfo: LocalType[]): Promise<LocalType[] | undefined> {
     try {
         // Mapeia os objetos da lista de locais para o formato exigido ao criar registros no banco
-        let newLocalOrder: CreateLocalType[] = localInfo.map((local) => {
+        const newLocalOrder: CreateLocalType[] = localInfo.map((local) => {
             return ({
                 city: local.city,       // Cidade do local
                 image: local.image,     // URL da imagem do local

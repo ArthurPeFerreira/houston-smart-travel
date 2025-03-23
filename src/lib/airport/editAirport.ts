@@ -7,7 +7,7 @@ import { AirportType } from "./types"; // Importa o tipo AirportType para garant
 export async function editAirport(airportInfo: AirportType): Promise<AirportType | undefined> {
     try {
         // Atualiza as informações do Aeroporto no banco de dados usando o Prisma
-        let airportEdited = await prismaClient.airports.update({
+        const airportEdited = await prismaClient.airports.update({
             where: {
                 id: airportInfo.id // Localiza o Aeroporto pelo ID fornecido
             },

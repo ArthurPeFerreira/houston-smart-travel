@@ -12,7 +12,10 @@ export default function CheckFlightsBox() {
   const selects = "w-full bg-gray-300 p-2 rounded";
   const inputs = "w-20 bg-gray-300 p-2 rounded";
 
-  function handleSubmit() {}
+  function handleSubmit() {
+    setLoading(true);
+    setLoading(false);
+  }
 
   return (
     <div
@@ -35,7 +38,7 @@ export default function CheckFlightsBox() {
               name="airports"
               id="airports"
               className={`${selects} invalid:text-gray-500`}
-              onChange={(e) => {}}
+              onChange={(e) => {console.log(e.target.value)}}
               value={0}
               required
             >
@@ -52,7 +55,7 @@ export default function CheckFlightsBox() {
               name="airports"
               id="airports"
               className={`${selects} invalid:text-gray-500`}
-              onChange={(e) => {}}
+              onChange={(e) => {console.log(e.target.value)}}
               value={0}
               required
             >
@@ -69,7 +72,7 @@ export default function CheckFlightsBox() {
               name="airports"
               id="airports"
               className={`${selects} invalid:text-gray-500`}
-              onChange={(e) => {}}
+              onChange={(e) => {console.log(e.target.value)}}
               value={0}
               required
             >

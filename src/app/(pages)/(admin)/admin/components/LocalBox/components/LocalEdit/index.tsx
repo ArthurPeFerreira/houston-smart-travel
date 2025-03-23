@@ -150,6 +150,7 @@ export default function LocalEdit({
 
             {/* Exibição da imagem selecionada como preview */}
             {previewEdit && (
+              // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={previewEdit}
                 alt="Preview"

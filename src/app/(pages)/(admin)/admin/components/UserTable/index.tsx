@@ -22,7 +22,7 @@ import CreateUserModal from "./components/CreateUser";
 import EditUserModal from "./components/EditUser";
 
 // Importação do Toastify para notificações
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { toastConfigs } from "@/lib/toastify/toastify";
 
@@ -69,7 +69,7 @@ export default function UserTable() {
         const sessionData = await api.get("api/auth/session");
         setSession(sessionData.data);
 
-      } catch (error) {
+      } catch {
         console.error("Failed to Find Users!");
       }
     }

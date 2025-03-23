@@ -20,7 +20,7 @@ export default function PrivacyPolicy() {
         <h2 className={h2ClassName}>1. Information We Collect</h2>
         <h3 className={h3ClassName}>
           We do not collect personal information directly through our website.
-          Any personal data (such as passport, national ID, or driver's license
+          Any personal data (such as passport, national ID, or driver&apos;s license
           information) is collected only through our communications via WhatsApp
           when making a booking.
         </h3>

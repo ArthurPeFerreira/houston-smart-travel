@@ -21,7 +21,7 @@ interface AirportBoxProps {
 }
 
 // Componente principal que gerencia aeroportos
-export default function AirportBox(data: AirportBoxProps) {
+export default function AirportBox({airportsInitialData}: AirportBoxProps) {
   // Classe para estilização de inputs
   const inputs =
     "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white";
@@ -60,17 +60,17 @@ export default function AirportBox(data: AirportBoxProps) {
     async function fetchInitialData() {
       setLoadingAirportsInfoModal(true);
       try {
-        if (data.airportsInitialData) {
-          setAirports(data.airportsInitialData);
+        if (airportsInitialData) {
+          setAirports(airportsInitialData);
         }
-      } catch (error) {
+      } catch {
         console.error("Failed to Find Initial Data!");
       } finally {
         setLoadingAirportsInfoModal(false);
       }
     }
     fetchInitialData();
-  }, []);
+  }, [airportsInitialData]);
 
   // Função para criar um novo aeroporto
   async function handleCreateAirport() {
