@@ -34,13 +34,12 @@ jobs:
           username: ${{secrets.PRODUCTION_REMOTE_USER}}
           key: ${{secrets.PRODUCTION_SSH_PRIVATE_KEY}}
           script: |
-            sudo systemctl stop redis-server
             sudo systemctl stop HoustonSmarTravel
+            sudo systemctl start redis-server
+            sudo redis-cli flushall
             cd /projeto
             npm install
             npx prisma generate
-            npm run build
-            sudo systemctl start redis-server
-            sudo redis-cli flushall
+            npm run build           
             sudo systemctl start HoustonSmarTravel
             
