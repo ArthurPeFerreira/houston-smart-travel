@@ -5,7 +5,7 @@
 import { EditLocalTypeFile, LocalType } from "@/lib/local/types";
 
 // Importação dos hooks do React para controle de estado
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 // Importação do componente de visualização de imagem
 import SeeImage from "./components/SeeImage";
@@ -61,9 +61,7 @@ export default function LocalsInfo({
   const [showSeeImageModal, setShowSeeImageModal] = useState<boolean>(false);
 
   // Estado local que mantém os dados dos locais, permitindo alterações temporárias como reordenação
-  const [localsData, setLocalsData] = useState<LocalType[]>(
-    locals ? locals : []
-  );
+  const [localsData, setLocalsData] = useState<LocalType[]>([]);
 
   // Classe padrão para células da tabela
   const classItens = "border border-gray-800 p-2 text-center";
@@ -89,6 +87,12 @@ export default function LocalsInfo({
       return newLocals;
     });
   }
+
+  useEffect(() => {
+    if (locals) {
+      setLocalsData(locals);
+    }
+  }, [locals]);
 
   // Caso o modal não esteja aberto, não renderiza nada
   if (!isOpen) return null;

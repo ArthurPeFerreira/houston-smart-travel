@@ -42,6 +42,7 @@ export default function LocalBox({
   const inputs =
     "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white";
 
+
   // Estados para armazenar os dados de aeroportos e locais
   const [airports, setAirports] = useState<AirportType[] | undefined>();
   const [airportsToShow, setAirportsToShow] = useState<
