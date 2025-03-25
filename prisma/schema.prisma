@@ -13,31 +13,36 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-//Modelo da Tabela de Usuário
+// Modelo da Tabela de Usuário
 model Users {
-  id         Int           @id @default(autoincrement())
-  user       String        @unique
+  id         Int       @id @default(autoincrement())
+  user       String    @unique
   password   String
   name       String
-  active     Boolean       @default(true)
-  dateJoined DateTime      @default(now())
+  active     Boolean   @default(true)
+  dateJoined DateTime  @default(now())
   lastLogin  DateTime?
-  updatedAt  DateTime      @default(now())
+  updatedAt  DateTime  @default(now())
 
-  @@index(id(sort: Asc), name: "IndexUserById")
+  @@index([id], name: "IndexUserById")
 }
 
-//Modelo da Tabela de Aeroportos
+// Modelo da Tabela de Aeroportos
 model Airports {
-  id            Int       @id @default(autoincrement())
-  city          String        
-  airportCode   String    @unique
-  local         Locals?   @relation("AirportToLocal")
+  id          Int             @id @default(autoincrement())
+  city        String
+  airportCode String          @unique
 
-  @@index(id(sort: Asc), name: "IndexAirportsById")
+  // Relação com Locals (se for 1:1, mantém o ?)
+  local       Locals?         @relation("AirportToLocal")
+
+  // Relação 1:N com a tabela de junção
+  routes AirportsRoute[] @relation("Airport")
+
+  @@index([id], name: "IndexAirportsById")
 }
 
-//Modelo da Tabela de Locais que vão aparecer na tela de Home
+// Modelo da Tabela de Locais que vão aparecer na tela de Home
 model Locals {
   id        Int       @id @default(autoincrement())
   airportId Int       @unique
@@ -46,5 +51,37 @@ model Locals {
   active    Boolean   @default(true)
   airport   Airports  @relation("AirportToLocal", fields: [airportId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  @@index(id(sort: Asc), name: "IndexLocalsById")
+  @@index([id], name: "IndexLocalsById")
+}
+
+// Modelo da Tabela de Rotas
+model Route {
+  id             Int              @id @default(autoincrement())
+  hasCabinY      Boolean
+  hasCabinW      Boolean
+  hasCabinJ      Boolean
+  hasCabinF      Boolean
+  mileageProgram String
+  maximumPoints  Int
+  active         Boolean          @default(true)
+
+  // Relação 1:N com a tabela de junção
+  airports AirportsRoute[] @relation("Route")
+
+  @@index([id], name: "IndexRoutesById")
+}
+
+// Modelo da Tabela de junção entre Airports e Route
+model AirportsRoute {
+  id        Int      @id @default(autoincrement())
+  airportId Int
+  routeId   Int
+
+  // Relação com o aeroporto
+  airport   Airports @relation("Airport", fields: [airportId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  
+  // Relação com a rota
+  route     Route    @relation("Route", fields: [routeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  
+  @@index([airportId, routeId], name: "IndexAirportsRoute")
 }

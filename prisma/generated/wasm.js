@@ -142,6 +142,23 @@ exports.Prisma.LocalsScalarFieldEnum = {
   active: 'active'
 };
 
+exports.Prisma.RouteScalarFieldEnum = {
+  id: 'id',
+  hasCabinY: 'hasCabinY',
+  hasCabinW: 'hasCabinW',
+  hasCabinJ: 'hasCabinJ',
+  hasCabinF: 'hasCabinF',
+  mileageProgram: 'mileageProgram',
+  maximumPoints: 'maximumPoints',
+  active: 'active'
+};
+
+exports.Prisma.AirportsRouteScalarFieldEnum = {
+  id: 'id',
+  airportId: 'airportId',
+  routeId: 'routeId'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -161,7 +178,9 @@ exports.Prisma.NullsOrder = {
 exports.Prisma.ModelName = {
   Users: 'Users',
   Airports: 'Airports',
-  Locals: 'Locals'
+  Locals: 'Locals',
+  Route: 'Route',
+  AirportsRoute: 'AirportsRoute'
 };
 
 /**
