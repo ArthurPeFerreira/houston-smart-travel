@@ -63,6 +63,7 @@ model Route {
   hasCabinF      Boolean
   mileageProgram String
   maximumPoints  Int
+  passagePrice   Decimal
   active         Boolean          @default(true)
 
   // Relação 1:N com a tabela de junção

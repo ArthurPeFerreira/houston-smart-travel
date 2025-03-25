@@ -150,6 +150,7 @@ exports.Prisma.RouteScalarFieldEnum = {
   hasCabinF: 'hasCabinF',
   mileageProgram: 'mileageProgram',
   maximumPoints: 'maximumPoints',
+  passagePrice: 'passagePrice',
   active: 'active'
 };
 

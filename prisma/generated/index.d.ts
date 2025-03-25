@@ -4574,11 +4574,13 @@ export namespace Prisma {
   export type RouteAvgAggregateOutputType = {
     id: number | null
     maximumPoints: number | null
+    passagePrice: Decimal | null
   }
 
   export type RouteSumAggregateOutputType = {
     id: number | null
     maximumPoints: number | null
+    passagePrice: Decimal | null
   }
 
   export type RouteMinAggregateOutputType = {
@@ -4589,6 +4591,7 @@ export namespace Prisma {
     hasCabinF: boolean | null
     mileageProgram: string | null
     maximumPoints: number | null
+    passagePrice: Decimal | null
     active: boolean | null
   }
 
@@ -4600,6 +4603,7 @@ export namespace Prisma {
     hasCabinF: boolean | null
     mileageProgram: string | null
     maximumPoints: number | null
+    passagePrice: Decimal | null
     active: boolean | null
   }
 
@@ -4611,6 +4615,7 @@ export namespace Prisma {
     hasCabinF: number
     mileageProgram: number
     maximumPoints: number
+    passagePrice: number
     active: number
     _all: number
   }
@@ -4619,11 +4624,13 @@ export namespace Prisma {
   export type RouteAvgAggregateInputType = {
     id?: true
     maximumPoints?: true
+    passagePrice?: true
   }
 
   export type RouteSumAggregateInputType = {
     id?: true
     maximumPoints?: true
+    passagePrice?: true
   }
 
   export type RouteMinAggregateInputType = {
@@ -4634,6 +4641,7 @@ export namespace Prisma {
     hasCabinF?: true
     mileageProgram?: true
     maximumPoints?: true
+    passagePrice?: true
     active?: true
   }
 
@@ -4645,6 +4653,7 @@ export namespace Prisma {
     hasCabinF?: true
     mileageProgram?: true
     maximumPoints?: true
+    passagePrice?: true
     active?: true
   }
 
@@ -4656,6 +4665,7 @@ export namespace Prisma {
     hasCabinF?: true
     mileageProgram?: true
     maximumPoints?: true
+    passagePrice?: true
     active?: true
     _all?: true
   }
@@ -4754,6 +4764,7 @@ export namespace Prisma {
     hasCabinF: boolean
     mileageProgram: string
     maximumPoints: number
+    passagePrice: Decimal
     active: boolean
     _count: RouteCountAggregateOutputType | null
     _avg: RouteAvgAggregateOutputType | null
@@ -4784,6 +4795,7 @@ export namespace Prisma {
     hasCabinF?: boolean
     mileageProgram?: boolean
     maximumPoints?: boolean
+    passagePrice?: boolean
     active?: boolean
     airports?: boolean | Route$airportsArgs<ExtArgs>
     _count?: boolean | RouteCountOutputTypeDefaultArgs<ExtArgs>
@@ -4797,6 +4809,7 @@ export namespace Prisma {
     hasCabinF?: boolean
     mileageProgram?: boolean
     maximumPoints?: boolean
+    passagePrice?: boolean
     active?: boolean
   }, ExtArgs["result"]["route"]>
 
@@ -4808,6 +4821,7 @@ export namespace Prisma {
     hasCabinF?: boolean
     mileageProgram?: boolean
     maximumPoints?: boolean
+    passagePrice?: boolean
     active?: boolean
   }, ExtArgs["result"]["route"]>
 
@@ -4819,10 +4833,11 @@ export namespace Prisma {
     hasCabinF?: boolean
     mileageProgram?: boolean
     maximumPoints?: boolean
+    passagePrice?: boolean
     active?: boolean
   }
 
-  export type RouteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "hasCabinY" | "hasCabinW" | "hasCabinJ" | "hasCabinF" | "mileageProgram" | "maximumPoints" | "active", ExtArgs["result"]["route"]>
+  export type RouteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "hasCabinY" | "hasCabinW" | "hasCabinJ" | "hasCabinF" | "mileageProgram" | "maximumPoints" | "passagePrice" | "active", ExtArgs["result"]["route"]>
   export type RouteInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     airports?: boolean | Route$airportsArgs<ExtArgs>
     _count?: boolean | RouteCountOutputTypeDefaultArgs<ExtArgs>
@@ -4843,6 +4858,7 @@ export namespace Prisma {
       hasCabinF: boolean
       mileageProgram: string
       maximumPoints: number
+      passagePrice: Prisma.Decimal
       active: boolean
     }, ExtArgs["result"]["route"]>
     composites: {}
@@ -5275,6 +5291,7 @@ export namespace Prisma {
     readonly hasCabinF: FieldRef<"Route", 'Boolean'>
     readonly mileageProgram: FieldRef<"Route", 'String'>
     readonly maximumPoints: FieldRef<"Route", 'Int'>
+    readonly passagePrice: FieldRef<"Route", 'Decimal'>
     readonly active: FieldRef<"Route", 'Boolean'>
   }
     
@@ -6844,6 +6861,7 @@ export namespace Prisma {
     hasCabinF: 'hasCabinF',
     mileageProgram: 'mileageProgram',
     maximumPoints: 'maximumPoints',
+    passagePrice: 'passagePrice',
     active: 'active'
   };
 
@@ -6934,6 +6952,20 @@ export namespace Prisma {
    * Reference to a field of type 'DateTime[]'
    */
   export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Decimal'
+   */
+  export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
+    
+
+
+  /**
+   * Reference to a field of type 'Decimal[]'
+   */
+  export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
     
 
 
@@ -7141,6 +7173,7 @@ export namespace Prisma {
     hasCabinF?: BoolFilter<"Route"> | boolean
     mileageProgram?: StringFilter<"Route"> | string
     maximumPoints?: IntFilter<"Route"> | number
+    passagePrice?: DecimalFilter<"Route"> | Decimal | DecimalJsLike | number | string
     active?: BoolFilter<"Route"> | boolean
     airports?: AirportsRouteListRelationFilter
   }
@@ -7153,6 +7186,7 @@ export namespace Prisma {
     hasCabinF?: SortOrder
     mileageProgram?: SortOrder
     maximumPoints?: SortOrder
+    passagePrice?: SortOrder
     active?: SortOrder
     airports?: AirportsRouteOrderByRelationAggregateInput
   }
@@ -7168,6 +7202,7 @@ export namespace Prisma {
     hasCabinF?: BoolFilter<"Route"> | boolean
     mileageProgram?: StringFilter<"Route"> | string
     maximumPoints?: IntFilter<"Route"> | number
+    passagePrice?: DecimalFilter<"Route"> | Decimal | DecimalJsLike | number | string
     active?: BoolFilter<"Route"> | boolean
     airports?: AirportsRouteListRelationFilter
   }, "id">
@@ -7180,6 +7215,7 @@ export namespace Prisma {
     hasCabinF?: SortOrder
     mileageProgram?: SortOrder
     maximumPoints?: SortOrder
+    passagePrice?: SortOrder
     active?: SortOrder
     _count?: RouteCountOrderByAggregateInput
     _avg?: RouteAvgOrderByAggregateInput
@@ -7199,6 +7235,7 @@ export namespace Prisma {
     hasCabinF?: BoolWithAggregatesFilter<"Route"> | boolean
     mileageProgram?: StringWithAggregatesFilter<"Route"> | string
     maximumPoints?: IntWithAggregatesFilter<"Route"> | number
+    passagePrice?: DecimalWithAggregatesFilter<"Route"> | Decimal | DecimalJsLike | number | string
     active?: BoolWithAggregatesFilter<"Route"> | boolean
   }
 
@@ -7432,6 +7469,7 @@ export namespace Prisma {
     hasCabinF: boolean
     mileageProgram: string
     maximumPoints: number
+    passagePrice: Decimal | DecimalJsLike | number | string
     active?: boolean
     airports?: AirportsRouteCreateNestedManyWithoutRouteInput
   }
@@ -7444,6 +7482,7 @@ export namespace Prisma {
     hasCabinF: boolean
     mileageProgram: string
     maximumPoints: number
+    passagePrice: Decimal | DecimalJsLike | number | string
     active?: boolean
     airports?: AirportsRouteUncheckedCreateNestedManyWithoutRouteInput
   }
@@ -7455,6 +7494,7 @@ export namespace Prisma {
     hasCabinF?: BoolFieldUpdateOperationsInput | boolean
     mileageProgram?: StringFieldUpdateOperationsInput | string
     maximumPoints?: IntFieldUpdateOperationsInput | number
+    passagePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     active?: BoolFieldUpdateOperationsInput | boolean
     airports?: AirportsRouteUpdateManyWithoutRouteNestedInput
   }
@@ -7467,6 +7507,7 @@ export namespace Prisma {
     hasCabinF?: BoolFieldUpdateOperationsInput | boolean
     mileageProgram?: StringFieldUpdateOperationsInput | string
     maximumPoints?: IntFieldUpdateOperationsInput | number
+    passagePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     active?: BoolFieldUpdateOperationsInput | boolean
     airports?: AirportsRouteUncheckedUpdateManyWithoutRouteNestedInput
   }
@@ -7479,6 +7520,7 @@ export namespace Prisma {
     hasCabinF: boolean
     mileageProgram: string
     maximumPoints: number
+    passagePrice: Decimal | DecimalJsLike | number | string
     active?: boolean
   }
 
@@ -7489,6 +7531,7 @@ export namespace Prisma {
     hasCabinF?: BoolFieldUpdateOperationsInput | boolean
     mileageProgram?: StringFieldUpdateOperationsInput | string
     maximumPoints?: IntFieldUpdateOperationsInput | number
+    passagePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     active?: BoolFieldUpdateOperationsInput | boolean
   }
 
@@ -7500,6 +7543,7 @@ export namespace Prisma {
     hasCabinF?: BoolFieldUpdateOperationsInput | boolean
     mileageProgram?: StringFieldUpdateOperationsInput | string
     maximumPoints?: IntFieldUpdateOperationsInput | number
+    passagePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     active?: BoolFieldUpdateOperationsInput | boolean
   }
 
@@ -7790,6 +7834,17 @@ export namespace Prisma {
     airportId?: SortOrder
   }
 
+  export type DecimalFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+  }
+
   export type RouteCountOrderByAggregateInput = {
     id?: SortOrder
     hasCabinY?: SortOrder
@@ -7798,12 +7853,14 @@ export namespace Prisma {
     hasCabinF?: SortOrder
     mileageProgram?: SortOrder
     maximumPoints?: SortOrder
+    passagePrice?: SortOrder
     active?: SortOrder
   }
 
   export type RouteAvgOrderByAggregateInput = {
     id?: SortOrder
     maximumPoints?: SortOrder
+    passagePrice?: SortOrder
   }
 
   export type RouteMaxOrderByAggregateInput = {
@@ -7814,6 +7871,7 @@ export namespace Prisma {
     hasCabinF?: SortOrder
     mileageProgram?: SortOrder
     maximumPoints?: SortOrder
+    passagePrice?: SortOrder
     active?: SortOrder
   }
 
@@ -7825,12 +7883,30 @@ export namespace Prisma {
     hasCabinF?: SortOrder
     mileageProgram?: SortOrder
     maximumPoints?: SortOrder
+    passagePrice?: SortOrder
     active?: SortOrder
   }
 
   export type RouteSumOrderByAggregateInput = {
     id?: SortOrder
     maximumPoints?: SortOrder
+    passagePrice?: SortOrder
+  }
+
+  export type DecimalWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedDecimalFilter<$PrismaModel>
+    _sum?: NestedDecimalFilter<$PrismaModel>
+    _min?: NestedDecimalFilter<$PrismaModel>
+    _max?: NestedDecimalFilter<$PrismaModel>
   }
 
   export type RouteScalarRelationFilter = {
@@ -7992,6 +8068,14 @@ export namespace Prisma {
     connectOrCreate?: AirportsRouteCreateOrConnectWithoutRouteInput | AirportsRouteCreateOrConnectWithoutRouteInput[]
     createMany?: AirportsRouteCreateManyRouteInputEnvelope
     connect?: AirportsRouteWhereUniqueInput | AirportsRouteWhereUniqueInput[]
+  }
+
+  export type DecimalFieldUpdateOperationsInput = {
+    set?: Decimal | DecimalJsLike | number | string
+    increment?: Decimal | DecimalJsLike | number | string
+    decrement?: Decimal | DecimalJsLike | number | string
+    multiply?: Decimal | DecimalJsLike | number | string
+    divide?: Decimal | DecimalJsLike | number | string
   }
 
   export type AirportsRouteUpdateManyWithoutRouteNestedInput = {
@@ -8193,6 +8277,33 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
+  export type NestedDecimalFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+  }
+
+  export type NestedDecimalWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedDecimalFilter<$PrismaModel>
+    _sum?: NestedDecimalFilter<$PrismaModel>
+    _min?: NestedDecimalFilter<$PrismaModel>
+    _max?: NestedDecimalFilter<$PrismaModel>
+  }
+
   export type LocalsCreateWithoutAirportInput = {
     city: string
     image: string
@@ -8381,6 +8492,7 @@ export namespace Prisma {
     hasCabinF: boolean
     mileageProgram: string
     maximumPoints: number
+    passagePrice: Decimal | DecimalJsLike | number | string
     active?: boolean
   }
 
@@ -8392,6 +8504,7 @@ export namespace Prisma {
     hasCabinF: boolean
     mileageProgram: string
     maximumPoints: number
+    passagePrice: Decimal | DecimalJsLike | number | string
     active?: boolean
   }
 
@@ -8442,6 +8555,7 @@ export namespace Prisma {
     hasCabinF?: BoolFieldUpdateOperationsInput | boolean
     mileageProgram?: StringFieldUpdateOperationsInput | string
     maximumPoints?: IntFieldUpdateOperationsInput | number
+    passagePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     active?: BoolFieldUpdateOperationsInput | boolean
   }
 
@@ -8453,6 +8567,7 @@ export namespace Prisma {
     hasCabinF?: BoolFieldUpdateOperationsInput | boolean
     mileageProgram?: StringFieldUpdateOperationsInput | string
     maximumPoints?: IntFieldUpdateOperationsInput | number
+    passagePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     active?: BoolFieldUpdateOperationsInput | boolean
   }
 

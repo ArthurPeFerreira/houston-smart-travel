@@ -15,13 +15,13 @@ import Select, {
 import { AirportType } from "@/lib/airport/types";
 
 // Dados e tipos relacionados às cabines (classes de voo)
-import { Cabin, CabinKey, cabins } from "@/lib/routes/cabins";
+import { Cabin, CabinKey, cabins } from "@/lib/route/cabins";
 
 // Ícones para ações visuais
 import { FaPlus, FaTrash } from "react-icons/fa";
 
 // Lista de programas de milhagem
-import { mileagePrograms } from "@/lib/routes/mileagePrograms";
+import { mileagePrograms } from "@/lib/route/mileagePrograms";
 
 // Tipagem para opções de programa de milhagem usadas no Select
 interface MileageProgramOption {
