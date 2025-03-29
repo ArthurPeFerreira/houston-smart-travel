@@ -4682,18 +4682,21 @@ export namespace Prisma {
   export type RouteMinAggregateOutputType = {
     id: number | null
     mileageProgram: string | null
+    enableLayovers: boolean | null
     active: boolean | null
   }
 
   export type RouteMaxAggregateOutputType = {
     id: number | null
     mileageProgram: string | null
+    enableLayovers: boolean | null
     active: boolean | null
   }
 
   export type RouteCountAggregateOutputType = {
     id: number
     mileageProgram: number
+    enableLayovers: number
     active: number
     _all: number
   }
@@ -4710,18 +4713,21 @@ export namespace Prisma {
   export type RouteMinAggregateInputType = {
     id?: true
     mileageProgram?: true
+    enableLayovers?: true
     active?: true
   }
 
   export type RouteMaxAggregateInputType = {
     id?: true
     mileageProgram?: true
+    enableLayovers?: true
     active?: true
   }
 
   export type RouteCountAggregateInputType = {
     id?: true
     mileageProgram?: true
+    enableLayovers?: true
     active?: true
     _all?: true
   }
@@ -4815,6 +4821,7 @@ export namespace Prisma {
   export type RouteGroupByOutputType = {
     id: number
     mileageProgram: string
+    enableLayovers: boolean
     active: boolean
     _count: RouteCountAggregateOutputType | null
     _avg: RouteAvgAggregateOutputType | null
@@ -4840,6 +4847,7 @@ export namespace Prisma {
   export type RouteSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     mileageProgram?: boolean
+    enableLayovers?: boolean
     active?: boolean
     airports?: boolean | Route$airportsArgs<ExtArgs>
     cabins?: boolean | Route$cabinsArgs<ExtArgs>
@@ -4849,22 +4857,25 @@ export namespace Prisma {
   export type RouteSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     mileageProgram?: boolean
+    enableLayovers?: boolean
     active?: boolean
   }, ExtArgs["result"]["route"]>
 
   export type RouteSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     mileageProgram?: boolean
+    enableLayovers?: boolean
     active?: boolean
   }, ExtArgs["result"]["route"]>
 
   export type RouteSelectScalar = {
     id?: boolean
     mileageProgram?: boolean
+    enableLayovers?: boolean
     active?: boolean
   }
 
-  export type RouteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "mileageProgram" | "active", ExtArgs["result"]["route"]>
+  export type RouteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "mileageProgram" | "enableLayovers" | "active", ExtArgs["result"]["route"]>
   export type RouteInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     airports?: boolean | Route$airportsArgs<ExtArgs>
     cabins?: boolean | Route$cabinsArgs<ExtArgs>
@@ -4882,6 +4893,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: number
       mileageProgram: string
+      enableLayovers: boolean
       active: boolean
     }, ExtArgs["result"]["route"]>
     composites: {}
@@ -5310,6 +5322,7 @@ export namespace Prisma {
   interface RouteFieldRefs {
     readonly id: FieldRef<"Route", 'Int'>
     readonly mileageProgram: FieldRef<"Route", 'String'>
+    readonly enableLayovers: FieldRef<"Route", 'Boolean'>
     readonly active: FieldRef<"Route", 'Boolean'>
   }
     
@@ -8019,6 +8032,7 @@ export namespace Prisma {
   export const RouteScalarFieldEnum: {
     id: 'id',
     mileageProgram: 'mileageProgram',
+    enableLayovers: 'enableLayovers',
     active: 'active'
   };
 
@@ -8337,6 +8351,7 @@ export namespace Prisma {
     NOT?: RouteWhereInput | RouteWhereInput[]
     id?: IntFilter<"Route"> | number
     mileageProgram?: StringFilter<"Route"> | string
+    enableLayovers?: BoolFilter<"Route"> | boolean
     active?: BoolFilter<"Route"> | boolean
     airports?: AirportsRouteListRelationFilter
     cabins?: CabinsRouteListRelationFilter
@@ -8345,6 +8360,7 @@ export namespace Prisma {
   export type RouteOrderByWithRelationInput = {
     id?: SortOrder
     mileageProgram?: SortOrder
+    enableLayovers?: SortOrder
     active?: SortOrder
     airports?: AirportsRouteOrderByRelationAggregateInput
     cabins?: CabinsRouteOrderByRelationAggregateInput
@@ -8356,6 +8372,7 @@ export namespace Prisma {
     OR?: RouteWhereInput[]
     NOT?: RouteWhereInput | RouteWhereInput[]
     mileageProgram?: StringFilter<"Route"> | string
+    enableLayovers?: BoolFilter<"Route"> | boolean
     active?: BoolFilter<"Route"> | boolean
     airports?: AirportsRouteListRelationFilter
     cabins?: CabinsRouteListRelationFilter
@@ -8364,6 +8381,7 @@ export namespace Prisma {
   export type RouteOrderByWithAggregationInput = {
     id?: SortOrder
     mileageProgram?: SortOrder
+    enableLayovers?: SortOrder
     active?: SortOrder
     _count?: RouteCountOrderByAggregateInput
     _avg?: RouteAvgOrderByAggregateInput
@@ -8378,6 +8396,7 @@ export namespace Prisma {
     NOT?: RouteScalarWhereWithAggregatesInput | RouteScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"Route"> | number
     mileageProgram?: StringWithAggregatesFilter<"Route"> | string
+    enableLayovers?: BoolWithAggregatesFilter<"Route"> | boolean
     active?: BoolWithAggregatesFilter<"Route"> | boolean
   }
 
@@ -8669,6 +8688,7 @@ export namespace Prisma {
 
   export type RouteCreateInput = {
     mileageProgram: string
+    enableLayovers: boolean
     active?: boolean
     airports?: AirportsRouteCreateNestedManyWithoutRouteInput
     cabins?: CabinsRouteCreateNestedManyWithoutRouteInput
@@ -8677,6 +8697,7 @@ export namespace Prisma {
   export type RouteUncheckedCreateInput = {
     id?: number
     mileageProgram: string
+    enableLayovers: boolean
     active?: boolean
     airports?: AirportsRouteUncheckedCreateNestedManyWithoutRouteInput
     cabins?: CabinsRouteUncheckedCreateNestedManyWithoutRouteInput
@@ -8684,6 +8705,7 @@ export namespace Prisma {
 
   export type RouteUpdateInput = {
     mileageProgram?: StringFieldUpdateOperationsInput | string
+    enableLayovers?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     airports?: AirportsRouteUpdateManyWithoutRouteNestedInput
     cabins?: CabinsRouteUpdateManyWithoutRouteNestedInput
@@ -8692,6 +8714,7 @@ export namespace Prisma {
   export type RouteUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     mileageProgram?: StringFieldUpdateOperationsInput | string
+    enableLayovers?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     airports?: AirportsRouteUncheckedUpdateManyWithoutRouteNestedInput
     cabins?: CabinsRouteUncheckedUpdateManyWithoutRouteNestedInput
@@ -8700,17 +8723,20 @@ export namespace Prisma {
   export type RouteCreateManyInput = {
     id?: number
     mileageProgram: string
+    enableLayovers: boolean
     active?: boolean
   }
 
   export type RouteUpdateManyMutationInput = {
     mileageProgram?: StringFieldUpdateOperationsInput | string
+    enableLayovers?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type RouteUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     mileageProgram?: StringFieldUpdateOperationsInput | string
+    enableLayovers?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
   }
 
@@ -9073,6 +9099,7 @@ export namespace Prisma {
   export type RouteCountOrderByAggregateInput = {
     id?: SortOrder
     mileageProgram?: SortOrder
+    enableLayovers?: SortOrder
     active?: SortOrder
   }
 
@@ -9083,12 +9110,14 @@ export namespace Prisma {
   export type RouteMaxOrderByAggregateInput = {
     id?: SortOrder
     mileageProgram?: SortOrder
+    enableLayovers?: SortOrder
     active?: SortOrder
   }
 
   export type RouteMinOrderByAggregateInput = {
     id?: SortOrder
     mileageProgram?: SortOrder
+    enableLayovers?: SortOrder
     active?: SortOrder
   }
 
@@ -9840,6 +9869,7 @@ export namespace Prisma {
 
   export type RouteCreateWithoutCabinsInput = {
     mileageProgram: string
+    enableLayovers: boolean
     active?: boolean
     airports?: AirportsRouteCreateNestedManyWithoutRouteInput
   }
@@ -9847,6 +9877,7 @@ export namespace Prisma {
   export type RouteUncheckedCreateWithoutCabinsInput = {
     id?: number
     mileageProgram: string
+    enableLayovers: boolean
     active?: boolean
     airports?: AirportsRouteUncheckedCreateNestedManyWithoutRouteInput
   }
@@ -9869,6 +9900,7 @@ export namespace Prisma {
 
   export type RouteUpdateWithoutCabinsInput = {
     mileageProgram?: StringFieldUpdateOperationsInput | string
+    enableLayovers?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     airports?: AirportsRouteUpdateManyWithoutRouteNestedInput
   }
@@ -9876,6 +9908,7 @@ export namespace Prisma {
   export type RouteUncheckedUpdateWithoutCabinsInput = {
     id?: IntFieldUpdateOperationsInput | number
     mileageProgram?: StringFieldUpdateOperationsInput | string
+    enableLayovers?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     airports?: AirportsRouteUncheckedUpdateManyWithoutRouteNestedInput
   }
@@ -9900,6 +9933,7 @@ export namespace Prisma {
 
   export type RouteCreateWithoutAirportsInput = {
     mileageProgram: string
+    enableLayovers: boolean
     active?: boolean
     cabins?: CabinsRouteCreateNestedManyWithoutRouteInput
   }
@@ -9907,6 +9941,7 @@ export namespace Prisma {
   export type RouteUncheckedCreateWithoutAirportsInput = {
     id?: number
     mileageProgram: string
+    enableLayovers: boolean
     active?: boolean
     cabins?: CabinsRouteUncheckedCreateNestedManyWithoutRouteInput
   }
@@ -9953,6 +9988,7 @@ export namespace Prisma {
 
   export type RouteUpdateWithoutAirportsInput = {
     mileageProgram?: StringFieldUpdateOperationsInput | string
+    enableLayovers?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     cabins?: CabinsRouteUpdateManyWithoutRouteNestedInput
   }
@@ -9960,6 +9996,7 @@ export namespace Prisma {
   export type RouteUncheckedUpdateWithoutAirportsInput = {
     id?: IntFieldUpdateOperationsInput | number
     mileageProgram?: StringFieldUpdateOperationsInput | string
+    enableLayovers?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     cabins?: CabinsRouteUncheckedUpdateManyWithoutRouteNestedInput
   }

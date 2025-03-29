@@ -75,6 +75,7 @@ model Locals {
 model Route {
   id                   Int              @id @default(autoincrement()) // ID primário auto incremental
   mileageProgram       String // Nome do programa de milhagem associado
+  enableLayovers       Boolean // Indica se a rota permite voos com escalas ou conexões  
   active               Boolean          @default(true) // Indicador se a rota está ativa
 
   // Relação 1:N com AirportsRoute (aeroportos envolvidos na rota)

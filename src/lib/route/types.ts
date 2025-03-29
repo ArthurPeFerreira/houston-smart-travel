@@ -4,6 +4,7 @@ import { AirportType } from "../airport/types";
 export interface RouteType {
   id: number;
   mileageProgram: string;
+  enableLayovers: boolean;
   active: boolean;
   airports: AirportType[] | null;
   cabins: CabinsType[] | null;
@@ -26,6 +27,7 @@ export interface CreateRouteType {
   }[];
   airportsId: number[];
   mileageProgram: string;
+  enableLayovers: boolean;
 }
 
 export interface EditRouteType {
@@ -37,5 +39,6 @@ export interface EditRouteType {
     cancellationPrice: Prisma.Decimal;
   }[];
   mileageProgram: string;
+  enableLayovers: boolean;
   active: boolean;
 }

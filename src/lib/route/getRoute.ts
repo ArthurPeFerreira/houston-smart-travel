@@ -46,6 +46,7 @@ export async function getRoute(
       const formattedRoute: RouteType = {
         id: route.id,
         mileageProgram: route.mileageProgram,
+        enableLayovers: route.enableLayovers,
         active: route.active,
         cabins: route.cabins,
         // Mapeia os aeroportos relacionados à rota
@@ -95,6 +96,7 @@ export async function getRoute(
         return {
           id: route.id,
           mileageProgram: route.mileageProgram,
+          enableLayovers: route.enableLayovers,
           active: route.active,
           cabins: route.cabins,
           // Mapeia os aeroportos associados à rota

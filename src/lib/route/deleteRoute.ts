@@ -47,6 +47,7 @@ export async function deleteRoute(
     const formattedRoute: RouteType = {
       id: route.id,
       mileageProgram: route.mileageProgram,
+      enableLayovers: route.enableLayovers,
       active: route.active,
       cabins: route.cabins,
       // Converte os dados dos aeroportos para o formato simplificado

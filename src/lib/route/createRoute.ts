@@ -18,6 +18,7 @@ export async function createRoute(
     const routeCreated = await prismaClient.route.create({
       data: {
         mileageProgram: routeInfo.mileageProgram,
+        enableLayovers: routeInfo.enableLayovers,
       },
     });
 

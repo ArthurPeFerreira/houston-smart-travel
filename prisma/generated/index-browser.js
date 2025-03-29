@@ -145,6 +145,7 @@ exports.Prisma.LocalsScalarFieldEnum = {
 exports.Prisma.RouteScalarFieldEnum = {
   id: 'id',
   mileageProgram: 'mileageProgram',
+  enableLayovers: 'enableLayovers',
   active: 'active'
 };
 

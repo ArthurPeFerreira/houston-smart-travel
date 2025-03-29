@@ -38,6 +38,7 @@ export async function editRoute(
       data: {
         active: routeInfo.active,
         mileageProgram: routeInfo.mileageProgram,
+        enableLayovers: routeInfo.enableLayovers
       },
       // Inclui os relacionamentos com aeroportos e cabines para retorno completo
       include: {
@@ -65,6 +66,7 @@ export async function editRoute(
     const formattedRoute: RouteType = {
       id: route.id,
       mileageProgram: route.mileageProgram,
+      enableLayovers: route.enableLayovers,
       active: route.active,
       cabins: route.cabins,
       // Constrói o array de aeroportos com os dados essenciais
