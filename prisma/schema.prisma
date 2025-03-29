@@ -1,88 +1,124 @@
+// Comando para gerar o cliente Prisma
 // npx prisma generate
+
+// Comando para aplicar as migrações em ambiente de desenvolvimento
 // npx prisma migrate dev --name hst
+
+// Comando para aplicar as migrações em produção
 // npx prisma migrate deploy
 
+// Configuração do gerador Prisma Client
 generator client {
-  provider = "prisma-client-js"
-  output   = "../prisma/generated"
-  binaryTargets = ["native", "linux-arm64-openssl-3.0.x"]
+  provider = "prisma-client-js" // Define o uso do cliente JavaScript
+  output   = "../prisma/generated" // Caminho de saída do cliente gerado
+  binaryTargets = ["native", "linux-arm64-openssl-3.0.x"] // Alvos binários específicos para compilação
 }
 
+// Fonte de dados apontando para um banco PostgreSQL
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "postgresql" // Provedor do banco de dados
+  url      = env("DATABASE_URL") // URL de conexão obtida da variável de ambiente
 }
 
+// ============================
 // Modelo da Tabela de Usuário
+// ============================
 model Users {
-  id         Int       @id @default(autoincrement())
-  user       String    @unique
-  password   String
-  name       String
-  active     Boolean   @default(true)
-  dateJoined DateTime  @default(now())
-  lastLogin  DateTime?
-  updatedAt  DateTime  @default(now())
+  id         Int       @id @default(autoincrement()) // ID primário auto incremental
+  user       String    @unique // Nome de usuário único
+  password   String // Senha do usuário
+  name       String // Nome completo do usuário
+  active     Boolean   @default(true) // Indicador de conta ativa
+  dateJoined DateTime  @default(now()) // Data de criação do usuário
+  lastLogin  DateTime? // Último login do usuário (opcional)
+  updatedAt  DateTime  @default(now()) // Data da última atualização
 
-  @@index([id], name: "IndexUserById")
+  @@index([id], name: "IndexUserById") // Índice no campo ID
 }
 
+// ======================================
 // Modelo da Tabela de Aeroportos
+// ======================================
 model Airports {
-  id          Int             @id @default(autoincrement())
-  city        String
-  airportCode String          @unique
+  id          Int             @id @default(autoincrement()) // ID primário auto incremental
+  city        String // Cidade do aeroporto
+  airportCode String          @unique // Código único do aeroporto (ex: GRU, JFK)
 
-  // Relação com Locals (se for 1:1, mantém o ?)
+  // Relação opcional 1:1 com a tabela Locals
   local       Locals?         @relation("AirportToLocal")
 
-  // Relação 1:N com a tabela de junção
-  routes AirportsRoute[] @relation("Airport")
+  // Relação 1:N com a tabela de junção AirportsRoute
+  routes      AirportsRoute[] @relation("Airport")
 
-  @@index([id], name: "IndexAirportsById")
+  @@index([id], name: "IndexAirportsById") // Índice no campo ID
 }
 
-// Modelo da Tabela de Locais que vão aparecer na tela de Home
+// ======================================================
+// Modelo da Tabela de Locais exibidos na tela de Home
+// ======================================================
 model Locals {
-  id        Int       @id @default(autoincrement())
-  airportId Int       @unique
-  city      String    
-  image     String
-  active    Boolean   @default(true)
+  id        Int       @id @default(autoincrement()) // ID primário auto incremental
+  airportId Int       @unique // Chave estrangeira única para o aeroporto
+  city      String // Nome da cidade
+  image     String // Caminho da imagem representando o local
+  active    Boolean   @default(true) // Indicador se o local está ativo para exibição
+
+  // Relação com a tabela Airports (obrigatória)
   airport   Airports  @relation("AirportToLocal", fields: [airportId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  @@index([id], name: "IndexLocalsById")
+  @@index([id], name: "IndexLocalsById") // Índice no campo ID
 }
 
+// ======================================
 // Modelo da Tabela de Rotas
+// ======================================
 model Route {
-  id             Int              @id @default(autoincrement())
-  hasCabinY      Boolean
-  hasCabinW      Boolean
-  hasCabinJ      Boolean
-  hasCabinF      Boolean
-  mileageProgram String
-  maximumPoints  Int
-  passagePrice   Decimal
-  active         Boolean          @default(true)
+  id                   Int              @id @default(autoincrement()) // ID primário auto incremental
+  mileageProgram       String // Nome do programa de milhagem associado
+  active               Boolean          @default(true) // Indicador se a rota está ativa
 
-  // Relação 1:N com a tabela de junção
-  airports AirportsRoute[] @relation("Route")
+  // Relação 1:N com AirportsRoute (aeroportos envolvidos na rota)
+  airports             AirportsRoute[]  @relation("Route")
 
-  @@index([id], name: "IndexRoutesById")
+  // Relação 1:N com CabinsRoute (cabines disponíveis na rota)
+  cabins               CabinsRoute[]    @relation("Cabins")
+
+  @@index([id], name: "IndexRoutesById") // Índice no campo ID
 }
 
-// Modelo da Tabela de junção entre Airports e Route
-model AirportsRoute {
-  id        Int      @id @default(autoincrement())
-  airportId Int
-  routeId   Int
+// =================================================================
+// Modelo da Tabela de junção entre Cabins e Route
+// Representa configurações específicas de cabine por rota
+// =================================================================
+model CabinsRoute {
+  id                Int      @id @default(autoincrement()) // ID primário auto incremental
+  routeId           Int // Chave estrangeira para rota
+  key               String   @unique// Identificador da cabine
+  maximumPoints     Int // Máximo de pontos permitidos
+  passagePrice      Decimal // Preço da passagem
+  cancellationPrice Decimal // Preço de cancelamento
 
-  // Relação com o aeroporto
+  // Relação com a tabela Route
+  route     Route    @relation("Cabins", fields: [routeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([routeId, key], name: "UniqueCabinPerRoute") // Garante que key seja único por routeId
+  @@index([routeId,id], name: "IndexCabinsRoute") // Índice composto por routeId e id
+}
+
+// =====================================================================
+// Modelo da Tabela de junção entre Airports e Route
+// Representa quais aeroportos pertencem a uma rota
+// =====================================================================
+model AirportsRoute {
+  id        Int      @id @default(autoincrement()) // ID primário auto incremental
+  airportId Int // Chave estrangeira para o aeroporto
+  routeId   Int // Chave estrangeira para a rota
+
+  // Relação com a tabela Airports
   airport   Airports @relation("Airport", fields: [airportId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  
-  // Relação com a rota
+
+  // Relação com a tabela Route
   route     Route    @relation("Route", fields: [routeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  
-  @@index([airportId, routeId], name: "IndexAirportsRoute")
+
+  @@index([airportId, routeId], name: "IndexAirportsRoute") // Índice composto por airportId e routeId
 }

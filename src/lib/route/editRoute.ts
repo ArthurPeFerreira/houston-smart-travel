@@ -1,37 +1,73 @@
-import { prismaClient } from "../prisma/prisma"; // Importa o cliente do Prisma para interagir com o banco de dados
-import { updateRouteCache } from "./cacheRoute"; // Importa a função para atualizar o cache de rotas
-import { EditRouteType, RouteType } from "./types"; // Importa os tipos utilizados para entrada e retorno da função
+// Importa o cliente do Prisma para interagir com o banco de dados
+import { prismaClient } from "../prisma/prisma";
 
-// Função assíncrona responsável por editar uma rota existente no banco de dados
+// Importa a função para atualizar o cache das rotas após modificações
+import { updateRouteCache } from "./cacheRoute";
+
+// Importa os tipos utilizados para entrada (EditRouteType) e retorno (RouteType)
+import { EditRouteType, RouteType } from "./types";
+
+// ==========================================================================
+// Função assíncrona responsável por editar uma rota existente no banco
+// ==========================================================================
 export async function editRoute(
   routeInfo: EditRouteType
 ): Promise<RouteType | undefined> {
   try {
-    // Atualiza a rota no banco de dados com base no ID e nas novas informações fornecidas
+    // Itera sobre a lista de cabines fornecidas para atualizar cada uma no banco
+    for (const cabin of routeInfo.cabins) {
+      await prismaClient.cabinsRoute.update({
+        where: {
+          // Utiliza a constraint composta `routeId` + `key` para identificar a cabine
+          UniqueCabinPerRoute: { routeId: routeInfo.id, key: cabin.key },
+        },
+        // Aplica as alterações nos campos da cabine
+        data: {
+          maximumPoints: cabin.maximumPoints,
+          passagePrice: cabin.passagePrice,
+          cancellationPrice: cabin.cancellationPrice,
+        },
+      });
+    }
+
+    // Atualiza os dados principais da rota (status e programa de milhagem)
     const route = await prismaClient.route.update({
       where: {
-        id: routeInfo.id, // Localiza a rota que será atualizada pelo seu ID
+        id: routeInfo.id,
       },
-      data: routeInfo, // Aplica as alterações usando os dados fornecidos
-      // Inclui os dados dos aeroportos associados para que possam ser retornados no objeto final
-      include: { airports: { select: { airport: true } } },
+      data: {
+        active: routeInfo.active,
+        mileageProgram: routeInfo.mileageProgram,
+      },
+      // Inclui os relacionamentos com aeroportos e cabines para retorno completo
+      include: {
+        airports: {
+          select: { airport: true },
+          orderBy: { id: "asc" },
+        },
+        cabins: {
+          select: {
+            id: true,
+            key: true,
+            maximumPoints: true,
+            passagePrice: true,
+            cancellationPrice: true,
+          },
+          orderBy: { id: "asc" },
+        },
+      },
     });
 
-    // Atualiza o cache das rotas após a modificação dos dados no banco
+    // Atualiza o cache das rotas após a edição
     await updateRouteCache();
 
-    // Formata os dados da rota atualizada para o formato definido por RouteType
+    // Formata os dados retornados para o formato do tipo `RouteType`
     const formattedRoute: RouteType = {
       id: route.id,
-      hasCabinY: route.hasCabinY, // Indica se a rota possui cabine econômica
-      hasCabinW: route.hasCabinW, // Indica se a rota possui cabine premium
-      hasCabinJ: route.hasCabinJ, // Indica se a rota possui cabine executiva
-      hasCabinF: route.hasCabinF, // Indica se a rota possui primeira classe
-      mileageProgram: route.mileageProgram, // Programa de milhagem associado
-      maximumPoints: route.maximumPoints, // Pontuação máxima permitida
-      passagePrice: route.passagePrice, // Preço da passagem
-      active: route.active, // Status da rota (ativa ou inativa)
-      // Mapeia os aeroportos associados, formatando conforme necessário
+      mileageProgram: route.mileageProgram,
+      active: route.active,
+      cabins: route.cabins,
+      // Constrói o array de aeroportos com os dados essenciais
       airports: route.airports.map((airport) => {
         return {
           id: airport.airport.id,
@@ -41,14 +77,14 @@ export async function editRoute(
       }),
     };
 
-    // Retorna os dados atualizados da rota
+    // Retorna os dados atualizados da rota formatados
     return formattedRoute;
   } catch {
-    // Em caso de falha na atualização, registra uma mensagem de erro no console
+    // Em caso de falha no processo, exibe uma mensagem de erro no console
     console.error("Failed to Edit Route!");
     return undefined;
   } finally {
-    // Encerra a conexão com o Prisma, independentemente do sucesso ou falha da operação
+    // Garante o encerramento da conexão com o Prisma após a operação
     await prismaClient.$disconnect();
   }
 }

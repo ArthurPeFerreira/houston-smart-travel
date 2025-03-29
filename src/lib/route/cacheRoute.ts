@@ -1,69 +1,82 @@
-import { redis } from "../redis/redis"; // Importa o cliente Redis para manipulação de cache
-import { getRoute } from "./getRoute"; // Importa a função getRoute para buscar rotas no banco de dados
-import { RouteType } from "./types"; // Importa o tipo RouteType para tipagem das rotas
+// Importa o cliente Redis para manipulação do cache
+import { redis } from "../redis/redis";
 
-// Define a chave única usada para armazenar os dados das rotas no Redis
+// Importa a função `getRoute` responsável por buscar rotas no banco de dados
+import { getRoute } from "./getRoute";
+
+// Importa o tipo `RouteType` que representa a estrutura de uma rota
+import { RouteType } from "./types";
+
+// Define a chave utilizada para armazenar e recuperar os dados de rotas no Redis
 const cacheKey: string = `hst:routes`;
 
-// Função responsável por atualizar o cache de rotas no Redis
+// =====================================================================
+// Função responsável por atualizar o cache com todas as rotas disponíveis
+// =====================================================================
 export async function updateRouteCache(): Promise<RouteType[] | undefined> {
   try {
-    // Obtém todas as rotas do banco de dados (passando 0 como parâmetro para retornar todas)
+    // Busca todas as rotas no banco de dados
+    // O parâmetro 0 indica que todas as rotas devem ser retornadas
     const routes = await getRoute(0);
 
-    // Salva os dados das rotas no Redis após convertê-los para string JSON
+    // Armazena os dados das rotas no Redis, convertendo para JSON string
     await redis.set(cacheKey, JSON.stringify(routes));
 
-    // Retorna as rotas recuperadas do banco
+    // Retorna os dados das rotas obtidas do banco
     return routes;
   } catch {
-    // Em caso de erro na atualização do cache, exibe uma mensagem no console
+    // Caso ocorra erro durante o processo de atualização do cache
     console.error("Failed to Update Routes Cache!");
     return undefined;
   }
 }
 
-// Função que busca uma rota específica ou todas as rotas diretamente do cache Redis
-export async function getRouteByCache(routeId: number): Promise<RouteType[] | undefined> {
+// =====================================================================
+// Função responsável por buscar uma rota específica ou todas as rotas,
+// diretamente do cache Redis (ou do banco, caso não esteja em cache)
+// =====================================================================
+export async function getRouteByCache(
+  routeId: number
+): Promise<RouteType[] | undefined> {
   try {
-    // Recupera os dados das rotas armazenados no Redis (formato string JSON)
+    // Tenta recuperar os dados de rotas armazenados no Redis
     const routesData = await redis.get(cacheKey);
 
-    // Converte a string JSON de volta para array de objetos RouteType, se houver dados
+    // Converte os dados JSON string para um array de objetos RouteType, se existir
     let routes: RouteType[] | undefined = routesData
       ? JSON.parse(routesData)
       : undefined;
 
-    // Se os dados não estiverem no cache, realiza a atualização via banco de dados
+    // Caso os dados não estejam no cache, atualiza o cache buscando do banco
     if (!routes) {
       routes = await updateRouteCache();
     }
 
-    // Se ainda assim não for possível obter as rotas, lança erro
+    // Se após tentativa de atualização o cache ainda estiver vazio, lança erro
     if (!routes) {
       throw new Error("Failed to Find Routes!");
     }
 
-    // Caso um ID específico de rota tenha sido fornecido
+    // Se um ID de rota for fornecido (maior que zero), busca apenas a rota correspondente
     if (routeId > 0) {
-      // Procura pela rota que corresponde ao ID fornecido
+      // Busca a rota que corresponde ao ID fornecido
       const route = routes.find((route) => {
         return route.id == routeId;
       });
 
-      // Se não encontrar a rota, lança um erro
+      // Se a rota não for encontrada, lança erro
       if (!route) {
         throw new Error("Failed to Find routes!");
       }
 
-      // Retorna a rota encontrada dentro de um array
+      // Retorna a rota específica encontrada, dentro de um array
       return [route];
     } else {
-      // Se nenhum ID específico foi fornecido, retorna todas as rotas disponíveis
+      // Caso nenhum ID tenha sido fornecido, retorna todas as rotas disponíveis
       return routes;
     }
   } catch {
-    // Em caso de erro durante a leitura do cache ou busca no banco, registra mensagem de falha
+    // Em caso de falha na recuperação do cache ou na busca no banco de dados
     console.error("Failed to Find Routes!");
     return undefined;
   }

@@ -144,14 +144,17 @@ exports.Prisma.LocalsScalarFieldEnum = {
 
 exports.Prisma.RouteScalarFieldEnum = {
   id: 'id',
-  hasCabinY: 'hasCabinY',
-  hasCabinW: 'hasCabinW',
-  hasCabinJ: 'hasCabinJ',
-  hasCabinF: 'hasCabinF',
   mileageProgram: 'mileageProgram',
+  active: 'active'
+};
+
+exports.Prisma.CabinsRouteScalarFieldEnum = {
+  id: 'id',
+  routeId: 'routeId',
+  key: 'key',
   maximumPoints: 'maximumPoints',
   passagePrice: 'passagePrice',
-  active: 'active'
+  cancellationPrice: 'cancellationPrice'
 };
 
 exports.Prisma.AirportsRouteScalarFieldEnum = {
@@ -181,6 +184,7 @@ exports.Prisma.ModelName = {
   Airports: 'Airports',
   Locals: 'Locals',
   Route: 'Route',
+  CabinsRoute: 'CabinsRoute',
   AirportsRoute: 'AirportsRoute'
 };
 

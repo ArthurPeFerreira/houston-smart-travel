@@ -57,7 +57,7 @@ export default function Locals({ locals }: LocalsProps) {
           centeredSlides={false}
           // Ajusta o espaço entre slides
           spaceBetween={10}
-          // Configura o comportamento responsivo
+          // Configura o comportamento responsivo-
           breakpoints={{
             480: { slidesPerView: 2 },
             690: { slidesPerView: 3 },

@@ -34,6 +34,11 @@ export type Locals = $Result.DefaultSelection<Prisma.$LocalsPayload>
  */
 export type Route = $Result.DefaultSelection<Prisma.$RoutePayload>
 /**
+ * Model CabinsRoute
+ * 
+ */
+export type CabinsRoute = $Result.DefaultSelection<Prisma.$CabinsRoutePayload>
+/**
  * Model AirportsRoute
  * 
  */
@@ -203,6 +208,16 @@ export class PrismaClient<
     * ```
     */
   get route(): Prisma.RouteDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.cabinsRoute`: Exposes CRUD operations for the **CabinsRoute** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CabinsRoutes
+    * const cabinsRoutes = await prisma.cabinsRoute.findMany()
+    * ```
+    */
+  get cabinsRoute(): Prisma.CabinsRouteDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.airportsRoute`: Exposes CRUD operations for the **AirportsRoute** model.
@@ -657,6 +672,7 @@ export namespace Prisma {
     Airports: 'Airports',
     Locals: 'Locals',
     Route: 'Route',
+    CabinsRoute: 'CabinsRoute',
     AirportsRoute: 'AirportsRoute'
   };
 
@@ -676,7 +692,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "users" | "airports" | "locals" | "route" | "airportsRoute"
+      modelProps: "users" | "airports" | "locals" | "route" | "cabinsRoute" | "airportsRoute"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -976,6 +992,80 @@ export namespace Prisma {
           }
         }
       }
+      CabinsRoute: {
+        payload: Prisma.$CabinsRoutePayload<ExtArgs>
+        fields: Prisma.CabinsRouteFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CabinsRouteFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CabinsRoutePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CabinsRouteFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CabinsRoutePayload>
+          }
+          findFirst: {
+            args: Prisma.CabinsRouteFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CabinsRoutePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CabinsRouteFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CabinsRoutePayload>
+          }
+          findMany: {
+            args: Prisma.CabinsRouteFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CabinsRoutePayload>[]
+          }
+          create: {
+            args: Prisma.CabinsRouteCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CabinsRoutePayload>
+          }
+          createMany: {
+            args: Prisma.CabinsRouteCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CabinsRouteCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CabinsRoutePayload>[]
+          }
+          delete: {
+            args: Prisma.CabinsRouteDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CabinsRoutePayload>
+          }
+          update: {
+            args: Prisma.CabinsRouteUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CabinsRoutePayload>
+          }
+          deleteMany: {
+            args: Prisma.CabinsRouteDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CabinsRouteUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CabinsRouteUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CabinsRoutePayload>[]
+          }
+          upsert: {
+            args: Prisma.CabinsRouteUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CabinsRoutePayload>
+          }
+          aggregate: {
+            args: Prisma.CabinsRouteAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCabinsRoute>
+          }
+          groupBy: {
+            args: Prisma.CabinsRouteGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CabinsRouteGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CabinsRouteCountArgs<ExtArgs>
+            result: $Utils.Optional<CabinsRouteCountAggregateOutputType> | number
+          }
+        }
+      }
       AirportsRoute: {
         payload: Prisma.$AirportsRoutePayload<ExtArgs>
         fields: Prisma.AirportsRouteFieldRefs
@@ -1138,6 +1228,7 @@ export namespace Prisma {
     airports?: AirportsOmit
     locals?: LocalsOmit
     route?: RouteOmit
+    cabinsRoute?: CabinsRouteOmit
     airportsRoute?: AirportsRouteOmit
   }
 
@@ -1265,10 +1356,12 @@ export namespace Prisma {
 
   export type RouteCountOutputType = {
     airports: number
+    cabins: number
   }
 
   export type RouteCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     airports?: boolean | RouteCountOutputTypeCountAirportsArgs
+    cabins?: boolean | RouteCountOutputTypeCountCabinsArgs
   }
 
   // Custom InputTypes
@@ -1287,6 +1380,13 @@ export namespace Prisma {
    */
   export type RouteCountOutputTypeCountAirportsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: AirportsRouteWhereInput
+  }
+
+  /**
+   * RouteCountOutputType without action
+   */
+  export type RouteCountOutputTypeCountCabinsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CabinsRouteWhereInput
   }
 
 
@@ -4573,49 +4673,27 @@ export namespace Prisma {
 
   export type RouteAvgAggregateOutputType = {
     id: number | null
-    maximumPoints: number | null
-    passagePrice: Decimal | null
   }
 
   export type RouteSumAggregateOutputType = {
     id: number | null
-    maximumPoints: number | null
-    passagePrice: Decimal | null
   }
 
   export type RouteMinAggregateOutputType = {
     id: number | null
-    hasCabinY: boolean | null
-    hasCabinW: boolean | null
-    hasCabinJ: boolean | null
-    hasCabinF: boolean | null
     mileageProgram: string | null
-    maximumPoints: number | null
-    passagePrice: Decimal | null
     active: boolean | null
   }
 
   export type RouteMaxAggregateOutputType = {
     id: number | null
-    hasCabinY: boolean | null
-    hasCabinW: boolean | null
-    hasCabinJ: boolean | null
-    hasCabinF: boolean | null
     mileageProgram: string | null
-    maximumPoints: number | null
-    passagePrice: Decimal | null
     active: boolean | null
   }
 
   export type RouteCountAggregateOutputType = {
     id: number
-    hasCabinY: number
-    hasCabinW: number
-    hasCabinJ: number
-    hasCabinF: number
     mileageProgram: number
-    maximumPoints: number
-    passagePrice: number
     active: number
     _all: number
   }
@@ -4623,49 +4701,27 @@ export namespace Prisma {
 
   export type RouteAvgAggregateInputType = {
     id?: true
-    maximumPoints?: true
-    passagePrice?: true
   }
 
   export type RouteSumAggregateInputType = {
     id?: true
-    maximumPoints?: true
-    passagePrice?: true
   }
 
   export type RouteMinAggregateInputType = {
     id?: true
-    hasCabinY?: true
-    hasCabinW?: true
-    hasCabinJ?: true
-    hasCabinF?: true
     mileageProgram?: true
-    maximumPoints?: true
-    passagePrice?: true
     active?: true
   }
 
   export type RouteMaxAggregateInputType = {
     id?: true
-    hasCabinY?: true
-    hasCabinW?: true
-    hasCabinJ?: true
-    hasCabinF?: true
     mileageProgram?: true
-    maximumPoints?: true
-    passagePrice?: true
     active?: true
   }
 
   export type RouteCountAggregateInputType = {
     id?: true
-    hasCabinY?: true
-    hasCabinW?: true
-    hasCabinJ?: true
-    hasCabinF?: true
     mileageProgram?: true
-    maximumPoints?: true
-    passagePrice?: true
     active?: true
     _all?: true
   }
@@ -4758,13 +4814,7 @@ export namespace Prisma {
 
   export type RouteGroupByOutputType = {
     id: number
-    hasCabinY: boolean
-    hasCabinW: boolean
-    hasCabinJ: boolean
-    hasCabinF: boolean
     mileageProgram: string
-    maximumPoints: number
-    passagePrice: Decimal
     active: boolean
     _count: RouteCountAggregateOutputType | null
     _avg: RouteAvgAggregateOutputType | null
@@ -4789,57 +4839,35 @@ export namespace Prisma {
 
   export type RouteSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    hasCabinY?: boolean
-    hasCabinW?: boolean
-    hasCabinJ?: boolean
-    hasCabinF?: boolean
     mileageProgram?: boolean
-    maximumPoints?: boolean
-    passagePrice?: boolean
     active?: boolean
     airports?: boolean | Route$airportsArgs<ExtArgs>
+    cabins?: boolean | Route$cabinsArgs<ExtArgs>
     _count?: boolean | RouteCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["route"]>
 
   export type RouteSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    hasCabinY?: boolean
-    hasCabinW?: boolean
-    hasCabinJ?: boolean
-    hasCabinF?: boolean
     mileageProgram?: boolean
-    maximumPoints?: boolean
-    passagePrice?: boolean
     active?: boolean
   }, ExtArgs["result"]["route"]>
 
   export type RouteSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    hasCabinY?: boolean
-    hasCabinW?: boolean
-    hasCabinJ?: boolean
-    hasCabinF?: boolean
     mileageProgram?: boolean
-    maximumPoints?: boolean
-    passagePrice?: boolean
     active?: boolean
   }, ExtArgs["result"]["route"]>
 
   export type RouteSelectScalar = {
     id?: boolean
-    hasCabinY?: boolean
-    hasCabinW?: boolean
-    hasCabinJ?: boolean
-    hasCabinF?: boolean
     mileageProgram?: boolean
-    maximumPoints?: boolean
-    passagePrice?: boolean
     active?: boolean
   }
 
-  export type RouteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "hasCabinY" | "hasCabinW" | "hasCabinJ" | "hasCabinF" | "mileageProgram" | "maximumPoints" | "passagePrice" | "active", ExtArgs["result"]["route"]>
+  export type RouteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "mileageProgram" | "active", ExtArgs["result"]["route"]>
   export type RouteInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     airports?: boolean | Route$airportsArgs<ExtArgs>
+    cabins?: boolean | Route$cabinsArgs<ExtArgs>
     _count?: boolean | RouteCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type RouteIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -4849,16 +4877,11 @@ export namespace Prisma {
     name: "Route"
     objects: {
       airports: Prisma.$AirportsRoutePayload<ExtArgs>[]
+      cabins: Prisma.$CabinsRoutePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
-      hasCabinY: boolean
-      hasCabinW: boolean
-      hasCabinJ: boolean
-      hasCabinF: boolean
       mileageProgram: string
-      maximumPoints: number
-      passagePrice: Prisma.Decimal
       active: boolean
     }, ExtArgs["result"]["route"]>
     composites: {}
@@ -5255,6 +5278,7 @@ export namespace Prisma {
   export interface Prisma__RouteClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     airports<T extends Route$airportsArgs<ExtArgs> = {}>(args?: Subset<T, Route$airportsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AirportsRoutePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    cabins<T extends Route$cabinsArgs<ExtArgs> = {}>(args?: Subset<T, Route$cabinsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CabinsRoutePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5285,13 +5309,7 @@ export namespace Prisma {
    */ 
   interface RouteFieldRefs {
     readonly id: FieldRef<"Route", 'Int'>
-    readonly hasCabinY: FieldRef<"Route", 'Boolean'>
-    readonly hasCabinW: FieldRef<"Route", 'Boolean'>
-    readonly hasCabinJ: FieldRef<"Route", 'Boolean'>
-    readonly hasCabinF: FieldRef<"Route", 'Boolean'>
     readonly mileageProgram: FieldRef<"Route", 'String'>
-    readonly maximumPoints: FieldRef<"Route", 'Int'>
-    readonly passagePrice: FieldRef<"Route", 'Decimal'>
     readonly active: FieldRef<"Route", 'Boolean'>
   }
     
@@ -5705,6 +5723,30 @@ export namespace Prisma {
   }
 
   /**
+   * Route.cabins
+   */
+  export type Route$cabinsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CabinsRoute
+     */
+    select?: CabinsRouteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CabinsRoute
+     */
+    omit?: CabinsRouteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CabinsRouteInclude<ExtArgs> | null
+    where?: CabinsRouteWhereInput
+    orderBy?: CabinsRouteOrderByWithRelationInput | CabinsRouteOrderByWithRelationInput[]
+    cursor?: CabinsRouteWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CabinsRouteScalarFieldEnum | CabinsRouteScalarFieldEnum[]
+  }
+
+  /**
    * Route without action
    */
   export type RouteDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5720,6 +5762,1127 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: RouteInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model CabinsRoute
+   */
+
+  export type AggregateCabinsRoute = {
+    _count: CabinsRouteCountAggregateOutputType | null
+    _avg: CabinsRouteAvgAggregateOutputType | null
+    _sum: CabinsRouteSumAggregateOutputType | null
+    _min: CabinsRouteMinAggregateOutputType | null
+    _max: CabinsRouteMaxAggregateOutputType | null
+  }
+
+  export type CabinsRouteAvgAggregateOutputType = {
+    id: number | null
+    routeId: number | null
+    maximumPoints: number | null
+    passagePrice: Decimal | null
+    cancellationPrice: Decimal | null
+  }
+
+  export type CabinsRouteSumAggregateOutputType = {
+    id: number | null
+    routeId: number | null
+    maximumPoints: number | null
+    passagePrice: Decimal | null
+    cancellationPrice: Decimal | null
+  }
+
+  export type CabinsRouteMinAggregateOutputType = {
+    id: number | null
+    routeId: number | null
+    key: string | null
+    maximumPoints: number | null
+    passagePrice: Decimal | null
+    cancellationPrice: Decimal | null
+  }
+
+  export type CabinsRouteMaxAggregateOutputType = {
+    id: number | null
+    routeId: number | null
+    key: string | null
+    maximumPoints: number | null
+    passagePrice: Decimal | null
+    cancellationPrice: Decimal | null
+  }
+
+  export type CabinsRouteCountAggregateOutputType = {
+    id: number
+    routeId: number
+    key: number
+    maximumPoints: number
+    passagePrice: number
+    cancellationPrice: number
+    _all: number
+  }
+
+
+  export type CabinsRouteAvgAggregateInputType = {
+    id?: true
+    routeId?: true
+    maximumPoints?: true
+    passagePrice?: true
+    cancellationPrice?: true
+  }
+
+  export type CabinsRouteSumAggregateInputType = {
+    id?: true
+    routeId?: true
+    maximumPoints?: true
+    passagePrice?: true
+    cancellationPrice?: true
+  }
+
+  export type CabinsRouteMinAggregateInputType = {
+    id?: true
+    routeId?: true
+    key?: true
+    maximumPoints?: true
+    passagePrice?: true
+    cancellationPrice?: true
+  }
+
+  export type CabinsRouteMaxAggregateInputType = {
+    id?: true
+    routeId?: true
+    key?: true
+    maximumPoints?: true
+    passagePrice?: true
+    cancellationPrice?: true
+  }
+
+  export type CabinsRouteCountAggregateInputType = {
+    id?: true
+    routeId?: true
+    key?: true
+    maximumPoints?: true
+    passagePrice?: true
+    cancellationPrice?: true
+    _all?: true
+  }
+
+  export type CabinsRouteAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CabinsRoute to aggregate.
+     */
+    where?: CabinsRouteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CabinsRoutes to fetch.
+     */
+    orderBy?: CabinsRouteOrderByWithRelationInput | CabinsRouteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CabinsRouteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CabinsRoutes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CabinsRoutes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CabinsRoutes
+    **/
+    _count?: true | CabinsRouteCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: CabinsRouteAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: CabinsRouteSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CabinsRouteMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CabinsRouteMaxAggregateInputType
+  }
+
+  export type GetCabinsRouteAggregateType<T extends CabinsRouteAggregateArgs> = {
+        [P in keyof T & keyof AggregateCabinsRoute]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCabinsRoute[P]>
+      : GetScalarType<T[P], AggregateCabinsRoute[P]>
+  }
+
+
+
+
+  export type CabinsRouteGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CabinsRouteWhereInput
+    orderBy?: CabinsRouteOrderByWithAggregationInput | CabinsRouteOrderByWithAggregationInput[]
+    by: CabinsRouteScalarFieldEnum[] | CabinsRouteScalarFieldEnum
+    having?: CabinsRouteScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CabinsRouteCountAggregateInputType | true
+    _avg?: CabinsRouteAvgAggregateInputType
+    _sum?: CabinsRouteSumAggregateInputType
+    _min?: CabinsRouteMinAggregateInputType
+    _max?: CabinsRouteMaxAggregateInputType
+  }
+
+  export type CabinsRouteGroupByOutputType = {
+    id: number
+    routeId: number
+    key: string
+    maximumPoints: number
+    passagePrice: Decimal
+    cancellationPrice: Decimal
+    _count: CabinsRouteCountAggregateOutputType | null
+    _avg: CabinsRouteAvgAggregateOutputType | null
+    _sum: CabinsRouteSumAggregateOutputType | null
+    _min: CabinsRouteMinAggregateOutputType | null
+    _max: CabinsRouteMaxAggregateOutputType | null
+  }
+
+  type GetCabinsRouteGroupByPayload<T extends CabinsRouteGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CabinsRouteGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CabinsRouteGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CabinsRouteGroupByOutputType[P]>
+            : GetScalarType<T[P], CabinsRouteGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CabinsRouteSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    routeId?: boolean
+    key?: boolean
+    maximumPoints?: boolean
+    passagePrice?: boolean
+    cancellationPrice?: boolean
+    route?: boolean | RouteDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["cabinsRoute"]>
+
+  export type CabinsRouteSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    routeId?: boolean
+    key?: boolean
+    maximumPoints?: boolean
+    passagePrice?: boolean
+    cancellationPrice?: boolean
+    route?: boolean | RouteDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["cabinsRoute"]>
+
+  export type CabinsRouteSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    routeId?: boolean
+    key?: boolean
+    maximumPoints?: boolean
+    passagePrice?: boolean
+    cancellationPrice?: boolean
+    route?: boolean | RouteDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["cabinsRoute"]>
+
+  export type CabinsRouteSelectScalar = {
+    id?: boolean
+    routeId?: boolean
+    key?: boolean
+    maximumPoints?: boolean
+    passagePrice?: boolean
+    cancellationPrice?: boolean
+  }
+
+  export type CabinsRouteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "routeId" | "key" | "maximumPoints" | "passagePrice" | "cancellationPrice", ExtArgs["result"]["cabinsRoute"]>
+  export type CabinsRouteInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    route?: boolean | RouteDefaultArgs<ExtArgs>
+  }
+  export type CabinsRouteIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    route?: boolean | RouteDefaultArgs<ExtArgs>
+  }
+  export type CabinsRouteIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    route?: boolean | RouteDefaultArgs<ExtArgs>
+  }
+
+  export type $CabinsRoutePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CabinsRoute"
+    objects: {
+      route: Prisma.$RoutePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      routeId: number
+      key: string
+      maximumPoints: number
+      passagePrice: Prisma.Decimal
+      cancellationPrice: Prisma.Decimal
+    }, ExtArgs["result"]["cabinsRoute"]>
+    composites: {}
+  }
+
+  type CabinsRouteGetPayload<S extends boolean | null | undefined | CabinsRouteDefaultArgs> = $Result.GetResult<Prisma.$CabinsRoutePayload, S>
+
+  type CabinsRouteCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CabinsRouteFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CabinsRouteCountAggregateInputType | true
+    }
+
+  export interface CabinsRouteDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CabinsRoute'], meta: { name: 'CabinsRoute' } }
+    /**
+     * Find zero or one CabinsRoute that matches the filter.
+     * @param {CabinsRouteFindUniqueArgs} args - Arguments to find a CabinsRoute
+     * @example
+     * // Get one CabinsRoute
+     * const cabinsRoute = await prisma.cabinsRoute.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CabinsRouteFindUniqueArgs>(args: SelectSubset<T, CabinsRouteFindUniqueArgs<ExtArgs>>): Prisma__CabinsRouteClient<$Result.GetResult<Prisma.$CabinsRoutePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CabinsRoute that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CabinsRouteFindUniqueOrThrowArgs} args - Arguments to find a CabinsRoute
+     * @example
+     * // Get one CabinsRoute
+     * const cabinsRoute = await prisma.cabinsRoute.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CabinsRouteFindUniqueOrThrowArgs>(args: SelectSubset<T, CabinsRouteFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CabinsRouteClient<$Result.GetResult<Prisma.$CabinsRoutePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CabinsRoute that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CabinsRouteFindFirstArgs} args - Arguments to find a CabinsRoute
+     * @example
+     * // Get one CabinsRoute
+     * const cabinsRoute = await prisma.cabinsRoute.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CabinsRouteFindFirstArgs>(args?: SelectSubset<T, CabinsRouteFindFirstArgs<ExtArgs>>): Prisma__CabinsRouteClient<$Result.GetResult<Prisma.$CabinsRoutePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CabinsRoute that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CabinsRouteFindFirstOrThrowArgs} args - Arguments to find a CabinsRoute
+     * @example
+     * // Get one CabinsRoute
+     * const cabinsRoute = await prisma.cabinsRoute.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CabinsRouteFindFirstOrThrowArgs>(args?: SelectSubset<T, CabinsRouteFindFirstOrThrowArgs<ExtArgs>>): Prisma__CabinsRouteClient<$Result.GetResult<Prisma.$CabinsRoutePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CabinsRoutes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CabinsRouteFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CabinsRoutes
+     * const cabinsRoutes = await prisma.cabinsRoute.findMany()
+     * 
+     * // Get first 10 CabinsRoutes
+     * const cabinsRoutes = await prisma.cabinsRoute.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const cabinsRouteWithIdOnly = await prisma.cabinsRoute.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CabinsRouteFindManyArgs>(args?: SelectSubset<T, CabinsRouteFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CabinsRoutePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CabinsRoute.
+     * @param {CabinsRouteCreateArgs} args - Arguments to create a CabinsRoute.
+     * @example
+     * // Create one CabinsRoute
+     * const CabinsRoute = await prisma.cabinsRoute.create({
+     *   data: {
+     *     // ... data to create a CabinsRoute
+     *   }
+     * })
+     * 
+     */
+    create<T extends CabinsRouteCreateArgs>(args: SelectSubset<T, CabinsRouteCreateArgs<ExtArgs>>): Prisma__CabinsRouteClient<$Result.GetResult<Prisma.$CabinsRoutePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CabinsRoutes.
+     * @param {CabinsRouteCreateManyArgs} args - Arguments to create many CabinsRoutes.
+     * @example
+     * // Create many CabinsRoutes
+     * const cabinsRoute = await prisma.cabinsRoute.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CabinsRouteCreateManyArgs>(args?: SelectSubset<T, CabinsRouteCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CabinsRoutes and returns the data saved in the database.
+     * @param {CabinsRouteCreateManyAndReturnArgs} args - Arguments to create many CabinsRoutes.
+     * @example
+     * // Create many CabinsRoutes
+     * const cabinsRoute = await prisma.cabinsRoute.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CabinsRoutes and only return the `id`
+     * const cabinsRouteWithIdOnly = await prisma.cabinsRoute.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CabinsRouteCreateManyAndReturnArgs>(args?: SelectSubset<T, CabinsRouteCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CabinsRoutePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a CabinsRoute.
+     * @param {CabinsRouteDeleteArgs} args - Arguments to delete one CabinsRoute.
+     * @example
+     * // Delete one CabinsRoute
+     * const CabinsRoute = await prisma.cabinsRoute.delete({
+     *   where: {
+     *     // ... filter to delete one CabinsRoute
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CabinsRouteDeleteArgs>(args: SelectSubset<T, CabinsRouteDeleteArgs<ExtArgs>>): Prisma__CabinsRouteClient<$Result.GetResult<Prisma.$CabinsRoutePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CabinsRoute.
+     * @param {CabinsRouteUpdateArgs} args - Arguments to update one CabinsRoute.
+     * @example
+     * // Update one CabinsRoute
+     * const cabinsRoute = await prisma.cabinsRoute.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CabinsRouteUpdateArgs>(args: SelectSubset<T, CabinsRouteUpdateArgs<ExtArgs>>): Prisma__CabinsRouteClient<$Result.GetResult<Prisma.$CabinsRoutePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CabinsRoutes.
+     * @param {CabinsRouteDeleteManyArgs} args - Arguments to filter CabinsRoutes to delete.
+     * @example
+     * // Delete a few CabinsRoutes
+     * const { count } = await prisma.cabinsRoute.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CabinsRouteDeleteManyArgs>(args?: SelectSubset<T, CabinsRouteDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CabinsRoutes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CabinsRouteUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CabinsRoutes
+     * const cabinsRoute = await prisma.cabinsRoute.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CabinsRouteUpdateManyArgs>(args: SelectSubset<T, CabinsRouteUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CabinsRoutes and returns the data updated in the database.
+     * @param {CabinsRouteUpdateManyAndReturnArgs} args - Arguments to update many CabinsRoutes.
+     * @example
+     * // Update many CabinsRoutes
+     * const cabinsRoute = await prisma.cabinsRoute.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more CabinsRoutes and only return the `id`
+     * const cabinsRouteWithIdOnly = await prisma.cabinsRoute.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CabinsRouteUpdateManyAndReturnArgs>(args: SelectSubset<T, CabinsRouteUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CabinsRoutePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one CabinsRoute.
+     * @param {CabinsRouteUpsertArgs} args - Arguments to update or create a CabinsRoute.
+     * @example
+     * // Update or create a CabinsRoute
+     * const cabinsRoute = await prisma.cabinsRoute.upsert({
+     *   create: {
+     *     // ... data to create a CabinsRoute
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CabinsRoute we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CabinsRouteUpsertArgs>(args: SelectSubset<T, CabinsRouteUpsertArgs<ExtArgs>>): Prisma__CabinsRouteClient<$Result.GetResult<Prisma.$CabinsRoutePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of CabinsRoutes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CabinsRouteCountArgs} args - Arguments to filter CabinsRoutes to count.
+     * @example
+     * // Count the number of CabinsRoutes
+     * const count = await prisma.cabinsRoute.count({
+     *   where: {
+     *     // ... the filter for the CabinsRoutes we want to count
+     *   }
+     * })
+    **/
+    count<T extends CabinsRouteCountArgs>(
+      args?: Subset<T, CabinsRouteCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CabinsRouteCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CabinsRoute.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CabinsRouteAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CabinsRouteAggregateArgs>(args: Subset<T, CabinsRouteAggregateArgs>): Prisma.PrismaPromise<GetCabinsRouteAggregateType<T>>
+
+    /**
+     * Group by CabinsRoute.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CabinsRouteGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CabinsRouteGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CabinsRouteGroupByArgs['orderBy'] }
+        : { orderBy?: CabinsRouteGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CabinsRouteGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCabinsRouteGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CabinsRoute model
+   */
+  readonly fields: CabinsRouteFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CabinsRoute.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CabinsRouteClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    route<T extends RouteDefaultArgs<ExtArgs> = {}>(args?: Subset<T, RouteDefaultArgs<ExtArgs>>): Prisma__RouteClient<$Result.GetResult<Prisma.$RoutePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CabinsRoute model
+   */ 
+  interface CabinsRouteFieldRefs {
+    readonly id: FieldRef<"CabinsRoute", 'Int'>
+    readonly routeId: FieldRef<"CabinsRoute", 'Int'>
+    readonly key: FieldRef<"CabinsRoute", 'String'>
+    readonly maximumPoints: FieldRef<"CabinsRoute", 'Int'>
+    readonly passagePrice: FieldRef<"CabinsRoute", 'Decimal'>
+    readonly cancellationPrice: FieldRef<"CabinsRoute", 'Decimal'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CabinsRoute findUnique
+   */
+  export type CabinsRouteFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CabinsRoute
+     */
+    select?: CabinsRouteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CabinsRoute
+     */
+    omit?: CabinsRouteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CabinsRouteInclude<ExtArgs> | null
+    /**
+     * Filter, which CabinsRoute to fetch.
+     */
+    where: CabinsRouteWhereUniqueInput
+  }
+
+  /**
+   * CabinsRoute findUniqueOrThrow
+   */
+  export type CabinsRouteFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CabinsRoute
+     */
+    select?: CabinsRouteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CabinsRoute
+     */
+    omit?: CabinsRouteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CabinsRouteInclude<ExtArgs> | null
+    /**
+     * Filter, which CabinsRoute to fetch.
+     */
+    where: CabinsRouteWhereUniqueInput
+  }
+
+  /**
+   * CabinsRoute findFirst
+   */
+  export type CabinsRouteFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CabinsRoute
+     */
+    select?: CabinsRouteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CabinsRoute
+     */
+    omit?: CabinsRouteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CabinsRouteInclude<ExtArgs> | null
+    /**
+     * Filter, which CabinsRoute to fetch.
+     */
+    where?: CabinsRouteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CabinsRoutes to fetch.
+     */
+    orderBy?: CabinsRouteOrderByWithRelationInput | CabinsRouteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CabinsRoutes.
+     */
+    cursor?: CabinsRouteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CabinsRoutes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CabinsRoutes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CabinsRoutes.
+     */
+    distinct?: CabinsRouteScalarFieldEnum | CabinsRouteScalarFieldEnum[]
+  }
+
+  /**
+   * CabinsRoute findFirstOrThrow
+   */
+  export type CabinsRouteFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CabinsRoute
+     */
+    select?: CabinsRouteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CabinsRoute
+     */
+    omit?: CabinsRouteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CabinsRouteInclude<ExtArgs> | null
+    /**
+     * Filter, which CabinsRoute to fetch.
+     */
+    where?: CabinsRouteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CabinsRoutes to fetch.
+     */
+    orderBy?: CabinsRouteOrderByWithRelationInput | CabinsRouteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CabinsRoutes.
+     */
+    cursor?: CabinsRouteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CabinsRoutes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CabinsRoutes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CabinsRoutes.
+     */
+    distinct?: CabinsRouteScalarFieldEnum | CabinsRouteScalarFieldEnum[]
+  }
+
+  /**
+   * CabinsRoute findMany
+   */
+  export type CabinsRouteFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CabinsRoute
+     */
+    select?: CabinsRouteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CabinsRoute
+     */
+    omit?: CabinsRouteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CabinsRouteInclude<ExtArgs> | null
+    /**
+     * Filter, which CabinsRoutes to fetch.
+     */
+    where?: CabinsRouteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CabinsRoutes to fetch.
+     */
+    orderBy?: CabinsRouteOrderByWithRelationInput | CabinsRouteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CabinsRoutes.
+     */
+    cursor?: CabinsRouteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CabinsRoutes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CabinsRoutes.
+     */
+    skip?: number
+    distinct?: CabinsRouteScalarFieldEnum | CabinsRouteScalarFieldEnum[]
+  }
+
+  /**
+   * CabinsRoute create
+   */
+  export type CabinsRouteCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CabinsRoute
+     */
+    select?: CabinsRouteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CabinsRoute
+     */
+    omit?: CabinsRouteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CabinsRouteInclude<ExtArgs> | null
+    /**
+     * The data needed to create a CabinsRoute.
+     */
+    data: XOR<CabinsRouteCreateInput, CabinsRouteUncheckedCreateInput>
+  }
+
+  /**
+   * CabinsRoute createMany
+   */
+  export type CabinsRouteCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CabinsRoutes.
+     */
+    data: CabinsRouteCreateManyInput | CabinsRouteCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CabinsRoute createManyAndReturn
+   */
+  export type CabinsRouteCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CabinsRoute
+     */
+    select?: CabinsRouteSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CabinsRoute
+     */
+    omit?: CabinsRouteOmit<ExtArgs> | null
+    /**
+     * The data used to create many CabinsRoutes.
+     */
+    data: CabinsRouteCreateManyInput | CabinsRouteCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CabinsRouteIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CabinsRoute update
+   */
+  export type CabinsRouteUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CabinsRoute
+     */
+    select?: CabinsRouteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CabinsRoute
+     */
+    omit?: CabinsRouteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CabinsRouteInclude<ExtArgs> | null
+    /**
+     * The data needed to update a CabinsRoute.
+     */
+    data: XOR<CabinsRouteUpdateInput, CabinsRouteUncheckedUpdateInput>
+    /**
+     * Choose, which CabinsRoute to update.
+     */
+    where: CabinsRouteWhereUniqueInput
+  }
+
+  /**
+   * CabinsRoute updateMany
+   */
+  export type CabinsRouteUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CabinsRoutes.
+     */
+    data: XOR<CabinsRouteUpdateManyMutationInput, CabinsRouteUncheckedUpdateManyInput>
+    /**
+     * Filter which CabinsRoutes to update
+     */
+    where?: CabinsRouteWhereInput
+    /**
+     * Limit how many CabinsRoutes to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CabinsRoute updateManyAndReturn
+   */
+  export type CabinsRouteUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CabinsRoute
+     */
+    select?: CabinsRouteSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CabinsRoute
+     */
+    omit?: CabinsRouteOmit<ExtArgs> | null
+    /**
+     * The data used to update CabinsRoutes.
+     */
+    data: XOR<CabinsRouteUpdateManyMutationInput, CabinsRouteUncheckedUpdateManyInput>
+    /**
+     * Filter which CabinsRoutes to update
+     */
+    where?: CabinsRouteWhereInput
+    /**
+     * Limit how many CabinsRoutes to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CabinsRouteIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CabinsRoute upsert
+   */
+  export type CabinsRouteUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CabinsRoute
+     */
+    select?: CabinsRouteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CabinsRoute
+     */
+    omit?: CabinsRouteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CabinsRouteInclude<ExtArgs> | null
+    /**
+     * The filter to search for the CabinsRoute to update in case it exists.
+     */
+    where: CabinsRouteWhereUniqueInput
+    /**
+     * In case the CabinsRoute found by the `where` argument doesn't exist, create a new CabinsRoute with this data.
+     */
+    create: XOR<CabinsRouteCreateInput, CabinsRouteUncheckedCreateInput>
+    /**
+     * In case the CabinsRoute was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CabinsRouteUpdateInput, CabinsRouteUncheckedUpdateInput>
+  }
+
+  /**
+   * CabinsRoute delete
+   */
+  export type CabinsRouteDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CabinsRoute
+     */
+    select?: CabinsRouteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CabinsRoute
+     */
+    omit?: CabinsRouteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CabinsRouteInclude<ExtArgs> | null
+    /**
+     * Filter which CabinsRoute to delete.
+     */
+    where: CabinsRouteWhereUniqueInput
+  }
+
+  /**
+   * CabinsRoute deleteMany
+   */
+  export type CabinsRouteDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CabinsRoutes to delete
+     */
+    where?: CabinsRouteWhereInput
+    /**
+     * Limit how many CabinsRoutes to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * CabinsRoute without action
+   */
+  export type CabinsRouteDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CabinsRoute
+     */
+    select?: CabinsRouteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CabinsRoute
+     */
+    omit?: CabinsRouteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CabinsRouteInclude<ExtArgs> | null
   }
 
 
@@ -6855,17 +8018,23 @@ export namespace Prisma {
 
   export const RouteScalarFieldEnum: {
     id: 'id',
-    hasCabinY: 'hasCabinY',
-    hasCabinW: 'hasCabinW',
-    hasCabinJ: 'hasCabinJ',
-    hasCabinF: 'hasCabinF',
     mileageProgram: 'mileageProgram',
-    maximumPoints: 'maximumPoints',
-    passagePrice: 'passagePrice',
     active: 'active'
   };
 
   export type RouteScalarFieldEnum = (typeof RouteScalarFieldEnum)[keyof typeof RouteScalarFieldEnum]
+
+
+  export const CabinsRouteScalarFieldEnum: {
+    id: 'id',
+    routeId: 'routeId',
+    key: 'key',
+    maximumPoints: 'maximumPoints',
+    passagePrice: 'passagePrice',
+    cancellationPrice: 'cancellationPrice'
+  };
+
+  export type CabinsRouteScalarFieldEnum = (typeof CabinsRouteScalarFieldEnum)[keyof typeof CabinsRouteScalarFieldEnum]
 
 
   export const AirportsRouteScalarFieldEnum: {
@@ -7167,28 +8336,18 @@ export namespace Prisma {
     OR?: RouteWhereInput[]
     NOT?: RouteWhereInput | RouteWhereInput[]
     id?: IntFilter<"Route"> | number
-    hasCabinY?: BoolFilter<"Route"> | boolean
-    hasCabinW?: BoolFilter<"Route"> | boolean
-    hasCabinJ?: BoolFilter<"Route"> | boolean
-    hasCabinF?: BoolFilter<"Route"> | boolean
     mileageProgram?: StringFilter<"Route"> | string
-    maximumPoints?: IntFilter<"Route"> | number
-    passagePrice?: DecimalFilter<"Route"> | Decimal | DecimalJsLike | number | string
     active?: BoolFilter<"Route"> | boolean
     airports?: AirportsRouteListRelationFilter
+    cabins?: CabinsRouteListRelationFilter
   }
 
   export type RouteOrderByWithRelationInput = {
     id?: SortOrder
-    hasCabinY?: SortOrder
-    hasCabinW?: SortOrder
-    hasCabinJ?: SortOrder
-    hasCabinF?: SortOrder
     mileageProgram?: SortOrder
-    maximumPoints?: SortOrder
-    passagePrice?: SortOrder
     active?: SortOrder
     airports?: AirportsRouteOrderByRelationAggregateInput
+    cabins?: CabinsRouteOrderByRelationAggregateInput
   }
 
   export type RouteWhereUniqueInput = Prisma.AtLeast<{
@@ -7196,26 +8355,15 @@ export namespace Prisma {
     AND?: RouteWhereInput | RouteWhereInput[]
     OR?: RouteWhereInput[]
     NOT?: RouteWhereInput | RouteWhereInput[]
-    hasCabinY?: BoolFilter<"Route"> | boolean
-    hasCabinW?: BoolFilter<"Route"> | boolean
-    hasCabinJ?: BoolFilter<"Route"> | boolean
-    hasCabinF?: BoolFilter<"Route"> | boolean
     mileageProgram?: StringFilter<"Route"> | string
-    maximumPoints?: IntFilter<"Route"> | number
-    passagePrice?: DecimalFilter<"Route"> | Decimal | DecimalJsLike | number | string
     active?: BoolFilter<"Route"> | boolean
     airports?: AirportsRouteListRelationFilter
+    cabins?: CabinsRouteListRelationFilter
   }, "id">
 
   export type RouteOrderByWithAggregationInput = {
     id?: SortOrder
-    hasCabinY?: SortOrder
-    hasCabinW?: SortOrder
-    hasCabinJ?: SortOrder
-    hasCabinF?: SortOrder
     mileageProgram?: SortOrder
-    maximumPoints?: SortOrder
-    passagePrice?: SortOrder
     active?: SortOrder
     _count?: RouteCountOrderByAggregateInput
     _avg?: RouteAvgOrderByAggregateInput
@@ -7229,14 +8377,71 @@ export namespace Prisma {
     OR?: RouteScalarWhereWithAggregatesInput[]
     NOT?: RouteScalarWhereWithAggregatesInput | RouteScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"Route"> | number
-    hasCabinY?: BoolWithAggregatesFilter<"Route"> | boolean
-    hasCabinW?: BoolWithAggregatesFilter<"Route"> | boolean
-    hasCabinJ?: BoolWithAggregatesFilter<"Route"> | boolean
-    hasCabinF?: BoolWithAggregatesFilter<"Route"> | boolean
     mileageProgram?: StringWithAggregatesFilter<"Route"> | string
-    maximumPoints?: IntWithAggregatesFilter<"Route"> | number
-    passagePrice?: DecimalWithAggregatesFilter<"Route"> | Decimal | DecimalJsLike | number | string
     active?: BoolWithAggregatesFilter<"Route"> | boolean
+  }
+
+  export type CabinsRouteWhereInput = {
+    AND?: CabinsRouteWhereInput | CabinsRouteWhereInput[]
+    OR?: CabinsRouteWhereInput[]
+    NOT?: CabinsRouteWhereInput | CabinsRouteWhereInput[]
+    id?: IntFilter<"CabinsRoute"> | number
+    routeId?: IntFilter<"CabinsRoute"> | number
+    key?: StringFilter<"CabinsRoute"> | string
+    maximumPoints?: IntFilter<"CabinsRoute"> | number
+    passagePrice?: DecimalFilter<"CabinsRoute"> | Decimal | DecimalJsLike | number | string
+    cancellationPrice?: DecimalFilter<"CabinsRoute"> | Decimal | DecimalJsLike | number | string
+    route?: XOR<RouteScalarRelationFilter, RouteWhereInput>
+  }
+
+  export type CabinsRouteOrderByWithRelationInput = {
+    id?: SortOrder
+    routeId?: SortOrder
+    key?: SortOrder
+    maximumPoints?: SortOrder
+    passagePrice?: SortOrder
+    cancellationPrice?: SortOrder
+    route?: RouteOrderByWithRelationInput
+  }
+
+  export type CabinsRouteWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    key?: string
+    UniqueCabinPerRoute?: CabinsRouteUniqueCabinPerRouteCompoundUniqueInput
+    AND?: CabinsRouteWhereInput | CabinsRouteWhereInput[]
+    OR?: CabinsRouteWhereInput[]
+    NOT?: CabinsRouteWhereInput | CabinsRouteWhereInput[]
+    routeId?: IntFilter<"CabinsRoute"> | number
+    maximumPoints?: IntFilter<"CabinsRoute"> | number
+    passagePrice?: DecimalFilter<"CabinsRoute"> | Decimal | DecimalJsLike | number | string
+    cancellationPrice?: DecimalFilter<"CabinsRoute"> | Decimal | DecimalJsLike | number | string
+    route?: XOR<RouteScalarRelationFilter, RouteWhereInput>
+  }, "id" | "key" | "UniqueCabinPerRoute">
+
+  export type CabinsRouteOrderByWithAggregationInput = {
+    id?: SortOrder
+    routeId?: SortOrder
+    key?: SortOrder
+    maximumPoints?: SortOrder
+    passagePrice?: SortOrder
+    cancellationPrice?: SortOrder
+    _count?: CabinsRouteCountOrderByAggregateInput
+    _avg?: CabinsRouteAvgOrderByAggregateInput
+    _max?: CabinsRouteMaxOrderByAggregateInput
+    _min?: CabinsRouteMinOrderByAggregateInput
+    _sum?: CabinsRouteSumOrderByAggregateInput
+  }
+
+  export type CabinsRouteScalarWhereWithAggregatesInput = {
+    AND?: CabinsRouteScalarWhereWithAggregatesInput | CabinsRouteScalarWhereWithAggregatesInput[]
+    OR?: CabinsRouteScalarWhereWithAggregatesInput[]
+    NOT?: CabinsRouteScalarWhereWithAggregatesInput | CabinsRouteScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"CabinsRoute"> | number
+    routeId?: IntWithAggregatesFilter<"CabinsRoute"> | number
+    key?: StringWithAggregatesFilter<"CabinsRoute"> | string
+    maximumPoints?: IntWithAggregatesFilter<"CabinsRoute"> | number
+    passagePrice?: DecimalWithAggregatesFilter<"CabinsRoute"> | Decimal | DecimalJsLike | number | string
+    cancellationPrice?: DecimalWithAggregatesFilter<"CabinsRoute"> | Decimal | DecimalJsLike | number | string
   }
 
   export type AirportsRouteWhereInput = {
@@ -7463,88 +8668,109 @@ export namespace Prisma {
   }
 
   export type RouteCreateInput = {
-    hasCabinY: boolean
-    hasCabinW: boolean
-    hasCabinJ: boolean
-    hasCabinF: boolean
     mileageProgram: string
-    maximumPoints: number
-    passagePrice: Decimal | DecimalJsLike | number | string
     active?: boolean
     airports?: AirportsRouteCreateNestedManyWithoutRouteInput
+    cabins?: CabinsRouteCreateNestedManyWithoutRouteInput
   }
 
   export type RouteUncheckedCreateInput = {
     id?: number
-    hasCabinY: boolean
-    hasCabinW: boolean
-    hasCabinJ: boolean
-    hasCabinF: boolean
     mileageProgram: string
-    maximumPoints: number
-    passagePrice: Decimal | DecimalJsLike | number | string
     active?: boolean
     airports?: AirportsRouteUncheckedCreateNestedManyWithoutRouteInput
+    cabins?: CabinsRouteUncheckedCreateNestedManyWithoutRouteInput
   }
 
   export type RouteUpdateInput = {
-    hasCabinY?: BoolFieldUpdateOperationsInput | boolean
-    hasCabinW?: BoolFieldUpdateOperationsInput | boolean
-    hasCabinJ?: BoolFieldUpdateOperationsInput | boolean
-    hasCabinF?: BoolFieldUpdateOperationsInput | boolean
     mileageProgram?: StringFieldUpdateOperationsInput | string
-    maximumPoints?: IntFieldUpdateOperationsInput | number
-    passagePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     active?: BoolFieldUpdateOperationsInput | boolean
     airports?: AirportsRouteUpdateManyWithoutRouteNestedInput
+    cabins?: CabinsRouteUpdateManyWithoutRouteNestedInput
   }
 
   export type RouteUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
-    hasCabinY?: BoolFieldUpdateOperationsInput | boolean
-    hasCabinW?: BoolFieldUpdateOperationsInput | boolean
-    hasCabinJ?: BoolFieldUpdateOperationsInput | boolean
-    hasCabinF?: BoolFieldUpdateOperationsInput | boolean
     mileageProgram?: StringFieldUpdateOperationsInput | string
-    maximumPoints?: IntFieldUpdateOperationsInput | number
-    passagePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     active?: BoolFieldUpdateOperationsInput | boolean
     airports?: AirportsRouteUncheckedUpdateManyWithoutRouteNestedInput
+    cabins?: CabinsRouteUncheckedUpdateManyWithoutRouteNestedInput
   }
 
   export type RouteCreateManyInput = {
     id?: number
-    hasCabinY: boolean
-    hasCabinW: boolean
-    hasCabinJ: boolean
-    hasCabinF: boolean
     mileageProgram: string
-    maximumPoints: number
-    passagePrice: Decimal | DecimalJsLike | number | string
     active?: boolean
   }
 
   export type RouteUpdateManyMutationInput = {
-    hasCabinY?: BoolFieldUpdateOperationsInput | boolean
-    hasCabinW?: BoolFieldUpdateOperationsInput | boolean
-    hasCabinJ?: BoolFieldUpdateOperationsInput | boolean
-    hasCabinF?: BoolFieldUpdateOperationsInput | boolean
     mileageProgram?: StringFieldUpdateOperationsInput | string
-    maximumPoints?: IntFieldUpdateOperationsInput | number
-    passagePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     active?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type RouteUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
-    hasCabinY?: BoolFieldUpdateOperationsInput | boolean
-    hasCabinW?: BoolFieldUpdateOperationsInput | boolean
-    hasCabinJ?: BoolFieldUpdateOperationsInput | boolean
-    hasCabinF?: BoolFieldUpdateOperationsInput | boolean
     mileageProgram?: StringFieldUpdateOperationsInput | string
+    active?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type CabinsRouteCreateInput = {
+    key: string
+    maximumPoints: number
+    passagePrice: Decimal | DecimalJsLike | number | string
+    cancellationPrice: Decimal | DecimalJsLike | number | string
+    route: RouteCreateNestedOneWithoutCabinsInput
+  }
+
+  export type CabinsRouteUncheckedCreateInput = {
+    id?: number
+    routeId: number
+    key: string
+    maximumPoints: number
+    passagePrice: Decimal | DecimalJsLike | number | string
+    cancellationPrice: Decimal | DecimalJsLike | number | string
+  }
+
+  export type CabinsRouteUpdateInput = {
+    key?: StringFieldUpdateOperationsInput | string
     maximumPoints?: IntFieldUpdateOperationsInput | number
     passagePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    active?: BoolFieldUpdateOperationsInput | boolean
+    cancellationPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    route?: RouteUpdateOneRequiredWithoutCabinsNestedInput
+  }
+
+  export type CabinsRouteUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    routeId?: IntFieldUpdateOperationsInput | number
+    key?: StringFieldUpdateOperationsInput | string
+    maximumPoints?: IntFieldUpdateOperationsInput | number
+    passagePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    cancellationPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+  }
+
+  export type CabinsRouteCreateManyInput = {
+    id?: number
+    routeId: number
+    key: string
+    maximumPoints: number
+    passagePrice: Decimal | DecimalJsLike | number | string
+    cancellationPrice: Decimal | DecimalJsLike | number | string
+  }
+
+  export type CabinsRouteUpdateManyMutationInput = {
+    key?: StringFieldUpdateOperationsInput | string
+    maximumPoints?: IntFieldUpdateOperationsInput | number
+    passagePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    cancellationPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+  }
+
+  export type CabinsRouteUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    routeId?: IntFieldUpdateOperationsInput | number
+    key?: StringFieldUpdateOperationsInput | string
+    maximumPoints?: IntFieldUpdateOperationsInput | number
+    passagePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    cancellationPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
   }
 
   export type AirportsRouteCreateInput = {
@@ -7834,6 +9060,42 @@ export namespace Prisma {
     airportId?: SortOrder
   }
 
+  export type CabinsRouteListRelationFilter = {
+    every?: CabinsRouteWhereInput
+    some?: CabinsRouteWhereInput
+    none?: CabinsRouteWhereInput
+  }
+
+  export type CabinsRouteOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type RouteCountOrderByAggregateInput = {
+    id?: SortOrder
+    mileageProgram?: SortOrder
+    active?: SortOrder
+  }
+
+  export type RouteAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type RouteMaxOrderByAggregateInput = {
+    id?: SortOrder
+    mileageProgram?: SortOrder
+    active?: SortOrder
+  }
+
+  export type RouteMinOrderByAggregateInput = {
+    id?: SortOrder
+    mileageProgram?: SortOrder
+    active?: SortOrder
+  }
+
+  export type RouteSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
   export type DecimalFilter<$PrismaModel = never> = {
     equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
     in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
@@ -7845,52 +9107,57 @@ export namespace Prisma {
     not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
   }
 
-  export type RouteCountOrderByAggregateInput = {
-    id?: SortOrder
-    hasCabinY?: SortOrder
-    hasCabinW?: SortOrder
-    hasCabinJ?: SortOrder
-    hasCabinF?: SortOrder
-    mileageProgram?: SortOrder
-    maximumPoints?: SortOrder
-    passagePrice?: SortOrder
-    active?: SortOrder
+  export type RouteScalarRelationFilter = {
+    is?: RouteWhereInput
+    isNot?: RouteWhereInput
   }
 
-  export type RouteAvgOrderByAggregateInput = {
-    id?: SortOrder
-    maximumPoints?: SortOrder
-    passagePrice?: SortOrder
+  export type CabinsRouteUniqueCabinPerRouteCompoundUniqueInput = {
+    routeId: number
+    key: string
   }
 
-  export type RouteMaxOrderByAggregateInput = {
+  export type CabinsRouteCountOrderByAggregateInput = {
     id?: SortOrder
-    hasCabinY?: SortOrder
-    hasCabinW?: SortOrder
-    hasCabinJ?: SortOrder
-    hasCabinF?: SortOrder
-    mileageProgram?: SortOrder
+    routeId?: SortOrder
+    key?: SortOrder
     maximumPoints?: SortOrder
     passagePrice?: SortOrder
-    active?: SortOrder
+    cancellationPrice?: SortOrder
   }
 
-  export type RouteMinOrderByAggregateInput = {
+  export type CabinsRouteAvgOrderByAggregateInput = {
     id?: SortOrder
-    hasCabinY?: SortOrder
-    hasCabinW?: SortOrder
-    hasCabinJ?: SortOrder
-    hasCabinF?: SortOrder
-    mileageProgram?: SortOrder
+    routeId?: SortOrder
     maximumPoints?: SortOrder
     passagePrice?: SortOrder
-    active?: SortOrder
+    cancellationPrice?: SortOrder
   }
 
-  export type RouteSumOrderByAggregateInput = {
+  export type CabinsRouteMaxOrderByAggregateInput = {
     id?: SortOrder
+    routeId?: SortOrder
+    key?: SortOrder
     maximumPoints?: SortOrder
     passagePrice?: SortOrder
+    cancellationPrice?: SortOrder
+  }
+
+  export type CabinsRouteMinOrderByAggregateInput = {
+    id?: SortOrder
+    routeId?: SortOrder
+    key?: SortOrder
+    maximumPoints?: SortOrder
+    passagePrice?: SortOrder
+    cancellationPrice?: SortOrder
+  }
+
+  export type CabinsRouteSumOrderByAggregateInput = {
+    id?: SortOrder
+    routeId?: SortOrder
+    maximumPoints?: SortOrder
+    passagePrice?: SortOrder
+    cancellationPrice?: SortOrder
   }
 
   export type DecimalWithAggregatesFilter<$PrismaModel = never> = {
@@ -7907,11 +9174,6 @@ export namespace Prisma {
     _sum?: NestedDecimalFilter<$PrismaModel>
     _min?: NestedDecimalFilter<$PrismaModel>
     _max?: NestedDecimalFilter<$PrismaModel>
-  }
-
-  export type RouteScalarRelationFilter = {
-    is?: RouteWhereInput
-    isNot?: RouteWhereInput
   }
 
   export type AirportsRouteCountOrderByAggregateInput = {
@@ -8063,6 +9325,13 @@ export namespace Prisma {
     connect?: AirportsRouteWhereUniqueInput | AirportsRouteWhereUniqueInput[]
   }
 
+  export type CabinsRouteCreateNestedManyWithoutRouteInput = {
+    create?: XOR<CabinsRouteCreateWithoutRouteInput, CabinsRouteUncheckedCreateWithoutRouteInput> | CabinsRouteCreateWithoutRouteInput[] | CabinsRouteUncheckedCreateWithoutRouteInput[]
+    connectOrCreate?: CabinsRouteCreateOrConnectWithoutRouteInput | CabinsRouteCreateOrConnectWithoutRouteInput[]
+    createMany?: CabinsRouteCreateManyRouteInputEnvelope
+    connect?: CabinsRouteWhereUniqueInput | CabinsRouteWhereUniqueInput[]
+  }
+
   export type AirportsRouteUncheckedCreateNestedManyWithoutRouteInput = {
     create?: XOR<AirportsRouteCreateWithoutRouteInput, AirportsRouteUncheckedCreateWithoutRouteInput> | AirportsRouteCreateWithoutRouteInput[] | AirportsRouteUncheckedCreateWithoutRouteInput[]
     connectOrCreate?: AirportsRouteCreateOrConnectWithoutRouteInput | AirportsRouteCreateOrConnectWithoutRouteInput[]
@@ -8070,12 +9339,11 @@ export namespace Prisma {
     connect?: AirportsRouteWhereUniqueInput | AirportsRouteWhereUniqueInput[]
   }
 
-  export type DecimalFieldUpdateOperationsInput = {
-    set?: Decimal | DecimalJsLike | number | string
-    increment?: Decimal | DecimalJsLike | number | string
-    decrement?: Decimal | DecimalJsLike | number | string
-    multiply?: Decimal | DecimalJsLike | number | string
-    divide?: Decimal | DecimalJsLike | number | string
+  export type CabinsRouteUncheckedCreateNestedManyWithoutRouteInput = {
+    create?: XOR<CabinsRouteCreateWithoutRouteInput, CabinsRouteUncheckedCreateWithoutRouteInput> | CabinsRouteCreateWithoutRouteInput[] | CabinsRouteUncheckedCreateWithoutRouteInput[]
+    connectOrCreate?: CabinsRouteCreateOrConnectWithoutRouteInput | CabinsRouteCreateOrConnectWithoutRouteInput[]
+    createMany?: CabinsRouteCreateManyRouteInputEnvelope
+    connect?: CabinsRouteWhereUniqueInput | CabinsRouteWhereUniqueInput[]
   }
 
   export type AirportsRouteUpdateManyWithoutRouteNestedInput = {
@@ -8092,6 +9360,20 @@ export namespace Prisma {
     deleteMany?: AirportsRouteScalarWhereInput | AirportsRouteScalarWhereInput[]
   }
 
+  export type CabinsRouteUpdateManyWithoutRouteNestedInput = {
+    create?: XOR<CabinsRouteCreateWithoutRouteInput, CabinsRouteUncheckedCreateWithoutRouteInput> | CabinsRouteCreateWithoutRouteInput[] | CabinsRouteUncheckedCreateWithoutRouteInput[]
+    connectOrCreate?: CabinsRouteCreateOrConnectWithoutRouteInput | CabinsRouteCreateOrConnectWithoutRouteInput[]
+    upsert?: CabinsRouteUpsertWithWhereUniqueWithoutRouteInput | CabinsRouteUpsertWithWhereUniqueWithoutRouteInput[]
+    createMany?: CabinsRouteCreateManyRouteInputEnvelope
+    set?: CabinsRouteWhereUniqueInput | CabinsRouteWhereUniqueInput[]
+    disconnect?: CabinsRouteWhereUniqueInput | CabinsRouteWhereUniqueInput[]
+    delete?: CabinsRouteWhereUniqueInput | CabinsRouteWhereUniqueInput[]
+    connect?: CabinsRouteWhereUniqueInput | CabinsRouteWhereUniqueInput[]
+    update?: CabinsRouteUpdateWithWhereUniqueWithoutRouteInput | CabinsRouteUpdateWithWhereUniqueWithoutRouteInput[]
+    updateMany?: CabinsRouteUpdateManyWithWhereWithoutRouteInput | CabinsRouteUpdateManyWithWhereWithoutRouteInput[]
+    deleteMany?: CabinsRouteScalarWhereInput | CabinsRouteScalarWhereInput[]
+  }
+
   export type AirportsRouteUncheckedUpdateManyWithoutRouteNestedInput = {
     create?: XOR<AirportsRouteCreateWithoutRouteInput, AirportsRouteUncheckedCreateWithoutRouteInput> | AirportsRouteCreateWithoutRouteInput[] | AirportsRouteUncheckedCreateWithoutRouteInput[]
     connectOrCreate?: AirportsRouteCreateOrConnectWithoutRouteInput | AirportsRouteCreateOrConnectWithoutRouteInput[]
@@ -8104,6 +9386,42 @@ export namespace Prisma {
     update?: AirportsRouteUpdateWithWhereUniqueWithoutRouteInput | AirportsRouteUpdateWithWhereUniqueWithoutRouteInput[]
     updateMany?: AirportsRouteUpdateManyWithWhereWithoutRouteInput | AirportsRouteUpdateManyWithWhereWithoutRouteInput[]
     deleteMany?: AirportsRouteScalarWhereInput | AirportsRouteScalarWhereInput[]
+  }
+
+  export type CabinsRouteUncheckedUpdateManyWithoutRouteNestedInput = {
+    create?: XOR<CabinsRouteCreateWithoutRouteInput, CabinsRouteUncheckedCreateWithoutRouteInput> | CabinsRouteCreateWithoutRouteInput[] | CabinsRouteUncheckedCreateWithoutRouteInput[]
+    connectOrCreate?: CabinsRouteCreateOrConnectWithoutRouteInput | CabinsRouteCreateOrConnectWithoutRouteInput[]
+    upsert?: CabinsRouteUpsertWithWhereUniqueWithoutRouteInput | CabinsRouteUpsertWithWhereUniqueWithoutRouteInput[]
+    createMany?: CabinsRouteCreateManyRouteInputEnvelope
+    set?: CabinsRouteWhereUniqueInput | CabinsRouteWhereUniqueInput[]
+    disconnect?: CabinsRouteWhereUniqueInput | CabinsRouteWhereUniqueInput[]
+    delete?: CabinsRouteWhereUniqueInput | CabinsRouteWhereUniqueInput[]
+    connect?: CabinsRouteWhereUniqueInput | CabinsRouteWhereUniqueInput[]
+    update?: CabinsRouteUpdateWithWhereUniqueWithoutRouteInput | CabinsRouteUpdateWithWhereUniqueWithoutRouteInput[]
+    updateMany?: CabinsRouteUpdateManyWithWhereWithoutRouteInput | CabinsRouteUpdateManyWithWhereWithoutRouteInput[]
+    deleteMany?: CabinsRouteScalarWhereInput | CabinsRouteScalarWhereInput[]
+  }
+
+  export type RouteCreateNestedOneWithoutCabinsInput = {
+    create?: XOR<RouteCreateWithoutCabinsInput, RouteUncheckedCreateWithoutCabinsInput>
+    connectOrCreate?: RouteCreateOrConnectWithoutCabinsInput
+    connect?: RouteWhereUniqueInput
+  }
+
+  export type DecimalFieldUpdateOperationsInput = {
+    set?: Decimal | DecimalJsLike | number | string
+    increment?: Decimal | DecimalJsLike | number | string
+    decrement?: Decimal | DecimalJsLike | number | string
+    multiply?: Decimal | DecimalJsLike | number | string
+    divide?: Decimal | DecimalJsLike | number | string
+  }
+
+  export type RouteUpdateOneRequiredWithoutCabinsNestedInput = {
+    create?: XOR<RouteCreateWithoutCabinsInput, RouteUncheckedCreateWithoutCabinsInput>
+    connectOrCreate?: RouteCreateOrConnectWithoutCabinsInput
+    upsert?: RouteUpsertWithoutCabinsInput
+    connect?: RouteWhereUniqueInput
+    update?: XOR<XOR<RouteUpdateToOneWithWhereWithoutCabinsInput, RouteUpdateWithoutCabinsInput>, RouteUncheckedUpdateWithoutCabinsInput>
   }
 
   export type AirportsCreateNestedOneWithoutRoutesInput = {
@@ -8451,6 +9769,31 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type CabinsRouteCreateWithoutRouteInput = {
+    key: string
+    maximumPoints: number
+    passagePrice: Decimal | DecimalJsLike | number | string
+    cancellationPrice: Decimal | DecimalJsLike | number | string
+  }
+
+  export type CabinsRouteUncheckedCreateWithoutRouteInput = {
+    id?: number
+    key: string
+    maximumPoints: number
+    passagePrice: Decimal | DecimalJsLike | number | string
+    cancellationPrice: Decimal | DecimalJsLike | number | string
+  }
+
+  export type CabinsRouteCreateOrConnectWithoutRouteInput = {
+    where: CabinsRouteWhereUniqueInput
+    create: XOR<CabinsRouteCreateWithoutRouteInput, CabinsRouteUncheckedCreateWithoutRouteInput>
+  }
+
+  export type CabinsRouteCreateManyRouteInputEnvelope = {
+    data: CabinsRouteCreateManyRouteInput | CabinsRouteCreateManyRouteInput[]
+    skipDuplicates?: boolean
+  }
+
   export type AirportsRouteUpsertWithWhereUniqueWithoutRouteInput = {
     where: AirportsRouteWhereUniqueInput
     update: XOR<AirportsRouteUpdateWithoutRouteInput, AirportsRouteUncheckedUpdateWithoutRouteInput>
@@ -8465,6 +9808,76 @@ export namespace Prisma {
   export type AirportsRouteUpdateManyWithWhereWithoutRouteInput = {
     where: AirportsRouteScalarWhereInput
     data: XOR<AirportsRouteUpdateManyMutationInput, AirportsRouteUncheckedUpdateManyWithoutRouteInput>
+  }
+
+  export type CabinsRouteUpsertWithWhereUniqueWithoutRouteInput = {
+    where: CabinsRouteWhereUniqueInput
+    update: XOR<CabinsRouteUpdateWithoutRouteInput, CabinsRouteUncheckedUpdateWithoutRouteInput>
+    create: XOR<CabinsRouteCreateWithoutRouteInput, CabinsRouteUncheckedCreateWithoutRouteInput>
+  }
+
+  export type CabinsRouteUpdateWithWhereUniqueWithoutRouteInput = {
+    where: CabinsRouteWhereUniqueInput
+    data: XOR<CabinsRouteUpdateWithoutRouteInput, CabinsRouteUncheckedUpdateWithoutRouteInput>
+  }
+
+  export type CabinsRouteUpdateManyWithWhereWithoutRouteInput = {
+    where: CabinsRouteScalarWhereInput
+    data: XOR<CabinsRouteUpdateManyMutationInput, CabinsRouteUncheckedUpdateManyWithoutRouteInput>
+  }
+
+  export type CabinsRouteScalarWhereInput = {
+    AND?: CabinsRouteScalarWhereInput | CabinsRouteScalarWhereInput[]
+    OR?: CabinsRouteScalarWhereInput[]
+    NOT?: CabinsRouteScalarWhereInput | CabinsRouteScalarWhereInput[]
+    id?: IntFilter<"CabinsRoute"> | number
+    routeId?: IntFilter<"CabinsRoute"> | number
+    key?: StringFilter<"CabinsRoute"> | string
+    maximumPoints?: IntFilter<"CabinsRoute"> | number
+    passagePrice?: DecimalFilter<"CabinsRoute"> | Decimal | DecimalJsLike | number | string
+    cancellationPrice?: DecimalFilter<"CabinsRoute"> | Decimal | DecimalJsLike | number | string
+  }
+
+  export type RouteCreateWithoutCabinsInput = {
+    mileageProgram: string
+    active?: boolean
+    airports?: AirportsRouteCreateNestedManyWithoutRouteInput
+  }
+
+  export type RouteUncheckedCreateWithoutCabinsInput = {
+    id?: number
+    mileageProgram: string
+    active?: boolean
+    airports?: AirportsRouteUncheckedCreateNestedManyWithoutRouteInput
+  }
+
+  export type RouteCreateOrConnectWithoutCabinsInput = {
+    where: RouteWhereUniqueInput
+    create: XOR<RouteCreateWithoutCabinsInput, RouteUncheckedCreateWithoutCabinsInput>
+  }
+
+  export type RouteUpsertWithoutCabinsInput = {
+    update: XOR<RouteUpdateWithoutCabinsInput, RouteUncheckedUpdateWithoutCabinsInput>
+    create: XOR<RouteCreateWithoutCabinsInput, RouteUncheckedCreateWithoutCabinsInput>
+    where?: RouteWhereInput
+  }
+
+  export type RouteUpdateToOneWithWhereWithoutCabinsInput = {
+    where?: RouteWhereInput
+    data: XOR<RouteUpdateWithoutCabinsInput, RouteUncheckedUpdateWithoutCabinsInput>
+  }
+
+  export type RouteUpdateWithoutCabinsInput = {
+    mileageProgram?: StringFieldUpdateOperationsInput | string
+    active?: BoolFieldUpdateOperationsInput | boolean
+    airports?: AirportsRouteUpdateManyWithoutRouteNestedInput
+  }
+
+  export type RouteUncheckedUpdateWithoutCabinsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    mileageProgram?: StringFieldUpdateOperationsInput | string
+    active?: BoolFieldUpdateOperationsInput | boolean
+    airports?: AirportsRouteUncheckedUpdateManyWithoutRouteNestedInput
   }
 
   export type AirportsCreateWithoutRoutesInput = {
@@ -8486,26 +9899,16 @@ export namespace Prisma {
   }
 
   export type RouteCreateWithoutAirportsInput = {
-    hasCabinY: boolean
-    hasCabinW: boolean
-    hasCabinJ: boolean
-    hasCabinF: boolean
     mileageProgram: string
-    maximumPoints: number
-    passagePrice: Decimal | DecimalJsLike | number | string
     active?: boolean
+    cabins?: CabinsRouteCreateNestedManyWithoutRouteInput
   }
 
   export type RouteUncheckedCreateWithoutAirportsInput = {
     id?: number
-    hasCabinY: boolean
-    hasCabinW: boolean
-    hasCabinJ: boolean
-    hasCabinF: boolean
     mileageProgram: string
-    maximumPoints: number
-    passagePrice: Decimal | DecimalJsLike | number | string
     active?: boolean
+    cabins?: CabinsRouteUncheckedCreateNestedManyWithoutRouteInput
   }
 
   export type RouteCreateOrConnectWithoutAirportsInput = {
@@ -8549,26 +9952,16 @@ export namespace Prisma {
   }
 
   export type RouteUpdateWithoutAirportsInput = {
-    hasCabinY?: BoolFieldUpdateOperationsInput | boolean
-    hasCabinW?: BoolFieldUpdateOperationsInput | boolean
-    hasCabinJ?: BoolFieldUpdateOperationsInput | boolean
-    hasCabinF?: BoolFieldUpdateOperationsInput | boolean
     mileageProgram?: StringFieldUpdateOperationsInput | string
-    maximumPoints?: IntFieldUpdateOperationsInput | number
-    passagePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     active?: BoolFieldUpdateOperationsInput | boolean
+    cabins?: CabinsRouteUpdateManyWithoutRouteNestedInput
   }
 
   export type RouteUncheckedUpdateWithoutAirportsInput = {
     id?: IntFieldUpdateOperationsInput | number
-    hasCabinY?: BoolFieldUpdateOperationsInput | boolean
-    hasCabinW?: BoolFieldUpdateOperationsInput | boolean
-    hasCabinJ?: BoolFieldUpdateOperationsInput | boolean
-    hasCabinF?: BoolFieldUpdateOperationsInput | boolean
     mileageProgram?: StringFieldUpdateOperationsInput | string
-    maximumPoints?: IntFieldUpdateOperationsInput | number
-    passagePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     active?: BoolFieldUpdateOperationsInput | boolean
+    cabins?: CabinsRouteUncheckedUpdateManyWithoutRouteNestedInput
   }
 
   export type AirportsRouteCreateManyAirportInput = {
@@ -8595,6 +9988,14 @@ export namespace Prisma {
     airportId: number
   }
 
+  export type CabinsRouteCreateManyRouteInput = {
+    id?: number
+    key: string
+    maximumPoints: number
+    passagePrice: Decimal | DecimalJsLike | number | string
+    cancellationPrice: Decimal | DecimalJsLike | number | string
+  }
+
   export type AirportsRouteUpdateWithoutRouteInput = {
     airport?: AirportsUpdateOneRequiredWithoutRoutesNestedInput
   }
@@ -8607,6 +10008,29 @@ export namespace Prisma {
   export type AirportsRouteUncheckedUpdateManyWithoutRouteInput = {
     id?: IntFieldUpdateOperationsInput | number
     airportId?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type CabinsRouteUpdateWithoutRouteInput = {
+    key?: StringFieldUpdateOperationsInput | string
+    maximumPoints?: IntFieldUpdateOperationsInput | number
+    passagePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    cancellationPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+  }
+
+  export type CabinsRouteUncheckedUpdateWithoutRouteInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    key?: StringFieldUpdateOperationsInput | string
+    maximumPoints?: IntFieldUpdateOperationsInput | number
+    passagePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    cancellationPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+  }
+
+  export type CabinsRouteUncheckedUpdateManyWithoutRouteInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    key?: StringFieldUpdateOperationsInput | string
+    maximumPoints?: IntFieldUpdateOperationsInput | number
+    passagePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    cancellationPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
   }
 
 

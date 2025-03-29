@@ -15,7 +15,7 @@ import Select, {
 import { AirportType } from "@/lib/airport/types";
 
 // Dados e tipos relacionados às cabines (classes de voo)
-import { Cabin, CabinKey, cabins } from "@/lib/route/cabins";
+import { Cabin, CabinKey, cabinPriority, cabins } from "@/lib/route/cabins";
 
 // Ícones para ações visuais
 import { FaPlus, FaTrash } from "react-icons/fa";
@@ -80,12 +80,11 @@ export default function RouteBox({ airportsInitialData }: LocalBoxProps) {
   function handleSubmitForm(e: React.FormEvent) {
     e.preventDefault();
     handleCreateRoute();
-    
   }
 
   // Função responsável por criar a rota (lógica futura)
   function handleCreateRoute() {
-    setAirports(airportsInitialData ? airportsInitialData : [])
+    setAirports(airportsInitialData ? airportsInitialData : []);
   }
 
   // Mapeia os programas de milhagem para opções do Select
@@ -181,16 +180,36 @@ export default function RouteBox({ airportsInitialData }: LocalBoxProps) {
   // Adiciona uma cabine à lista de seleção
   function addNewCabin(cabinKey: CabinKey) {
     const cabin = cabins[cabinKey];
+
     setCabinToShow((prev) => prev.filter((item) => item.key !== cabinKey));
-    setCabinList((prev) => [...prev, cabin]);
+    setCabinList((prev) => {
+      const newList = [...prev, cabin];
+      return newList.sort((a, b) => {
+        return cabinPriority[a.key] - cabinPriority[b.key];
+      });
+    });
     setCabinKey("");
   }
 
   // Remove uma cabine da lista de seleção
   function removeCabin(cabinKey: CabinKey) {
     const cabin = cabins[cabinKey];
-    setCabinList((prev) => prev.filter((item) => item.key !== cabinKey));
-    setCabinToShow((prev) => [...prev, cabin]);
+
+    // Remove a cabine da lista de seleção e ordena pela prioridade
+    setCabinList((prev) => {
+      const newList = prev.filter((item) => item.key !== cabinKey);
+      return newList.sort(
+        (a, b) => cabinPriority[a.key] - cabinPriority[b.key]
+      );
+    });
+
+    // Adiciona a cabine removida à lista de disponíveis e ordena pela prioridade
+    setCabinToShow((prev) => {
+      const newList = [...prev, cabin];
+      return newList.sort(
+        (a, b) => cabinPriority[a.key] - cabinPriority[b.key]
+      );
+    });
   }
 
   return (
@@ -294,18 +313,70 @@ export default function RouteBox({ airportsInitialData }: LocalBoxProps) {
                 {cabinList.map((cabin) => (
                   <div
                     key={cabin.key}
-                    className="w-full flex flex-row justify-between items-center bg-gray-700 py-2 px-3 rounded-lg"
+                    className="w-full bg-gray-700 py-2 px-3 rounded-lg"
                   >
-                    <label>
-                      {cabin.label} - {cabin.code}
-                    </label>
-                    {/* Botão para remover cabine */}
-                    <button
-                      className="text-red-500 cursor-pointer"
-                      onClick={() => removeCabin(cabin.key as CabinKey)}
-                    >
-                      <FaTrash size={24} />
-                    </button>
+                    <div>
+                      <div className="flex flex-row justify-between items-center bg-gray-900 p-2 rounded mb-2">
+                        <label>
+                          {cabin.label} - {cabin.code}
+                        </label>
+                        {/* Botão para remover cabine */}
+                        <button
+                          className="text-red-500 cursor-pointer"
+                          onClick={() => removeCabin(cabin.key as CabinKey)}
+                        >
+                          <FaTrash size={24} />
+                        </button>
+                      </div>
+                      {/* Campo para pontos máximos da rota */}
+                      <div>
+                        <label className="block mb-1 text-white">
+                          Maximum Points
+                        </label>
+                        <input
+                          id="aiport code"
+                          type="number"
+                          inputMode="decimal"
+                          value={maxPoints}
+                          onChange={(e) => setMaxPoints(Number(e.target.value))}
+                          className={inputs}
+                          required
+                          min={0}
+                        />
+                      </div>
+                      {/* Campo para pontos máximos da rota */}
+                      <div>
+                        <label className="block mb-1 text-white">
+                          Passage Price
+                        </label>
+                        <input
+                          id="aiport code"
+                          type="number"
+                          inputMode="decimal"
+                          value={maxPoints}
+                          onChange={(e) => setMaxPoints(Number(e.target.value))}
+                          className={inputs}
+                          required
+                          min={0}
+                        />
+                      </div>
+                      {/* Campo para pontos máximos da rota */}
+                      <div>
+                        <label className="block mb-1 text-white">
+                          Cancelation Price
+                        </label>
+                        <input
+                          id="aiport code"
+                          type="number"
+                          inputMode="decimal"
+                          value={maxPoints}
+                          onChange={(e) => setMaxPoints(Number(e.target.value))}
+                          className={inputs}
+                          required
+                          min={0}
+                        />
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -325,21 +396,6 @@ export default function RouteBox({ airportsInitialData }: LocalBoxProps) {
               }}
               styles={customStyles}
               defaultValue={options[0]}
-            />
-          </div>
-
-          {/* Campo para pontos máximos da rota */}
-          <div>
-            <label className="block mb-1 text-white">Maximum Points</label>
-            <input
-              id="aiport code"
-              type="number"
-              value={maxPoints}
-              placeholder="Type airport code"
-              onChange={(e) => setMaxPoints(Number(e.target.value))}
-              className={inputs}
-              required
-              min={0}
             />
           </div>
 

@@ -1,36 +1,55 @@
-import { prismaClient } from "../prisma/prisma"; // Importa o cliente do Prisma para interagir com o banco de dados
-import { updateRouteCache } from "./cacheRoute"; // Importa a função para atualizar o cache após a deleção
-import { RouteType } from "./types"; // Importa o tipo RouteType para garantir tipagem no retorno
+// Importa o cliente do Prisma para interagir com o banco de dados
+import { prismaClient } from "../prisma/prisma";
 
-// Função responsável por deletar uma rota do banco de dados com base no ID fornecido
+// Importa a função responsável por atualizar o cache das rotas
+import { updateRouteCache } from "./cacheRoute";
+
+// Importa o tipo utilizado para definir a estrutura esperada da rota retornada
+import { RouteType } from "./types";
+
+// ======================================================================
+// Função responsável por deletar uma rota do banco de dados via Prisma
+// ======================================================================
 export async function deleteRoute(
   routeId: number
 ): Promise<RouteType | undefined> {
   try {
-    // Executa a deleção da rota no banco de dados via Prisma
+    // Realiza a deleção da rota com base no ID fornecido
+    // Também inclui dados relacionados de aeroportos e cabines para retorno
     const route = await prismaClient.route.delete({
       where: {
-        id: routeId, // Define a condição de busca para deleção com base no ID da rota
+        id: routeId,
       },
-      // Inclui os aeroportos relacionados à rota para que possam ser retornados posteriormente
-      include: { airports: { select: { airport: true } } },
+      include: {
+        // Inclui os aeroportos associados à rota (relacionamento via tabela de junção)
+        airports: {
+          select: { airport: true },
+          orderBy: { id: "asc" },
+        },
+        // Inclui os dados das cabines vinculadas à rota
+        cabins: {
+          select: {
+            id: true,
+            key: true,
+            maximumPoints: true,
+            passagePrice: true,
+            cancellationPrice: true,
+          },
+          orderBy: { id: "asc" },
+        },
+      },
     });
 
-    // Atualiza o cache das rotas após a exclusão da rota do banco
+    // Após a exclusão da rota, atualiza o cache no Redis
     await updateRouteCache();
 
-    // Formata os dados da rota deletada para retornar no formato esperado pelo tipo RouteType
+    // Constrói o objeto no formato esperado por RouteType a partir dos dados retornados
     const formattedRoute: RouteType = {
       id: route.id,
-      hasCabinY: route.hasCabinY, // Indica se tinha cabine econômica
-      hasCabinW: route.hasCabinW, // Indica se tinha cabine premium
-      hasCabinJ: route.hasCabinJ, // Indica se tinha cabine executiva
-      hasCabinF: route.hasCabinF, // Indica se tinha primeira classe
-      mileageProgram: route.mileageProgram, // Programa de milhagem associado
-      maximumPoints: route.maximumPoints, // Pontos máximos permitidos
-      passagePrice: route.passagePrice, // Preço da passagem
-      active: route.active, // Status de ativação da rota
-      // Mapeia os aeroportos relacionados, extraindo os dados necessários
+      mileageProgram: route.mileageProgram,
+      active: route.active,
+      cabins: route.cabins,
+      // Converte os dados dos aeroportos para o formato simplificado
       airports: route.airports.map((airport) => {
         return {
           id: airport.airport.id,
@@ -40,14 +59,14 @@ export async function deleteRoute(
       }),
     };
 
-    // Retorna a rota deletada com os dados formatados
+    // Retorna os dados da rota deletada com os relacionamentos já formatados
     return formattedRoute;
   } catch {
-    // Em caso de erro durante a exclusão, registra uma mensagem no console
+    // Registra mensagem de erro caso ocorra falha durante o processo de exclusão
     console.error("Failed to Delete Route!");
     return undefined;
   } finally {
-    // Encerra a conexão com o Prisma após a operação
+    // Finaliza a conexão com o Prisma, garantindo liberação de recursos
     await prismaClient.$disconnect();
   }
 }
