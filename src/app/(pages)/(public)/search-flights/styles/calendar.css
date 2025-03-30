@@ -1,0 +1,50 @@
+.fc-multimonth {
+  display: flex;
+  flex-wrap: wrap; /* Permite quebrar a linha */
+  gap: 1rem;
+  justify-content: center; /* Centraliza os itens horizontalmente */
+  width: 100%;
+}
+
+/* Define a largura para que caibam 3 itens por linha */
+.fc-multimonth-month {
+  flex: 0 0 calc((100% - 2rem) / 3); /* Considerando 2 gaps de 1rem em cada linha */
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+}
+
+.has-flight-direct {
+  background-color: #05df72; /* exemplo de cor verde claro */
+}
+
+.has-flight-layovers {
+  background-color: #51a2ff; /* exemplo de cor verde claro */
+}
+
+.has-flight-direct:hover {
+  cursor: pointer;
+}
+
+.has-flight-layovers:hover {
+  cursor: pointer;
+}
+
+.fc-event,
+.fc-event-title,
+.fc-event-dot {
+  display: none !important;
+}
+
+.fc-daygrid-day-number {
+  font-weight: 700;
+}
+
+.fc-day-today {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+.fc-multimonth-title{
+  background-color: #4472c4;
+  color: #FFFFFF;
+}
