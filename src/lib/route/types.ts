@@ -6,8 +6,8 @@ export interface RouteType {
   mileageProgram: string;
   enableLayovers: boolean;
   active: boolean;
-  airports: AirportType[] | null;
-  cabins: CabinsType[] | null;
+  airports: AirportType[];
+  cabins: CabinsType[];
 }
 
 export interface CabinsType {

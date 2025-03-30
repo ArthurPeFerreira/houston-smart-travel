@@ -31,7 +31,7 @@ export async function createRoute(
     });
 
     // Cria os relacionamentos entre a nova rota e os aeroportos envolvidos (tabela de junção AirportsRoute)
-    prismaClient.airportsRoute.createMany({
+    await prismaClient.airportsRoute.createMany({
       data: insertAriportsRoute,
     });
 
@@ -47,7 +47,7 @@ export async function createRoute(
     });
 
     // Cria os registros das cabines associadas à nova rota (tabela de junção CabinsRoute)
-    prismaClient.cabinsRoute.createMany({
+    await prismaClient.cabinsRoute.createMany({
       data: insertCabinsRoute,
     });
 

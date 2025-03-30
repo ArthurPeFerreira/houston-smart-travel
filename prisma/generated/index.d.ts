@@ -8425,17 +8425,17 @@ export namespace Prisma {
 
   export type CabinsRouteWhereUniqueInput = Prisma.AtLeast<{
     id?: number
-    key?: string
     UniqueCabinPerRoute?: CabinsRouteUniqueCabinPerRouteCompoundUniqueInput
     AND?: CabinsRouteWhereInput | CabinsRouteWhereInput[]
     OR?: CabinsRouteWhereInput[]
     NOT?: CabinsRouteWhereInput | CabinsRouteWhereInput[]
     routeId?: IntFilter<"CabinsRoute"> | number
+    key?: StringFilter<"CabinsRoute"> | string
     maximumPoints?: IntFilter<"CabinsRoute"> | number
     passagePrice?: DecimalFilter<"CabinsRoute"> | Decimal | DecimalJsLike | number | string
     cancellationPrice?: DecimalFilter<"CabinsRoute"> | Decimal | DecimalJsLike | number | string
     route?: XOR<RouteScalarRelationFilter, RouteWhereInput>
-  }, "id" | "key" | "UniqueCabinPerRoute">
+  }, "id" | "UniqueCabinPerRoute">
 
   export type CabinsRouteOrderByWithAggregationInput = {
     id?: SortOrder

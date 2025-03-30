@@ -94,7 +94,7 @@ model Route {
 model CabinsRoute {
   id                Int     @id @default(autoincrement()) // ID primário auto incremental
   routeId           Int // Chave estrangeira para rota
-  key               String  @unique // Identificador da cabine
+  key               String // Identificador da cabine
   maximumPoints     Int // Máximo de pontos permitidos
   passagePrice      Decimal // Preço da passagem
   cancellationPrice Decimal // Preço de cancelamento

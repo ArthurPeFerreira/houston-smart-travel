@@ -23,71 +23,46 @@ import { FaPlus, FaTrash } from "react-icons/fa";
 // Lista de programas de milhagem
 import { mileagePrograms } from "@/lib/route/mileagePrograms";
 
-// Tipagem para opções de programa de milhagem usadas no Select
+// Biblioteca para operações com números decimais
+import Decimal from "decimal.js";
+
+// Tipagem do objeto de criação de rota
+import { CreateRouteType } from "@/lib/route/types";
+
+// Configurações e instância do toast para notificações
+import { toastConfigs } from "@/lib/toastify/toastify";
+import { toast } from "react-toastify";
+import { api } from "@/lib/api/api";
+
+// Tipagem para opções do Select que representam os programas de milhagem
 interface MileageProgramOption {
   value: string;
   label: string;
   logoUrl: string;
 }
 
-// Props esperadas pelo componente
+// Tipagem interna das cabines utilizadas no componente
+interface CabinData {
+  key: CabinKey;
+  label: string;
+  code: "Y" | "J" | "F" | "W";
+  maximumPoints: number;
+  passagePrice: Decimal;
+  cancellationPrice: Decimal;
+}
+
+// Tipagem das props recebidas pelo componente RouteBox
 interface LocalBoxProps {
   airportsInitialData: AirportType[] | undefined;
 }
 
-// Componente principal para criação de rotas entre aeroportos
+// Componente principal responsável pela criação de rotas entre dois aeroportos
 export default function RouteBox({ airportsInitialData }: LocalBoxProps) {
-  // Classe base de estilo para inputs reutilizável
+  // Classe de estilo aplicada aos inputs do formulário
   const inputs =
     "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white";
 
-  // Estado que armazena os aeroportos disponíveis
-  const [airports, setAirports] = useState<AirportType[]>(
-    airportsInitialData ? airportsInitialData : []
-  );
-
-  // Estados para seleção dos aeroportos da rota
-  const [airportId1, setAirportId1] = useState<number>(0);
-  const [airportId2, setAirportId2] = useState<number>(0);
-
-  // Estado para quantidade máxima de pontos na rota
-  const [maxPoints, setMaxPoints] = useState<number>(0);
-
-  // Estado para armazenar a cabine selecionada temporariamente
-  const [cabinKey, setCabinKey] = useState<string>("");
-
-  // Lista de cabines adicionadas à rota
-  const [cabinList, setCabinList] = useState<Cabin[]>([]);
-
-  // Lista de cabines disponíveis para adicionar
-  const [cabinToShow, setCabinToShow] = useState<Cabin[]>(
-    Object.values(cabins).map((cabin) => cabin)
-  );
-
-  // Efeito de montagem (reserva para lógica futura)
-  useEffect(() => {
-    async function fetchInitialData() {
-      try {
-        // (vazio no momento)
-      } catch {
-        console.error("Failed to Find Initial Data!");
-      }
-    }
-    fetchInitialData();
-  }, []);
-
-  // Manipula o envio do formulário
-  function handleSubmitForm(e: React.FormEvent) {
-    e.preventDefault();
-    handleCreateRoute();
-  }
-
-  // Função responsável por criar a rota (lógica futura)
-  function handleCreateRoute() {
-    setAirports(airportsInitialData ? airportsInitialData : []);
-  }
-
-  // Mapeia os programas de milhagem para opções do Select
+  // Mapeamento dos programas de milhagem para serem usados como opções no Select
   const options: MileageProgramOption[] = Object.values(mileagePrograms).map(
     (program) => ({
       value: program.key,
@@ -96,9 +71,107 @@ export default function RouteBox({ airportsInitialData }: LocalBoxProps) {
     })
   );
 
-  // Estilização customizada do Select (react-select)
+  // Estado para armazenar a lista de aeroportos disponíveis
+  const [airports, setAirports] = useState<AirportType[]>(
+    airportsInitialData ? airportsInitialData : []
+  );
+
+  // Estados para armazenar os IDs dos dois aeroportos selecionados
+  const [airportId1, setAirportId1] = useState<number>(0);
+  const [airportId2, setAirportId2] = useState<number>(0);
+
+  // Estado da cabine selecionada temporariamente antes de ser adicionada à lista
+  const [cabinKey, setCabinKey] = useState<string>("");
+
+  // Estado para o programa de milhagem selecionado
+  const [mileageProgram, setMileageProgram] =
+    useState<MileageProgramOption | null>(options[0]);
+
+  // Lista de cabines adicionadas para essa rota
+  const [cabinList, setCabinList] = useState<CabinData[]>([]);
+
+  // Lista de cabines ainda disponíveis para serem adicionadas
+  const [cabinToShow, setCabinToShow] = useState<Cabin[]>(
+    Object.values(cabins).map((cabin) => cabin)
+  );
+
+  // Estado que define se a rota permitirá conexões (layovers)
+  const [enableLayovers, setEnableLayovers] = useState<boolean>(false);
+
+  // Efeito de montagem (poderá ser utilizado futuramente para buscar dados externos)
+  useEffect(() => {
+    async function fetchInitialData() {
+      try {
+        // Lógica de carregamento inicial (reservada)
+      } catch {
+        console.error("Failed to Find Initial Data!");
+      }
+    }
+    fetchInitialData();
+  }, []);
+
+  // Cria o objeto da rota e valida os dados antes do envio
+  async function handleCreateRoute(e: React.FormEvent) {
+    e.preventDefault();
+
+    if (!mileageProgram || !mileageProgram?.value) {
+      toast.error("Please select the mileage program", toastConfigs);
+      return;
+    }
+
+    if (!airportId1) {
+      toast.error("Please select airport 1", toastConfigs);
+      return;
+    }
+
+    if (!airportId2) {
+      toast.error("Please select airport 2", toastConfigs);
+      return;
+    }
+
+    if (!cabinList || cabinList.length == 0) {
+      toast.error("Please select at least one cabin", toastConfigs);
+      return;
+    }
+
+    // Cria o objeto de rota com os dados preenchidos
+    const route: CreateRouteType = {
+      mileageProgram: mileageProgram.value,
+      enableLayovers: enableLayovers,
+      // Garante ordem consistente dos IDs dos aeroportos
+      airportsId:
+        airportId1 < airportId2
+          ? [airportId1, airportId2]
+          : [airportId2, airportId1],
+      // Mapeia as cabines para o formato esperado na API
+      cabins: cabinList.map((cabin) => {
+        return {
+          key: cabin.key,
+          maximumPoints: cabin.maximumPoints,
+          passagePrice: cabin.passagePrice,
+          cancellationPrice: cabin.cancellationPrice,
+        };
+      }),
+    };
+
+    try {
+      // Tenta criar a rota via POST
+      await api.post("api/admin/route", route);
+
+      // Exibe mensagem de sucesso
+      toast.success("Route created successfully!", toastConfigs);
+    } catch (error: any) {
+      // Tenta extrair mensagem de erro do servidor
+      const errorMessage =
+        error?.response?.data?.error || "Failed to create route.";
+
+      // Exibe mensagem de erro
+      toast.error(errorMessage, toastConfigs);
+    }
+  }
+
+  // Estilos customizados para o componente Select do react-select
   const customStyles = {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     control: (provided: any) => ({
       ...provided,
       backgroundColor: "#101828",
@@ -115,7 +188,6 @@ export default function RouteBox({ airportsInitialData }: LocalBoxProps) {
     indicatorSeparator: () => ({
       display: "none",
     }),
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     dropdownIndicator: (provided: any) => ({
       ...provided,
       color: "#fff",
@@ -128,12 +200,10 @@ export default function RouteBox({ airportsInitialData }: LocalBoxProps) {
         color: "#fff",
       },
     }),
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     menu: (provided: any) => ({
       ...provided,
       backgroundColor: "#101828",
     }),
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     option: (provided: any, state: any) => ({
       ...provided,
       backgroundColor: state.isSelected ? "#1967d2" : "#101828",
@@ -142,20 +212,18 @@ export default function RouteBox({ airportsInitialData }: LocalBoxProps) {
         backgroundColor: "#1967d2",
       },
     }),
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     singleValue: (provided: any) => ({
       ...provided,
       color: "#fff",
     }),
   };
 
-  // Componente customizado de opção do Select com logo e label
+  // Componente customizado de item da lista de opções do Select (com ícone)
   function ProgramOption(props: OptionProps<MileageProgramOption>) {
     const { data } = props;
     return (
       <components.Option {...props}>
         <div className="flex items-center">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={data.logoUrl} alt={data.label} className="w-5 h-5 mr-2" />
           {data.label}
         </div>
@@ -163,13 +231,12 @@ export default function RouteBox({ airportsInitialData }: LocalBoxProps) {
     );
   }
 
-  // Componente customizado para exibir o valor selecionado com logo
+  // Componente customizado para valor selecionado no Select (com ícone)
   function ProgramSingleValue(props: SingleValueProps<MileageProgramOption>) {
     const { data } = props;
     return (
       <components.SingleValue {...props}>
         <div className="flex items-center">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={data.logoUrl} alt={data.label} className="w-5 h-5 mr-2" />
           {data.label}
         </div>
@@ -177,25 +244,40 @@ export default function RouteBox({ airportsInitialData }: LocalBoxProps) {
     );
   }
 
-  // Adiciona uma cabine à lista de seleção
+  // Adiciona uma nova cabine à lista de seleção
   function addNewCabin(cabinKey: CabinKey) {
     const cabin = cabins[cabinKey];
 
+    // Remove a cabine da lista de disponíveis
     setCabinToShow((prev) => prev.filter((item) => item.key !== cabinKey));
+
+    // Adiciona a nova cabine e reordena conforme prioridade
     setCabinList((prev) => {
-      const newList = [...prev, cabin];
-      return newList.sort((a, b) => {
-        return cabinPriority[a.key] - cabinPriority[b.key];
-      });
+      const newList = [
+        ...prev,
+        {
+          key: cabin.key,
+          label: cabin.label,
+          code: cabin.code,
+          maximumPoints: 0,
+          passagePrice: Decimal(0),
+          cancellationPrice: Decimal(0),
+        },
+      ];
+      return newList.sort(
+        (a, b) => cabinPriority[a.key] - cabinPriority[b.key]
+      );
     });
+
+    // Reseta a seleção de cabine
     setCabinKey("");
   }
 
-  // Remove uma cabine da lista de seleção
+  // Remove uma cabine da lista adicionada
   function removeCabin(cabinKey: CabinKey) {
     const cabin = cabins[cabinKey];
 
-    // Remove a cabine da lista de seleção e ordena pela prioridade
+    // Remove da lista de cabines selecionadas
     setCabinList((prev) => {
       const newList = prev.filter((item) => item.key !== cabinKey);
       return newList.sort(
@@ -203,7 +285,7 @@ export default function RouteBox({ airportsInitialData }: LocalBoxProps) {
       );
     });
 
-    // Adiciona a cabine removida à lista de disponíveis e ordena pela prioridade
+    // Adiciona de volta à lista de cabines disponíveis
     setCabinToShow((prev) => {
       const newList = [...prev, cabin];
       return newList.sort(
@@ -212,18 +294,33 @@ export default function RouteBox({ airportsInitialData }: LocalBoxProps) {
     });
   }
 
+  // Atualiza um campo numérico de uma cabine específica
+  function updateCabinField(
+    cabinKey: CabinKey,
+    field: keyof Omit<CabinData, "key" | "label" | "code">,
+    value: number
+  ) {
+    setCabinList((prev) =>
+      prev.map((cabin) =>
+        cabin.key === cabinKey ? { ...cabin, [field]: value } : cabin
+      )
+    );
+  }
+
   return (
+    // Container principal centralizado na tela
     <div className="mt-10 flex items-center justify-center">
+      {/* Caixa visual do formulário */}
       <div className="bg-gray-800 w-fit p-5 rounded-2xl flex flex-col items-center justify-center text-white">
-        {/* Título principal */}
+        {/* Título da seção de criação de rota */}
         <h1 className="text-center font-bold text-3xl">Create New Route</h1>
 
-        {/* Formulário para criação da rota */}
+        {/* Formulário de criação de rota */}
         <form
           className="w-full mt-4 flex flex-col gap-4"
-          onSubmit={handleSubmitForm}
+          onSubmit={handleCreateRoute}
         >
-          {/* Seleção do primeiro aeroporto */}
+          {/* Campo de seleção do primeiro aeroporto */}
           <div>
             <label className="block mb-1 text-white">Airport 1</label>
             <select
@@ -234,9 +331,11 @@ export default function RouteBox({ airportsInitialData }: LocalBoxProps) {
               value={airportId1}
               required
             >
+              {/* Opção inicial desabilitada */}
               <option value={0} disabled className="text-gray-400">
                 Select an airport
               </option>
+              {/* Lista dinâmica de aeroportos disponíveis */}
               {airports.map((airport) => (
                 <option
                   value={airport.id}
@@ -249,7 +348,7 @@ export default function RouteBox({ airportsInitialData }: LocalBoxProps) {
             </select>
           </div>
 
-          {/* Seleção do segundo aeroporto */}
+          {/* Campo de seleção do segundo aeroporto */}
           <div>
             <label className="block mb-1 text-white">Airport 2</label>
             <select
@@ -260,9 +359,11 @@ export default function RouteBox({ airportsInitialData }: LocalBoxProps) {
               value={airportId2}
               required
             >
+              {/* Opção inicial desabilitada */}
               <option value={0} disabled className="text-gray-400">
                 Select an airport
               </option>
+              {/* Lista dinâmica de aeroportos disponíveis */}
               {airports.map((airport) => (
                 <option
                   value={airport.id}
@@ -275,10 +376,11 @@ export default function RouteBox({ airportsInitialData }: LocalBoxProps) {
             </select>
           </div>
 
-          {/* Seleção de cabines da rota */}
+          {/* Seção de seleção e adição de cabines à rota */}
           <div className="flex flex-col">
             <label className="block mb-1 text-white">Cabins</label>
             <div className="flex flex-row gap-2 items-center">
+              {/* Dropdown de cabines disponíveis */}
               <select
                 name="cabins"
                 id="cabins"
@@ -291,13 +393,14 @@ export default function RouteBox({ airportsInitialData }: LocalBoxProps) {
                 <option value="" disabled>
                   Select a cabin
                 </option>
+                {/* Lista de cabines que ainda podem ser adicionadas */}
                 {cabinToShow.map((cabin) => (
                   <option key={cabin.key} value={cabin.key}>
                     {cabin.label} - {cabin.code}
                   </option>
                 ))}
               </select>
-              {/* Botão para adicionar cabine */}
+              {/* Botão para adicionar nova cabine à lista */}
               <button
                 disabled={!cabinKey}
                 onClick={() => addNewCabin(cabinKey as CabinKey)}
@@ -307,75 +410,105 @@ export default function RouteBox({ airportsInitialData }: LocalBoxProps) {
               </button>
             </div>
 
-            {/* Lista de cabines adicionadas */}
+            {/* Lista visual de cabines já adicionadas */}
             {cabinList.length > 0 && (
-              <div className="flex flex-col pt-2 gap-2">
+              <div
+                className={`pt-2 gap-4 ${
+                  cabinList.length > 1
+                    ? "grid grid-cols-1 sm:grid-cols-2"
+                    : "flex flex-col"
+                }`}
+              >
+                {/* Para cada cabine adicionada, exibe um painel com seus campos */}
                 {cabinList.map((cabin) => (
                   <div
                     key={cabin.key}
                     className="w-full bg-gray-700 py-2 px-3 rounded-lg"
                   >
+                    {/* Cabeçalho com nome da cabine e botão de remoção */}
+                    <div className="flex flex-row justify-between items-center bg-gray-900 p-2 rounded mb-2">
+                      <label>
+                        {cabin.label} - {cabin.code}
+                      </label>
+                      {/* Botão para remover a cabine */}
+                      <button
+                        className="text-red-500 cursor-pointer"
+                        onClick={() => removeCabin(cabin.key as CabinKey)}
+                      >
+                        <FaTrash size={24} />
+                      </button>
+                    </div>
+
+                    {/* Campo de pontos máximos permitidos */}
                     <div>
-                      <div className="flex flex-row justify-between items-center bg-gray-900 p-2 rounded mb-2">
-                        <label>
-                          {cabin.label} - {cabin.code}
-                        </label>
-                        {/* Botão para remover cabine */}
-                        <button
-                          className="text-red-500 cursor-pointer"
-                          onClick={() => removeCabin(cabin.key as CabinKey)}
-                        >
-                          <FaTrash size={24} />
-                        </button>
-                      </div>
-                      {/* Campo para pontos máximos da rota */}
-                      <div>
-                        <label className="block mb-1 text-white">
-                          Maximum Points
-                        </label>
-                        <input
-                          id="aiport code"
-                          type="number"
-                          inputMode="decimal"
-                          value={maxPoints}
-                          onChange={(e) => setMaxPoints(Number(e.target.value))}
-                          className={inputs}
-                          required
-                          min={0}
-                        />
-                      </div>
-                      {/* Campo para pontos máximos da rota */}
-                      <div>
-                        <label className="block mb-1 text-white">
-                          Passage Price
-                        </label>
-                        <input
-                          id="aiport code"
-                          type="number"
-                          inputMode="decimal"
-                          value={maxPoints}
-                          onChange={(e) => setMaxPoints(Number(e.target.value))}
-                          className={inputs}
-                          required
-                          min={0}
-                        />
-                      </div>
-                      {/* Campo para pontos máximos da rota */}
-                      <div>
-                        <label className="block mb-1 text-white">
-                          Cancelation Price
-                        </label>
-                        <input
-                          id="aiport code"
-                          type="number"
-                          inputMode="decimal"
-                          value={maxPoints}
-                          onChange={(e) => setMaxPoints(Number(e.target.value))}
-                          className={inputs}
-                          required
-                          min={0}
-                        />
-                      </div>
+                      <label className="block mb-1 text-white">
+                        Maximum Mileage Program Points
+                      </label>
+                      <input
+                        id="Maximum Mileage Program Points"
+                        type="number"
+                        inputMode="decimal"
+                        step="1"
+                        value={cabin.maximumPoints}
+                        onChange={(e) =>
+                          updateCabinField(
+                            cabin.key,
+                            "maximumPoints",
+                            Number(e.target.value)
+                          )
+                        }
+                        className={inputs}
+                        required
+                        min={0}
+                      />
+                    </div>
+
+                    {/* Campo de preço da passagem */}
+                    <div>
+                      <label className="block mb-1 text-white">
+                        Sale Price
+                      </label>
+                      <input
+                        id="Sale Price"
+                        type="number"
+                        inputMode="decimal"
+                        step="0.01"
+                        value={Number(cabin.passagePrice)}
+                        onChange={(e) =>
+                          updateCabinField(
+                            cabin.key,
+                            "passagePrice",
+                            Number(e.target.value)
+                          )
+                        }
+                        className={inputs}
+                        required
+                        min={0}
+                      />
+                    </div>
+
+                    {/* Campo de taxa de cancelamento */}
+                    <div>
+                      <label className="block mb-1 text-white">
+                        Cancelation Fee
+                      </label>
+                      <input
+                        id="Cancelation Fee"
+                        type="number"
+                        inputMode="decimal"
+                        step="0.01"
+                        value={Number(cabin.cancellationPrice)}
+                        onChange={(e) =>
+                          updateCabinField(
+                            cabin.key,
+                            "cancellationPrice",
+                            Number(e.target.value)
+                          )
+                        }
+                        className={inputs}
+                        required
+                        min={0}
+                      />
                     </div>
                   </div>
                 ))}
@@ -383,7 +516,7 @@ export default function RouteBox({ airportsInitialData }: LocalBoxProps) {
             )}
           </div>
 
-          {/* Seleção do programa de milhagem */}
+          {/* Seção de seleção do programa de milhagem */}
           <div>
             <label className="block mb-1 text-white">Mileage Program</label>
             <Select<MileageProgramOption>
@@ -396,10 +529,31 @@ export default function RouteBox({ airportsInitialData }: LocalBoxProps) {
               }}
               styles={customStyles}
               defaultValue={options[0]}
+              value={mileageProgram}
+              onChange={(e) => setMileageProgram(e)}
             />
           </div>
 
-          {/* Botão para criar a rota */}
+          {/* Checkbox para permitir conexões na rota */}
+          <div className="cursor-pointer">
+            <input
+              id="EnableLayovers"
+              type="checkbox"
+              checked={enableLayovers}
+              onChange={(e) => {
+                setEnableLayovers(e.target.checked);
+              }}
+              className="mr-2"
+            />
+            <label
+              htmlFor="EnableLayovers"
+              className="text-white cursor-pointer"
+            >
+              Enable Layovers
+            </label>
+          </div>
+
+          {/* Botão de envio para criar a nova rota */}
           <button
             type="submit"
             className="bg-blue-500 w-full text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600"
@@ -408,7 +562,7 @@ export default function RouteBox({ airportsInitialData }: LocalBoxProps) {
           </button>
         </form>
 
-        {/* Link visual para ver as rotas (ainda não funcional) */}
+        {/* Link visual para ver rotas (placeholder) */}
         <label className="mt-2 w-full text-start text-blue-500 cursor-pointer hover:underline">
           See Routes
         </label>
