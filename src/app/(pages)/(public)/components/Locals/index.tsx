@@ -62,6 +62,7 @@ export default function Locals({ locals }: LocalsProps) {
           // Configura o comportamento responsivo-
           breakpoints={{
             0: { slidesPerView: 2 },
+            1000: { slidesPerView: 4 },
           }}
           // Atualiza os estados ao mudar de slide
           onSlideChange={(swiper) => {

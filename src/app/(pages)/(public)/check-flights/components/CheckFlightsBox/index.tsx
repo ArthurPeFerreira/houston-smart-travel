@@ -86,7 +86,7 @@ export default function CheckFlightsBox() {
           <div className="flex flex-row gap-10">
             <div>
               {/* Input para a quantidade de adultos */}
-              <label className="block mb-1 text-white">Adults:</label>
+              <label className="block mb-1 text-white">Seats:</label>
               <input
                 id="city"
                 type="number"
@@ -97,32 +97,8 @@ export default function CheckFlightsBox() {
                 min={1}
               />
             </div>
-            <div>
-              {/* Input para a quantidade de crianças */}
-              <label className="block mb-1 text-white">Child:</label>
-              <input
-                id="city"
-                type="number"
-                value={childs}
-                onChange={(e) => {setChilds(Number(e.target.value))}}
-                className={inputs}
-                required
-                min={0}
-              />
-            </div>
-            <div>
-              {/* Input para a quantidade de bebes */}
-              <label className="block mb-1 text-white">Infant:</label>
-              <input
-                id="city"
-                type="number"
-                value={infants}
-                onChange={(e) => {setInfants(Number(e.target.value))}}
-                className={inputs}
-                required
-                min={0}
-              />
-            </div>
+            
+           
           </div>
 
           {/* Botão de envio */}
