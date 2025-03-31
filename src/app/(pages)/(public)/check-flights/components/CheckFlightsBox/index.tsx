@@ -7,8 +7,6 @@ import { FaSpinner } from "react-icons/fa";
 export default function CheckFlightsBox() {
   const [loading, setLoading] = useState<boolean>(false);
   const [adults, setAdults] = useState<number>(1);
-  const [childs, setChilds] = useState<number>(0);
-  const [infants, setInfants] = useState<number>(0);
 
   const selects = "w-full bg-gray-300 p-2 rounded";
   const inputs = "w-20 bg-gray-300 p-2 rounded";

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // Indica que este é um componente do lado do cliente no Next.js (App Router)
 "use client";
 
@@ -27,7 +28,7 @@ import { mileagePrograms } from "@/lib/route/mileagePrograms";
 import Decimal from "decimal.js";
 
 // Tipagem do objeto de criação de rota
-import { CreateRouteType, RouteType } from "@/lib/route/types";
+import { CreateRouteType } from "@/lib/route/types";
 
 // Configurações e instância do toast para notificações
 import { toastConfigs } from "@/lib/toastify/toastify";
@@ -56,7 +57,6 @@ interface CabinData {
 // Tipagem das props recebidas pelo componente RouteBox
 interface RouteBoxProps {
   airportsInitialData: AirportType[] | undefined;
-  routesInitialData: RouteType[] | undefined;
 }
 
 // Componente principal responsável pela criação de rotas entre dois aeroportos
@@ -260,6 +260,7 @@ export default function RouteBox({ airportsInitialData }: RouteBoxProps) {
     return (
       <components.Option {...props}>
         <div className="flex items-center">
+          {/* eslint-disable @next/next/no-img-element */}
           <img src={data.logoUrl} alt={data.label} className="w-5 h-5 mr-2" />
           {data.label}
         </div>
@@ -273,6 +274,7 @@ export default function RouteBox({ airportsInitialData }: RouteBoxProps) {
     return (
       <components.SingleValue {...props}>
         <div className="flex items-center">
+          {/* eslint-disable @next/next/no-img-element */}
           <img src={data.logoUrl} alt={data.label} className="w-5 h-5 mr-2" />
           {data.label}
         </div>
