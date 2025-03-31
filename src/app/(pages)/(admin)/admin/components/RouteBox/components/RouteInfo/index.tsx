@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // Indica que este é um componente do lado do cliente no Next.js (App Router)
 "use client";
 
@@ -121,6 +122,7 @@ export default function RouteInfo({
                   <tr key={route.id} className="text-center bg-gray-600">
                     <td className={classItens}>
                       <div className="flex items-center justify-center">
+                        {/* eslint-disable @next/next/no-img-element */}
                         <img
                           src={mileagePrograms[route.mileageProgram].logoUrl}
                           alt={mileagePrograms[route.mileageProgram].key}

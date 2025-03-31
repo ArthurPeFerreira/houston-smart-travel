@@ -48,7 +48,7 @@ export default function Footer() {
                   href="https://api.whatsapp.com/send?phone=5511999999999&text=Ol%C3%A1%2C%20podemos%20conversar%3F"
                   className="text-blue-400 cursor-pointer hover:underline"
                 >
-                  {copiedEmail ? "Copied!" : "Click to Copy"}
+                  {copiedPhone ? "Copied!" : "Click to Copy"}
                 </a>
               </span>
             </div>

@@ -1,7 +1,7 @@
 import { getRouteByCache } from "@/lib/route/cacheRoute"; // Importa a função para buscar Rotas no cache
 import { deleteRoute } from "@/lib/route/deleteRoute"; // Importa a função para deletar um Rota
 import { editRoute } from "@/lib/route/editRoute"; // Importa a função para editar um Rota
-import { RouteType, EditRouteType } from "@/lib/route/types";
+import { EditRouteType } from "@/lib/route/types";
 import { NextRequest, NextResponse } from "next/server"; // Importa NextRequest e NextResponse do Next.js para manipulação de requisições e respostas
 
 // Função GET para buscar um Rota específico pelo ID
