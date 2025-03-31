@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { FaSpinner } from "react-icons/fa";
 
@@ -85,7 +86,7 @@ export default function CheckFlightsBox() {
           <div className="flex flex-row gap-10">
             <div>
               {/* Input para a quantidade de adultos */}
-              <label className="block mb-1 text-white">Adults:</label>
+              <label className="block mb-1 text-white">Seats:</label>
               <input
                 id="city"
                 type="number"
@@ -96,37 +97,14 @@ export default function CheckFlightsBox() {
                 min={1}
               />
             </div>
-            <div>
-              {/* Input para a quantidade de crianças */}
-              <label className="block mb-1 text-white">Child:</label>
-              <input
-                id="city"
-                type="number"
-                value={childs}
-                onChange={(e) => {setChilds(Number(e.target.value))}}
-                className={inputs}
-                required
-                min={0}
-              />
-            </div>
-            <div>
-              {/* Input para a quantidade de bebes */}
-              <label className="block mb-1 text-white">Infant:</label>
-              <input
-                id="city"
-                type="number"
-                value={infants}
-                onChange={(e) => {setInfants(Number(e.target.value))}}
-                className={inputs}
-                required
-                min={0}
-              />
-            </div>
+            
+           
           </div>
 
           {/* Botão de envio */}
           <div className="flex justify-center">
-
+            <Link href={"/search-flights"}>
+            
             <button
               type="submit"
               className="mt-4 w-fit bg-gray-300 flex items-center justify-center px-4 py-2 rounded cursor-pointer hover:bg-gray-400"
@@ -137,6 +115,7 @@ export default function CheckFlightsBox() {
                 "Check Availability"
               )}
             </button>
+            </Link>
           </div>
         </form>
       </div>

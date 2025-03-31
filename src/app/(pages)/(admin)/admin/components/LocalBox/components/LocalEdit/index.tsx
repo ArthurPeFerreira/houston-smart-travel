@@ -114,7 +114,7 @@ export default function LocalEdit({
           {/* Checkbox para indicar se o local está ativo */}
           <div className="mt-2 cursor-pointer">
             <input
-              id="PasswordChange"
+              id="active"
               type="checkbox"
               checked={active}
               onChange={(e) => {
@@ -123,7 +123,7 @@ export default function LocalEdit({
               className="mr-2"
             />
             <label
-              htmlFor="PasswordChange"
+              htmlFor="active"
               className="text-white cursor-pointer"
             >
               Active

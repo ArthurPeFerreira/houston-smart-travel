@@ -163,17 +163,17 @@ export default function UserTable() {
     <div className="mt-10 w-full flex items-center justify-center">
       <div className="bg-gray-800 w-full p-5 rounded-2xl flex flex-col items-center justify-center text-white">
             {/* Título e botão para criar usuário */}
-        <div className="relative w-full mb-5">
-              <h1 className="text-center font-bold text-3xl">Users Table</h1>
+        <div className="sm:relative flex flex-col items-center sm:justify-center w-full mb-5">
+              <h1 className="font-bold text-3xl mb-2 sm:mb-0">Users Table</h1>
               <button
                 onClick={() => setShowCreateUserModal(true)}
-                className="bg-green-500 py-2 px-3 rounded absolute right-0 top-0 cursor-pointer hover:bg-green-600"
+                className="bg-green-500 py-2 px-3 rounded w-fit sm:absolute sm:right-0 sm:top-0 cursor-pointer hover:bg-green-600"
               >
                 Create User
               </button>
             </div>
         {users ? (
-          <div className="w-full flex flex-col items-center justify-center text-white">      
+          <div className="w-full flex flex-col overflow-x-auto items-center justify-center text-white">      
             {/* Tabela de usuários */}
             <table className="min-w-full border-collapse text-sm md:text-lg">
               <thead>

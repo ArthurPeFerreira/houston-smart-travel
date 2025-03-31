@@ -1,0 +1,17 @@
+.fc-daygrid-day-frame,
+.fc-daygrid-day-bottom,
+.fc-multimonth-title,
+.fc-scrollgrid-sync-inner
+{
+  background-color: #141414;
+}
+
+.fc-col-header-cell-cushion,
+.fc-multimonth-title
+{
+    color: #FFFFFF;
+}
+
+.fc-daygrid-day-number {
+    color: #FFFFFF;
+}

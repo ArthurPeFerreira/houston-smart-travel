@@ -142,6 +142,29 @@ exports.Prisma.LocalsScalarFieldEnum = {
   active: 'active'
 };
 
+exports.Prisma.RouteScalarFieldEnum = {
+  id: 'id',
+  mileageProgram: 'mileageProgram',
+  enableLayovers: 'enableLayovers',
+  active: 'active'
+};
+
+exports.Prisma.CabinsRouteScalarFieldEnum = {
+  id: 'id',
+  routeId: 'routeId',
+  key: 'key',
+  maximumPoints: 'maximumPoints',
+  bagsAmount: 'bagsAmount',
+  passagePrice: 'passagePrice',
+  cancellationPrice: 'cancellationPrice'
+};
+
+exports.Prisma.AirportsRouteScalarFieldEnum = {
+  id: 'id',
+  airportId: 'airportId',
+  routeId: 'routeId'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -161,7 +184,10 @@ exports.Prisma.NullsOrder = {
 exports.Prisma.ModelName = {
   Users: 'Users',
   Airports: 'Airports',
-  Locals: 'Locals'
+  Locals: 'Locals',
+  Route: 'Route',
+  CabinsRoute: 'CabinsRoute',
+  AirportsRoute: 'AirportsRoute'
 };
 
 /**

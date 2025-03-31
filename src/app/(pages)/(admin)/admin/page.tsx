@@ -30,14 +30,16 @@ export default async function Admin() {
       <Navbar />
 
       <div className="w-11/12 grid grid-cols-1 items-center justify-center gap-4 lg:flex lg:flex-row">
-        {/* Componente AirportBox exibido na página */}
-        <AirportBox airportsInitialData={airports} />
+        <div>
+          {/* Componente AirportBox exibido na página */}
+          <AirportBox airportsInitialData={airports} />
+
+          {/* Componente LocalBox exibido na página */}
+          <LocalBox airportsInitialData={airports} localsInitialData={locals} />
+        </div>
 
         {/* Componente RouteBox exibido na página */}
         <RouteBox airportsInitialData={airports} />
-
-        {/* Componente LocalBox exibido na página */}
-        <LocalBox airportsInitialData={airports} localsInitialData={locals} />
       </div>
 
       {/* Componente UserTable exibido na página */}
