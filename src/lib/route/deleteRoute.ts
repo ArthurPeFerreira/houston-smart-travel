@@ -34,6 +34,7 @@ export async function deleteRoute(
             maximumPoints: true,
             passagePrice: true,
             cancellationPrice: true,
+            bagsAmount: true,
           },
           orderBy: { id: "asc" },
         },

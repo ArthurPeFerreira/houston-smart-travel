@@ -1,4 +1,4 @@
-import { Prisma } from "../../../prisma/generated";
+import Decimal from "decimal.js";
 import { AirportType } from "../airport/types";
 
 export interface RouteType {
@@ -14,17 +14,13 @@ export interface CabinsType {
   id: number;
   key: string;
   maximumPoints: number;
-  passagePrice: Prisma.Decimal;
-  cancellationPrice: Prisma.Decimal;
+  bagsAmount: number;
+  passagePrice: Decimal;
+  cancellationPrice: Decimal;
 }
 
 export interface CreateRouteType {
-  cabins: {
-    key: string;
-    maximumPoints: number;
-    passagePrice: Prisma.Decimal;
-    cancellationPrice: Prisma.Decimal;
-  }[];
+  cabins: Omit<CabinsType, "id">[];
   airportsId: number[];
   mileageProgram: string;
   enableLayovers: boolean;
@@ -32,12 +28,7 @@ export interface CreateRouteType {
 
 export interface EditRouteType {
   id: number;
-  cabins: {
-    key: string;
-    maximumPoints: number;
-    passagePrice: Prisma.Decimal;
-    cancellationPrice: Prisma.Decimal;
-  }[];
+  cabins: Omit<CabinsType, "id">[];
   mileageProgram: string;
   enableLayovers: boolean;
   active: boolean;

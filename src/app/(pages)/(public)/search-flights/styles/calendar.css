@@ -1,14 +1,20 @@
+:root{
+  --month-per-row: 4;
+  --spaces-per-month: calc(var(--month-per-row) - 1);
+}
+
 .fc-multimonth {
   display: flex;
   flex-wrap: wrap; /* Permite quebrar a linha */
   gap: 1rem;
   justify-content: center; /* Centraliza os itens horizontalmente */
   width: 100%;
+  height: max-content;
 }
 
 /* Define a largura para que caibam 3 itens por linha */
 .fc-multimonth-month {
-  flex: 0 0 calc((100% - 2rem) / 3); /* Considerando 2 gaps de 1rem em cada linha */
+  flex: 0 0 calc((100% - (var(--spaces-per-month) * 1rem)) / var(--month-per-row));
   border: 1px solid #e5e7eb;
   border-radius: 0.5rem;
 }

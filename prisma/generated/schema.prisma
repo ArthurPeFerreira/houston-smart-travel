@@ -96,6 +96,7 @@ model CabinsRoute {
   routeId           Int // Chave estrangeira para rota
   key               String // Identificador da cabine
   maximumPoints     Int // Máximo de pontos permitidos
+  bagsAmount        Int // Máximo de bagagens permitidos
   passagePrice      Decimal // Preço da passagem
   cancellationPrice Decimal // Preço de cancelamento
 
@@ -121,5 +122,5 @@ model AirportsRoute {
   // Relação com a tabela Route
   route Route @relation("Route", fields: [routeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  @@index([airportId, routeId], name: "IndexAirportsRoute") // Índice composto por airportId e routeId
+  @@index([routeId, airportId], name: "IndexAirportsRoute") // Índice composto por airportId e routeId
 }

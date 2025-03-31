@@ -5794,6 +5794,7 @@ export namespace Prisma {
     id: number | null
     routeId: number | null
     maximumPoints: number | null
+    bagsAmount: number | null
     passagePrice: Decimal | null
     cancellationPrice: Decimal | null
   }
@@ -5802,6 +5803,7 @@ export namespace Prisma {
     id: number | null
     routeId: number | null
     maximumPoints: number | null
+    bagsAmount: number | null
     passagePrice: Decimal | null
     cancellationPrice: Decimal | null
   }
@@ -5811,6 +5813,7 @@ export namespace Prisma {
     routeId: number | null
     key: string | null
     maximumPoints: number | null
+    bagsAmount: number | null
     passagePrice: Decimal | null
     cancellationPrice: Decimal | null
   }
@@ -5820,6 +5823,7 @@ export namespace Prisma {
     routeId: number | null
     key: string | null
     maximumPoints: number | null
+    bagsAmount: number | null
     passagePrice: Decimal | null
     cancellationPrice: Decimal | null
   }
@@ -5829,6 +5833,7 @@ export namespace Prisma {
     routeId: number
     key: number
     maximumPoints: number
+    bagsAmount: number
     passagePrice: number
     cancellationPrice: number
     _all: number
@@ -5839,6 +5844,7 @@ export namespace Prisma {
     id?: true
     routeId?: true
     maximumPoints?: true
+    bagsAmount?: true
     passagePrice?: true
     cancellationPrice?: true
   }
@@ -5847,6 +5853,7 @@ export namespace Prisma {
     id?: true
     routeId?: true
     maximumPoints?: true
+    bagsAmount?: true
     passagePrice?: true
     cancellationPrice?: true
   }
@@ -5856,6 +5863,7 @@ export namespace Prisma {
     routeId?: true
     key?: true
     maximumPoints?: true
+    bagsAmount?: true
     passagePrice?: true
     cancellationPrice?: true
   }
@@ -5865,6 +5873,7 @@ export namespace Prisma {
     routeId?: true
     key?: true
     maximumPoints?: true
+    bagsAmount?: true
     passagePrice?: true
     cancellationPrice?: true
   }
@@ -5874,6 +5883,7 @@ export namespace Prisma {
     routeId?: true
     key?: true
     maximumPoints?: true
+    bagsAmount?: true
     passagePrice?: true
     cancellationPrice?: true
     _all?: true
@@ -5970,6 +5980,7 @@ export namespace Prisma {
     routeId: number
     key: string
     maximumPoints: number
+    bagsAmount: number
     passagePrice: Decimal
     cancellationPrice: Decimal
     _count: CabinsRouteCountAggregateOutputType | null
@@ -5998,6 +6009,7 @@ export namespace Prisma {
     routeId?: boolean
     key?: boolean
     maximumPoints?: boolean
+    bagsAmount?: boolean
     passagePrice?: boolean
     cancellationPrice?: boolean
     route?: boolean | RouteDefaultArgs<ExtArgs>
@@ -6008,6 +6020,7 @@ export namespace Prisma {
     routeId?: boolean
     key?: boolean
     maximumPoints?: boolean
+    bagsAmount?: boolean
     passagePrice?: boolean
     cancellationPrice?: boolean
     route?: boolean | RouteDefaultArgs<ExtArgs>
@@ -6018,6 +6031,7 @@ export namespace Prisma {
     routeId?: boolean
     key?: boolean
     maximumPoints?: boolean
+    bagsAmount?: boolean
     passagePrice?: boolean
     cancellationPrice?: boolean
     route?: boolean | RouteDefaultArgs<ExtArgs>
@@ -6028,11 +6042,12 @@ export namespace Prisma {
     routeId?: boolean
     key?: boolean
     maximumPoints?: boolean
+    bagsAmount?: boolean
     passagePrice?: boolean
     cancellationPrice?: boolean
   }
 
-  export type CabinsRouteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "routeId" | "key" | "maximumPoints" | "passagePrice" | "cancellationPrice", ExtArgs["result"]["cabinsRoute"]>
+  export type CabinsRouteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "routeId" | "key" | "maximumPoints" | "bagsAmount" | "passagePrice" | "cancellationPrice", ExtArgs["result"]["cabinsRoute"]>
   export type CabinsRouteInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     route?: boolean | RouteDefaultArgs<ExtArgs>
   }
@@ -6053,6 +6068,7 @@ export namespace Prisma {
       routeId: number
       key: string
       maximumPoints: number
+      bagsAmount: number
       passagePrice: Prisma.Decimal
       cancellationPrice: Prisma.Decimal
     }, ExtArgs["result"]["cabinsRoute"]>
@@ -6483,6 +6499,7 @@ export namespace Prisma {
     readonly routeId: FieldRef<"CabinsRoute", 'Int'>
     readonly key: FieldRef<"CabinsRoute", 'String'>
     readonly maximumPoints: FieldRef<"CabinsRoute", 'Int'>
+    readonly bagsAmount: FieldRef<"CabinsRoute", 'Int'>
     readonly passagePrice: FieldRef<"CabinsRoute", 'Decimal'>
     readonly cancellationPrice: FieldRef<"CabinsRoute", 'Decimal'>
   }
@@ -8044,6 +8061,7 @@ export namespace Prisma {
     routeId: 'routeId',
     key: 'key',
     maximumPoints: 'maximumPoints',
+    bagsAmount: 'bagsAmount',
     passagePrice: 'passagePrice',
     cancellationPrice: 'cancellationPrice'
   };
@@ -8408,6 +8426,7 @@ export namespace Prisma {
     routeId?: IntFilter<"CabinsRoute"> | number
     key?: StringFilter<"CabinsRoute"> | string
     maximumPoints?: IntFilter<"CabinsRoute"> | number
+    bagsAmount?: IntFilter<"CabinsRoute"> | number
     passagePrice?: DecimalFilter<"CabinsRoute"> | Decimal | DecimalJsLike | number | string
     cancellationPrice?: DecimalFilter<"CabinsRoute"> | Decimal | DecimalJsLike | number | string
     route?: XOR<RouteScalarRelationFilter, RouteWhereInput>
@@ -8418,6 +8437,7 @@ export namespace Prisma {
     routeId?: SortOrder
     key?: SortOrder
     maximumPoints?: SortOrder
+    bagsAmount?: SortOrder
     passagePrice?: SortOrder
     cancellationPrice?: SortOrder
     route?: RouteOrderByWithRelationInput
@@ -8432,6 +8452,7 @@ export namespace Prisma {
     routeId?: IntFilter<"CabinsRoute"> | number
     key?: StringFilter<"CabinsRoute"> | string
     maximumPoints?: IntFilter<"CabinsRoute"> | number
+    bagsAmount?: IntFilter<"CabinsRoute"> | number
     passagePrice?: DecimalFilter<"CabinsRoute"> | Decimal | DecimalJsLike | number | string
     cancellationPrice?: DecimalFilter<"CabinsRoute"> | Decimal | DecimalJsLike | number | string
     route?: XOR<RouteScalarRelationFilter, RouteWhereInput>
@@ -8442,6 +8463,7 @@ export namespace Prisma {
     routeId?: SortOrder
     key?: SortOrder
     maximumPoints?: SortOrder
+    bagsAmount?: SortOrder
     passagePrice?: SortOrder
     cancellationPrice?: SortOrder
     _count?: CabinsRouteCountOrderByAggregateInput
@@ -8459,6 +8481,7 @@ export namespace Prisma {
     routeId?: IntWithAggregatesFilter<"CabinsRoute"> | number
     key?: StringWithAggregatesFilter<"CabinsRoute"> | string
     maximumPoints?: IntWithAggregatesFilter<"CabinsRoute"> | number
+    bagsAmount?: IntWithAggregatesFilter<"CabinsRoute"> | number
     passagePrice?: DecimalWithAggregatesFilter<"CabinsRoute"> | Decimal | DecimalJsLike | number | string
     cancellationPrice?: DecimalWithAggregatesFilter<"CabinsRoute"> | Decimal | DecimalJsLike | number | string
   }
@@ -8743,6 +8766,7 @@ export namespace Prisma {
   export type CabinsRouteCreateInput = {
     key: string
     maximumPoints: number
+    bagsAmount: number
     passagePrice: Decimal | DecimalJsLike | number | string
     cancellationPrice: Decimal | DecimalJsLike | number | string
     route: RouteCreateNestedOneWithoutCabinsInput
@@ -8753,6 +8777,7 @@ export namespace Prisma {
     routeId: number
     key: string
     maximumPoints: number
+    bagsAmount: number
     passagePrice: Decimal | DecimalJsLike | number | string
     cancellationPrice: Decimal | DecimalJsLike | number | string
   }
@@ -8760,6 +8785,7 @@ export namespace Prisma {
   export type CabinsRouteUpdateInput = {
     key?: StringFieldUpdateOperationsInput | string
     maximumPoints?: IntFieldUpdateOperationsInput | number
+    bagsAmount?: IntFieldUpdateOperationsInput | number
     passagePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     cancellationPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     route?: RouteUpdateOneRequiredWithoutCabinsNestedInput
@@ -8770,6 +8796,7 @@ export namespace Prisma {
     routeId?: IntFieldUpdateOperationsInput | number
     key?: StringFieldUpdateOperationsInput | string
     maximumPoints?: IntFieldUpdateOperationsInput | number
+    bagsAmount?: IntFieldUpdateOperationsInput | number
     passagePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     cancellationPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
   }
@@ -8779,6 +8806,7 @@ export namespace Prisma {
     routeId: number
     key: string
     maximumPoints: number
+    bagsAmount: number
     passagePrice: Decimal | DecimalJsLike | number | string
     cancellationPrice: Decimal | DecimalJsLike | number | string
   }
@@ -8786,6 +8814,7 @@ export namespace Prisma {
   export type CabinsRouteUpdateManyMutationInput = {
     key?: StringFieldUpdateOperationsInput | string
     maximumPoints?: IntFieldUpdateOperationsInput | number
+    bagsAmount?: IntFieldUpdateOperationsInput | number
     passagePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     cancellationPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
   }
@@ -8795,6 +8824,7 @@ export namespace Prisma {
     routeId?: IntFieldUpdateOperationsInput | number
     key?: StringFieldUpdateOperationsInput | string
     maximumPoints?: IntFieldUpdateOperationsInput | number
+    bagsAmount?: IntFieldUpdateOperationsInput | number
     passagePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     cancellationPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
   }
@@ -9151,6 +9181,7 @@ export namespace Prisma {
     routeId?: SortOrder
     key?: SortOrder
     maximumPoints?: SortOrder
+    bagsAmount?: SortOrder
     passagePrice?: SortOrder
     cancellationPrice?: SortOrder
   }
@@ -9159,6 +9190,7 @@ export namespace Prisma {
     id?: SortOrder
     routeId?: SortOrder
     maximumPoints?: SortOrder
+    bagsAmount?: SortOrder
     passagePrice?: SortOrder
     cancellationPrice?: SortOrder
   }
@@ -9168,6 +9200,7 @@ export namespace Prisma {
     routeId?: SortOrder
     key?: SortOrder
     maximumPoints?: SortOrder
+    bagsAmount?: SortOrder
     passagePrice?: SortOrder
     cancellationPrice?: SortOrder
   }
@@ -9177,6 +9210,7 @@ export namespace Prisma {
     routeId?: SortOrder
     key?: SortOrder
     maximumPoints?: SortOrder
+    bagsAmount?: SortOrder
     passagePrice?: SortOrder
     cancellationPrice?: SortOrder
   }
@@ -9185,6 +9219,7 @@ export namespace Prisma {
     id?: SortOrder
     routeId?: SortOrder
     maximumPoints?: SortOrder
+    bagsAmount?: SortOrder
     passagePrice?: SortOrder
     cancellationPrice?: SortOrder
   }
@@ -9801,6 +9836,7 @@ export namespace Prisma {
   export type CabinsRouteCreateWithoutRouteInput = {
     key: string
     maximumPoints: number
+    bagsAmount: number
     passagePrice: Decimal | DecimalJsLike | number | string
     cancellationPrice: Decimal | DecimalJsLike | number | string
   }
@@ -9809,6 +9845,7 @@ export namespace Prisma {
     id?: number
     key: string
     maximumPoints: number
+    bagsAmount: number
     passagePrice: Decimal | DecimalJsLike | number | string
     cancellationPrice: Decimal | DecimalJsLike | number | string
   }
@@ -9863,6 +9900,7 @@ export namespace Prisma {
     routeId?: IntFilter<"CabinsRoute"> | number
     key?: StringFilter<"CabinsRoute"> | string
     maximumPoints?: IntFilter<"CabinsRoute"> | number
+    bagsAmount?: IntFilter<"CabinsRoute"> | number
     passagePrice?: DecimalFilter<"CabinsRoute"> | Decimal | DecimalJsLike | number | string
     cancellationPrice?: DecimalFilter<"CabinsRoute"> | Decimal | DecimalJsLike | number | string
   }
@@ -10029,6 +10067,7 @@ export namespace Prisma {
     id?: number
     key: string
     maximumPoints: number
+    bagsAmount: number
     passagePrice: Decimal | DecimalJsLike | number | string
     cancellationPrice: Decimal | DecimalJsLike | number | string
   }
@@ -10050,6 +10089,7 @@ export namespace Prisma {
   export type CabinsRouteUpdateWithoutRouteInput = {
     key?: StringFieldUpdateOperationsInput | string
     maximumPoints?: IntFieldUpdateOperationsInput | number
+    bagsAmount?: IntFieldUpdateOperationsInput | number
     passagePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     cancellationPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
   }
@@ -10058,6 +10098,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     key?: StringFieldUpdateOperationsInput | string
     maximumPoints?: IntFieldUpdateOperationsInput | number
+    bagsAmount?: IntFieldUpdateOperationsInput | number
     passagePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     cancellationPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
   }
@@ -10066,6 +10107,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     key?: StringFieldUpdateOperationsInput | string
     maximumPoints?: IntFieldUpdateOperationsInput | number
+    bagsAmount?: IntFieldUpdateOperationsInput | number
     passagePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     cancellationPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
   }

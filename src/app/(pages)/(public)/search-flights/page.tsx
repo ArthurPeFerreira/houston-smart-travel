@@ -30,18 +30,18 @@ export default function Search() {
         <h1 className="text-[#141414] text-xl [text-align:justify]">
           You have chosen the Business cabin, your reservation includes the
           option to check up to 2 bags at no extra cost. The ticket price is
-          R$2,500.00. Please note that in the event of a cancellation, a fee of
-          R$500.00 will be applied according to our terms of services.
+          $2,500.00. Please note that in the event of a cancellation, a fee of
+          $500.00 will be applied according to our terms of services.
         </h1>
         <div className="flex flex-row gap-3 font-bold mt-4">
           <div className="flex flex-row items-center gap-2">
-            <div className="bg-blue-400 w-fit p-6 relative">
+            <div className="bg-blue-400 w-fit p-5 relative">
               <label className="absolute right-1 top-0.5">19</label>
             </div>
             <div>Direct flight</div>
           </div>
           <div className="flex flex-row items-center gap-2">
-            <div className="bg-green-400 w-fit p-6 relative">
+            <div className="bg-green-400 w-fit p-5 relative">
               <label className="absolute right-1 top-0.5">19</label>
             </div>
             <div>Flight with connection(s)</div>

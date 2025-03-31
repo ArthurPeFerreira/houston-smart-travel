@@ -15,10 +15,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-[#E1E1E1] min-h-screen flex flex-col overflow-y-auto scrollbar scrollbar-thumb-gray-600 scrollbar-track-gray-200">
-        <Navbar />
+        {/* <Navbar /> */}
         {/* Conteúdo da página */}
         {children}
-        <Footer />
+        {/* <Footer /> */}
       </body>
     </html>
   );

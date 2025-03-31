@@ -26,6 +26,7 @@ export async function editRoute(
           maximumPoints: cabin.maximumPoints,
           passagePrice: cabin.passagePrice,
           cancellationPrice: cabin.cancellationPrice,
+          bagsAmount: cabin.bagsAmount,
         },
       });
     }
@@ -38,7 +39,7 @@ export async function editRoute(
       data: {
         active: routeInfo.active,
         mileageProgram: routeInfo.mileageProgram,
-        enableLayovers: routeInfo.enableLayovers
+        enableLayovers: routeInfo.enableLayovers,
       },
       // Inclui os relacionamentos com aeroportos e cabines para retorno completo
       include: {
@@ -53,6 +54,7 @@ export async function editRoute(
             maximumPoints: true,
             passagePrice: true,
             cancellationPrice: true,
+            bagsAmount: true,
           },
           orderBy: { id: "asc" },
         },

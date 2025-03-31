@@ -41,6 +41,7 @@ export async function createRoute(
         routeId: routeCreated.id,
         key: cabin.key,
         maximumPoints: cabin.maximumPoints,
+        bagsAmount: cabin.bagsAmount,
         passagePrice: cabin.passagePrice,
         cancellationPrice: cabin.cancellationPrice,
       };

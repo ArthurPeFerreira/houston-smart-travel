@@ -18,7 +18,7 @@ import { AirportType } from "@/lib/airport/types";
 import { Cabin, CabinKey, cabinPriority, cabins } from "@/lib/route/cabins";
 
 // Ícones para ações visuais
-import { FaPlus, FaTrash } from "react-icons/fa";
+import { FaPlus, FaSpinner, FaTrash } from "react-icons/fa";
 
 // Lista de programas de milhagem
 import { mileagePrograms } from "@/lib/route/mileagePrograms";
@@ -27,12 +27,13 @@ import { mileagePrograms } from "@/lib/route/mileagePrograms";
 import Decimal from "decimal.js";
 
 // Tipagem do objeto de criação de rota
-import { CreateRouteType } from "@/lib/route/types";
+import { CreateRouteType, RouteType } from "@/lib/route/types";
 
 // Configurações e instância do toast para notificações
 import { toastConfigs } from "@/lib/toastify/toastify";
 import { toast } from "react-toastify";
 import { api } from "@/lib/api/api";
+import RouteInfo from "./components/RouteInfo";
 
 // Tipagem para opções do Select que representam os programas de milhagem
 interface MileageProgramOption {
@@ -47,17 +48,19 @@ interface CabinData {
   label: string;
   code: "Y" | "J" | "F" | "W";
   maximumPoints: number;
+  bagsAmount: number;
   passagePrice: Decimal;
   cancellationPrice: Decimal;
 }
 
 // Tipagem das props recebidas pelo componente RouteBox
-interface LocalBoxProps {
+interface RouteBoxProps {
   airportsInitialData: AirportType[] | undefined;
+  routesInitialData: RouteType[] | undefined;
 }
 
 // Componente principal responsável pela criação de rotas entre dois aeroportos
-export default function RouteBox({ airportsInitialData }: LocalBoxProps) {
+export default function RouteBox({ airportsInitialData }: RouteBoxProps) {
   // Classe de estilo aplicada aos inputs do formulário
   const inputs =
     "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white";
@@ -72,9 +75,8 @@ export default function RouteBox({ airportsInitialData }: LocalBoxProps) {
   );
 
   // Estado para armazenar a lista de aeroportos disponíveis
-  const [airports, setAirports] = useState<AirportType[]>(
-    airportsInitialData ? airportsInitialData : []
-  );
+  const airports = airportsInitialData ? airportsInitialData : [];
+  const [airport2Select, setAirport2Select] = useState<AirportType[]>([]);
 
   // Estados para armazenar os IDs dos dois aeroportos selecionados
   const [airportId1, setAirportId1] = useState<number>(0);
@@ -97,6 +99,12 @@ export default function RouteBox({ airportsInitialData }: LocalBoxProps) {
 
   // Estado que define se a rota permitirá conexões (layovers)
   const [enableLayovers, setEnableLayovers] = useState<boolean>(false);
+
+  const [loading, setLoading] = useState<boolean>(false);
+
+
+  const [loadingRoutesInfoModal, setLoadingRoutesInfoModal] = useState<boolean>(true);
+  const [showRoutesInfoModal, setShowRoutesInfoModal] = useState<boolean>(false);
 
   // Efeito de montagem (poderá ser utilizado futuramente para buscar dados externos)
   useEffect(() => {
@@ -148,6 +156,7 @@ export default function RouteBox({ airportsInitialData }: LocalBoxProps) {
         return {
           key: cabin.key,
           maximumPoints: cabin.maximumPoints,
+          bagsAmount: cabin.bagsAmount,
           passagePrice: cabin.passagePrice,
           cancellationPrice: cabin.cancellationPrice,
         };
@@ -155,6 +164,8 @@ export default function RouteBox({ airportsInitialData }: LocalBoxProps) {
     };
 
     try {
+      setLoading(true);
+
       // Tenta criar a rota via POST
       await api.post("api/admin/route", route);
 
@@ -164,6 +175,31 @@ export default function RouteBox({ airportsInitialData }: LocalBoxProps) {
       // Tenta extrair mensagem de erro do servidor
       const errorMessage =
         error?.response?.data?.error || "Failed to create route.";
+
+      // Exibe mensagem de erro
+      toast.error(errorMessage, toastConfigs);
+    } finally {
+      setAirportId1(0);
+      setAirportId2(0);
+      setAirport2Select([]);
+      setEnableLayovers(false);
+      setLoading(false);
+    }
+  }
+
+  async function handleSelectAirport1(id: number) {
+    try {
+      setAirport2Select([]);
+
+      setAirportId1(id);
+
+      const data = await api.get(`/api/admin/route/filter/${id}/no-route`);
+
+      setAirport2Select(data.data);
+    } catch (error: any) {
+      // Tenta extrair mensagem de erro do servidor
+      const errorMessage =
+        error?.response?.data?.error || "Failed to get airports.";
 
       // Exibe mensagem de erro
       toast.error(errorMessage, toastConfigs);
@@ -260,6 +296,7 @@ export default function RouteBox({ airportsInitialData }: LocalBoxProps) {
           label: cabin.label,
           code: cabin.code,
           maximumPoints: 0,
+          bagsAmount: 0,
           passagePrice: Decimal(0),
           cancellationPrice: Decimal(0),
         },
@@ -327,7 +364,7 @@ export default function RouteBox({ airportsInitialData }: LocalBoxProps) {
               name="airport1"
               id="airport1"
               className={`${inputs} invalid:text-gray-500`}
-              onChange={(e) => setAirportId1(Number(e.target.value))}
+              onChange={(e) => handleSelectAirport1(Number(e.target.value))}
               value={airportId1}
               required
             >
@@ -354,9 +391,10 @@ export default function RouteBox({ airportsInitialData }: LocalBoxProps) {
             <select
               name="airport2"
               id="airport2"
-              className={`${inputs} invalid:text-gray-500`}
+              className={`${inputs} invalid:text-gray-500 disabled:text-gray-500 disabled:cursor-not-allowed`}
               onChange={(e) => setAirportId2(Number(e.target.value))}
               value={airportId2}
+              disabled={airport2Select.length === 0}
               required
             >
               {/* Opção inicial desabilitada */}
@@ -364,7 +402,7 @@ export default function RouteBox({ airportsInitialData }: LocalBoxProps) {
                 Select an airport
               </option>
               {/* Lista dinâmica de aeroportos disponíveis */}
-              {airports.map((airport) => (
+              {airport2Select.map((airport) => (
                 <option
                   value={airport.id}
                   key={airport.id}
@@ -463,10 +501,34 @@ export default function RouteBox({ airportsInitialData }: LocalBoxProps) {
                       />
                     </div>
 
+                    {/* Campo da quantidade de Bagagens */}
+                    <div>
+                      <label className="block mb-1 text-white">
+                        Bags Amount
+                      </label>
+                      <input
+                        id="Bags Amount"
+                        type="number"
+                        inputMode="decimal"
+                        step="1"
+                        value={Number(cabin.bagsAmount)}
+                        onChange={(e) =>
+                          updateCabinField(
+                            cabin.key,
+                            "bagsAmount",
+                            Number(e.target.value)
+                          )
+                        }
+                        className={inputs}
+                        required
+                        min={0}
+                      />
+                    </div>
+
                     {/* Campo de preço da passagem */}
                     <div>
                       <label className="block mb-1 text-white">
-                        Sale Price
+                        Sale Price (USD)
                       </label>
                       <input
                         id="Sale Price"
@@ -490,7 +552,7 @@ export default function RouteBox({ airportsInitialData }: LocalBoxProps) {
                     {/* Campo de taxa de cancelamento */}
                     <div>
                       <label className="block mb-1 text-white">
-                        Cancelation Fee
+                        Cancelation Fee (USD)
                       </label>
                       <input
                         id="Cancelation Fee"
@@ -556,16 +618,33 @@ export default function RouteBox({ airportsInitialData }: LocalBoxProps) {
           {/* Botão de envio para criar a nova rota */}
           <button
             type="submit"
-            className="bg-blue-500 w-full text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600"
+            className="bg-blue-500 w-full text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600 flex justify-center items-center"
           >
-            Create
+            {loading ? (
+              <FaSpinner className="animate-spin" size={24} />
+            ) : (
+              "Create"
+            )}
           </button>
         </form>
 
-        {/* Link visual para ver rotas (placeholder) */}
-        <label className="mt-2 w-full text-start text-blue-500 cursor-pointer hover:underline">
-          See Routes
-        </label>
+        {/* Link para visualizar rotas cadastrados */}
+        <button
+          className="mt-2 w-full text-start text-blue-500 cursor-pointer hover:underline"
+          onClick={() => {
+            setShowRoutesInfoModal(true);
+          }}
+        >
+         See Routes
+        </button>
+
+        <RouteInfo 
+        airports={airports} 
+        isOpen={showRoutesInfoModal}
+        onClose={() => setShowRoutesInfoModal(false)} 
+        isLoading={loadingRoutesInfoModal}
+        setIsLoading={(value:boolean) => setLoadingRoutesInfoModal(value)}
+        />
       </div>
     </div>
   );

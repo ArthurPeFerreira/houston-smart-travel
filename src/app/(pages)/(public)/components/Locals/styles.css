@@ -49,3 +49,8 @@ opacity: 1;
 .swiper-pagination-bullet-active {
 background: #333;
 }
+
+.swiper-slide{
+  display: flex;
+  justify-items: center;
+}

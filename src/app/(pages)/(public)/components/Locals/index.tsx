@@ -42,7 +42,7 @@ export default function Locals({ locals }: LocalsProps) {
           // Define os módulos que serão utilizados no Swiper
           modules={[Navigation, Pagination, Autoplay]}
           // Configura a paginação automática
-          autoplay={{ delay: 5000, disableOnInteraction: false }}
+          autoplay={{ delay: 30000, disableOnInteraction: false }}
           // Configura a navegação personalizada com botões externos
           navigation={{
             nextEl: ".custom-next",
@@ -54,14 +54,14 @@ export default function Locals({ locals }: LocalsProps) {
             clickable: true,
           }}
           // Centraliza os slides
-          centeredSlides={false}
+          centeredSlides={true}
+          // Ficar em Loop
+          loop={true}
           // Ajusta o espaço entre slides
           spaceBetween={10}
           // Configura o comportamento responsivo-
           breakpoints={{
-            480: { slidesPerView: 2 },
-            690: { slidesPerView: 3 },
-            900: { slidesPerView: 4 },
+            0: { slidesPerView: 2 },
           }}
           // Atualiza os estados ao mudar de slide
           onSlideChange={(swiper) => {
@@ -75,7 +75,7 @@ export default function Locals({ locals }: LocalsProps) {
                 key={local.id}
                 className="w-fit px-2"
               >
-                <div className="xl:w-[300px] xl:h-[500px] w-[210px] h-[350px] relative">
+                <div className="xl:w-[300px] xl:h-[250px] lg:w-[276px] lg:h-[230px] w-[300px] h-[250px] sm:text-md text-sm flex items-center justify-center relative">
                   {/* Exibe a imagem de cada destino */}
                   <Image
                     src={local.image}
@@ -86,8 +86,11 @@ export default function Locals({ locals }: LocalsProps) {
                     className="rounded-xl shadow-md object-cover"
                   />
                   {/* Nome do destino exibido abaixo da imagem */}
-                  <span className="absolute bottom-[-13px] left-1/2 transform -translate-x-1/2 bg-[#141414] text-white px-4 py-1 rounded-full text-sm whitespace-nowrap">
+                  <span className="absolute top-[-16px] left-1/2 transform -translate-x-1/2 bg-[#141414] text-white px-4 py-1 rounded-full whitespace-nowrap">
                     {local.city}
+                  </span>
+                  <span className="absolute bottom-[-16px] left-1/2 transform -translate-x-1/2 bg-[#141414] text-white px-4 py-1 rounded-full whitespace-nowrap">
+                    Rounded Trip: $350
                   </span>
                 </div>
               </SwiperSlide>

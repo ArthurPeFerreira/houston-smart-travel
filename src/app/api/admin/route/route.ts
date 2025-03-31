@@ -49,6 +49,13 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    if (routeInfo.airportsId[0] === routeInfo.airportsId[1]) {
+      return NextResponse.json(
+        { error: "Airport 1 and Airport 2 cannot be the same!" },
+        { status: 400 }
+      );
+    }
+
     // Ordena os IDs dos aeroportos para comparação (independente da ordem enviada)
     const [id1, id2] = routeInfo.airportsId.sort((a, b) => a - b);
 
@@ -73,10 +80,10 @@ export async function POST(req: NextRequest) {
         );
       }
     }
-    
+
     // Cria a nova rota
     const RouteCreated = await createRoute(routeInfo);
-    
+
     // Retorna a nova rota criada
     return NextResponse.json(RouteCreated);
   } catch {

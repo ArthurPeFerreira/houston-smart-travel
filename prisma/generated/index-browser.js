@@ -154,6 +154,7 @@ exports.Prisma.CabinsRouteScalarFieldEnum = {
   routeId: 'routeId',
   key: 'key',
   maximumPoints: 'maximumPoints',
+  bagsAmount: 'bagsAmount',
   passagePrice: 'passagePrice',
   cancellationPrice: 'cancellationPrice'
 };
