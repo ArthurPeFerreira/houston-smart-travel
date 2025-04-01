@@ -31,13 +31,14 @@ export default function Locals({ locals }: LocalsProps) {
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
 
-  if(!locals || locals?.length == 0) {
+  if (!locals || locals?.length == 0) {
     return null;
   }
 
   return (
     <section className="bg-[#E6DCD1] w-full text-black">
       <div className="py-8 px-4 max-w-7xl mx-auto">
+        <h1 className="text-[#141414] text-2xl sm:text-4xl">Deals leaving from Houston:</h1>
         <Swiper
           // Define os módulos que serão utilizados no Swiper
           modules={[Navigation, Pagination, Autoplay]}
@@ -54,14 +55,15 @@ export default function Locals({ locals }: LocalsProps) {
             clickable: true,
           }}
           // Centraliza os slides
-          centeredSlides={true}
+          centeredSlides={false}
           // Ficar em Loop
-          loop={true}
+          loop={false}
           // Ajusta o espaço entre slides
           spaceBetween={10}
           // Configura o comportamento responsivo-
           breakpoints={{
             0: { slidesPerView: 2 },
+            800: { slidesPerView: 3 },
             1000: { slidesPerView: 4 },
           }}
           // Atualiza os estados ao mudar de slide
@@ -70,12 +72,9 @@ export default function Locals({ locals }: LocalsProps) {
             setIsEnd(swiper.isEnd);
           }}
         >
-          {locals.map((local) => (
+          {locals.map((local) =>
             local.active ? (
-              <SwiperSlide
-                key={local.id}
-                className="w-fit px-2"
-              >
+              <SwiperSlide key={local.id} className="w-fit px-2">
                 <div className="xl:w-[300px] xl:h-[250px] lg:w-[276px] lg:h-[230px] w-[300px] h-[250px] sm:text-md text-sm flex items-center justify-center relative">
                   {/* Exibe a imagem de cada destino */}
                   <Image
@@ -95,10 +94,8 @@ export default function Locals({ locals }: LocalsProps) {
                   </span>
                 </div>
               </SwiperSlide>
-            ) : (null)
-          ))
-
-          }
+            ) : null
+          )}
         </Swiper>
 
         {/* Controles personalizados: botões de navegação e paginação */}
