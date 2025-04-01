@@ -10,13 +10,13 @@ export const metadata: Metadata = {
 
 export default function CheckFlights() {
   return (
-    <main className="relative flex-1 w-full min-h-[70vh] flex items-center justify-center bg-no-repeat bg-cover bg-center p-5">
+    <main className="relative flex-1 w-full min-h-[70vh] md:min-h-fit flex items-center justify-center bg-no-repeat bg-cover bg-center p-5">
       <Image
         src={background}
         quality={100}
         fill
         alt="Beach Background"
-        className="absolute inset-0 min-h-fit"
+        className="absolute inset-0"
       />
       <div className="absolute inset-0">
         <CheckFlightsBox />

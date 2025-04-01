@@ -4,7 +4,7 @@
 import Image from "next/image";
 import logo from "@/../public/static/Logo.png";
 import Link from "next/link";
-import { FaBars, FaFacebookMessenger, FaWhatsapp } from "react-icons/fa";
+import { FaBars, FaInstagram, FaWhatsapp } from "react-icons/fa";
 import Sidebar from "./components/Sidebar";
 import { useState } from "react";
 
@@ -24,13 +24,15 @@ export default function Navbar() {
       <div className="mx-auto w-full max-w-7xl h-full flex items-center justify-between px-2 sm:px-5">
         <div className="flex flex-row gap-2 items-center">
           <button className="cursor-pointer" onClick={() => toggleOpenSideBar()}>
-            <FaBars className="flex md:hidden" size={30} />
+            <FaBars className="flex" size={30} />
           </button>
 
           <Sidebar isOpen={isOpen} onClose={toggleOpenSideBar} />
-          <Image src={logo} alt="Logo" height={55} />
+
+
         </div>
-        <div className="flex flex-row justify-center md:gap-5 text-xl whitespace-nowrap">
+          <Image src={logo} alt="Logo" height={55} />
+        {/* <div className="flex flex-row justify-center md:gap-5 text-xl whitespace-nowrap">
           <Link href="/" className="hidden md:flex">
             Home
           </Link>
@@ -40,7 +42,7 @@ export default function Navbar() {
           <Link href="/about-us" className="hidden md:flex">
             About Us
           </Link>
-        </div>
+        </div> */}
         <div className="flex flex-row gap-2 md:gap-5 text-[35px]">
           <Link
             href="https://api.whatsapp.com/send?phone=5511999999999&text=Ol%C3%A1%2C%20podemos%20conversar%3F"
@@ -50,11 +52,11 @@ export default function Navbar() {
             <FaWhatsapp />
           </Link>
           <Link
-            href="https://m.me/HoustonSmartTravel?ref=OlaConversa"
+            href="https://www.instagram.com/"
             target="_blank"
             rel="noopener noreferrer"
           >
-            <FaFacebookMessenger />
+            <FaInstagram />
           </Link>
         </div>
       </div>

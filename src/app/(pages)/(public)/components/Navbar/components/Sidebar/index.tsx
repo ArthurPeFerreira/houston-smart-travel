@@ -26,7 +26,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   }, [isOpen]);
 
   return (
-    <div className="md:hidden">
+    <div>
       {/* Overlay escuro */}
       {isOpen && (
         <div
@@ -43,7 +43,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         )}
       >
         <div className="mb-6">
-          <button onClick={onClose} className="text-white">
+          <button onClick={onClose} className="text-white cursor-pointer">
             <FaBars size={30} />
           </button>
         </div>
