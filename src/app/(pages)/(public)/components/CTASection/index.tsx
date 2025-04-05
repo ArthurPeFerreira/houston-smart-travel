@@ -37,7 +37,8 @@ export default function CTASection() {
           </p>
           <div className="w-full flex justify-center">
             <Link
-              href={"/check-flights"}
+              target="_blank"
+              href={"https://go.wa.link/houstonsmartravel"}
               className="bg-black text-white rounded-full px-6 py-3 font-medium hover:bg-gray-800 transition-colors flex flex-row items-center gap-2"
             >
               <FaWhatsapp />

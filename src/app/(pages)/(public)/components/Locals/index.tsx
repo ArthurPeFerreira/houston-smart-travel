@@ -21,6 +21,7 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 // Importa o hook useState do React
 import { useState } from "react";
 import { LocalType } from "@/lib/local/types";
+import { useRouter } from "next/navigation";
 
 interface LocalsProps {
   locals: LocalType[] | undefined;
@@ -30,6 +31,8 @@ export default function Locals({ locals }: LocalsProps) {
   // Estados para controlar se está no início ou no final do carrossel
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
+
+  const router = useRouter();
 
   if (!locals || locals?.length == 0) {
     return null;
@@ -80,26 +83,6 @@ export default function Locals({ locals }: LocalsProps) {
         >
           {locals.map((local) =>
             local.active ? (
-              // <SwiperSlide key={local.id} className="w-fit px-2">
-              //   <div className="xl:w-[300px] xl:h-[250px] lg:w-[276px] lg:h-[230px] w-[300px] h-[250px] sm:text-md text-sm flex items-center justify-center relative">
-              //     {/* Exibe a imagem de cada destino */}
-              //     <Image
-              //       src={local.image}
-              //       alt={local.city}
-              //       fill
-              //       quality={100}
-              //       unoptimized
-              //       className="rounded-xl shadow-md object-cover"
-              //     />
-              //     {/* Nome do destino exibido abaixo da imagem */}
-              //     <span className="absolute top-[-16px] left-1/2 transform -translate-x-1/2 bg-[#141414] text-white px-4 py-1 rounded-full whitespace-nowrap">
-              //       {local.city}
-              //     </span>
-              //     <span className="absolute bottom-[-16px] left-1/2 transform -translate-x-1/2 bg-[#141414] text-white px-4 py-1 rounded-full whitespace-nowrap">
-              //       Rounded Trip: $350
-              //     </span>
-              //   </div>
-              // </SwiperSlide>
               <SwiperSlide
                 key={local.id}
                 className="w-fit flex flex-col items-center"
@@ -129,7 +112,9 @@ export default function Locals({ locals }: LocalsProps) {
                     </span>
                   </div>
 
-                  <button className="absolute bottom-[-16px] left-1/2 transform -translate-x-1/2 bg-[#141414] text-white px-4 py-1 rounded-full whitespace-nowrap">
+                  <button 
+                  onClick={() => router.push(`/check-flights?airportId=${local.airport.id}`)}
+                  className="absolute bottom-[-16px] left-1/2 transform -translate-x-1/2 bg-[#141414] text-white px-4 py-1 rounded-full whitespace-nowrap cursor-pointer">
                     Check Availability
                   </button>
                 </div>
