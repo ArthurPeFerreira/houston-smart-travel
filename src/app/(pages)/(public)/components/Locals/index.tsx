@@ -19,7 +19,7 @@ import Image from "next/image";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 // Importa o hook useState do React
-import { useState } from "react";
+// import { useState } from "react";
 import { LocalType } from "@/lib/local/types";
 import { useRouter } from "next/navigation";
 
@@ -29,8 +29,8 @@ interface LocalsProps {
 
 export default function Locals({ locals }: LocalsProps) {
   // Estados para controlar se está no início ou no final do carrossel
-  const [isBeginning, setIsBeginning] = useState(true);
-  const [isEnd, setIsEnd] = useState(false);
+  // const [isBeginning, setIsBeginning] = useState(true);
+  // const [isEnd, setIsEnd] = useState(false);
 
   const router = useRouter();
 
@@ -51,7 +51,7 @@ export default function Locals({ locals }: LocalsProps) {
           // Define os módulos que serão utilizados no Swiper
           modules={[Navigation, Pagination, Autoplay]}
           // Configura a paginação automática
-          // autoplay={{ delay: 30000, disableOnInteraction: false }}
+          autoplay={{ delay: 30000, disableOnInteraction: false }}
           // Configura a navegação personalizada com botões externos
           navigation={{
             nextEl: ".custom-next",
@@ -65,7 +65,7 @@ export default function Locals({ locals }: LocalsProps) {
           // Centraliza os slides
           centeredSlides={false}
           // Ficar em Loop
-          loop={false}
+          loop={true}
           // Ajusta o espaço entre slides
           spaceBetween={10}
           // Configura o comportamento responsivo-
@@ -76,10 +76,10 @@ export default function Locals({ locals }: LocalsProps) {
             1050: { slidesPerView: 4 },
           }}
           // Atualiza os estados ao mudar de slide
-          onSlideChange={(swiper) => {
-            setIsBeginning(swiper.isBeginning);
-            setIsEnd(swiper.isEnd);
-          }}
+          // onSlideChange={(swiper) => {
+          //   setIsBeginning(swiper.isBeginning);
+          //   setIsEnd(swiper.isEnd);
+          // }}
         >
           {locals.map((local) =>
             local.active ? (
@@ -128,11 +128,12 @@ export default function Locals({ locals }: LocalsProps) {
           <div className="w-fit flex items-center justify-center gap-4 mb-4">
             {/* Botão para voltar ao slide anterior */}
             <button
-              className={`custom-prev p-2 ${
-                isBeginning
-                  ? "opacity-50 disabled cursor-default"
-                  : "cursor-pointer"
-              }`}
+              // className={`custom-prev p-2 ${
+              //   isBeginning
+              //     ? "opacity-50 disabled cursor-default"
+              //     : "cursor-pointer"
+              // }`}
+              className={`custom-prev p-2 cursor-pointer`}
             >
               <FaChevronLeft />
             </button>
@@ -142,9 +143,10 @@ export default function Locals({ locals }: LocalsProps) {
 
             {/* Botão para avançar para o próximo slide */}
             <button
-              className={`custom-next p-2 ${
-                isEnd ? "opacity-50 disabled cursor-default" : "cursor-pointer"
-              }`}
+              // className={`custom-next p-2 ${
+              //   isEnd ? "opacity-50 disabled cursor-default" : "cursor-pointer"
+              // }`}
+              className={`custom-next p-2 cursor-pointer`}
             >
               <FaChevronRight />
             </button>

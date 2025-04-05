@@ -20,7 +20,7 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="text-white w-full h-20 bg-[#141414]">
+    <nav className="fixed top-0 left-0 z-50 w-full h-20 bg-[#141414] text-white">
       <div className="mx-auto w-full max-w-7xl h-full flex items-center justify-between px-2 sm:px-5">
         <div className="flex flex-row gap-2 items-center">
           <button className={`cursor-pointer  ${isOpen ? "invisible" : "visible"}`} onClick={() => toggleOpenSideBar()}>

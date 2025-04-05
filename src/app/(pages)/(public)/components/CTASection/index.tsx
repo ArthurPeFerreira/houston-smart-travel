@@ -14,7 +14,7 @@ export default function CTASection() {
           <h1 className="text-2xl md:text-5xl font-bold text-gray-900 mb-4">
             Find Your Next Adventure
           </h1>
-          <p className="text-gray-700 text-base md:text-lg mb-5 [text-align:justify]">
+          <p className="text-gray-700 text-base md:text-lg mb-0 [text-align:justify]">
             Whether you&apos;re exploring historic cities, unwinding on paradise
             beaches, or seeking adventure in breathtaking landscapes, we have
             the perfect flight for you.
