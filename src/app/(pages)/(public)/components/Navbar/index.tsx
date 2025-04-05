@@ -2,7 +2,7 @@
 "use client";
 
 import Image from "next/image";
-import logo from "@/../public/static/Logo.png";
+import logo from "@/../public/static/Logo.svg";
 import Link from "next/link";
 import { FaBars, FaInstagram, FaWhatsapp } from "react-icons/fa";
 import Sidebar from "./components/Sidebar";
@@ -23,7 +23,7 @@ export default function Navbar() {
     <nav className="text-white w-full h-20 bg-[#141414]">
       <div className="mx-auto w-full max-w-7xl h-full flex items-center justify-between px-2 sm:px-5">
         <div className="flex flex-row gap-2 items-center">
-          <button className="cursor-pointer" onClick={() => toggleOpenSideBar()}>
+          <button className={`cursor-pointer  ${isOpen ? "invisible" : "visible"}`} onClick={() => toggleOpenSideBar()}>
             <FaBars className="flex" size={30} />
           </button>
 
@@ -31,7 +31,7 @@ export default function Navbar() {
 
 
         </div>
-          <Image src={logo} alt="Logo" height={55} />
+          <Image src={logo} alt="Logo" height={50} />
         {/* <div className="flex flex-row justify-center md:gap-5 text-xl whitespace-nowrap">
           <Link href="/" className="hidden md:flex">
             Home

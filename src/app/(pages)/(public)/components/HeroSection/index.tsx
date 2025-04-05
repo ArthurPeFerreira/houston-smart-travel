@@ -16,8 +16,8 @@ export default function HeroSection() {
           className="absolute inset-0 object-cover w-full h-full"
         />
         <div className="absolute inset-0">
-          <div className="flex flex-col items-center justify-center gap-6 w-full h-full ">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-light text-white text-center">
+          <div className="flex flex-col items-center justify-center gap-6 w-full h-full pb-[80px]">
+            <h1 className="text-5xl sm:text-5xl md:text-6xl font-light text-white text-center">
               Find Your Next Destination
             </h1>
             <Link
