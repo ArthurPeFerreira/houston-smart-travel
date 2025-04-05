@@ -57,11 +57,13 @@ model Airports {
 // Modelo da Tabela de Locais exibidos na tela de Home
 // ======================================================
 model Locals {
-  id        Int       @id @default(autoincrement()) // ID primário auto incremental
-  airportId Int       @unique // Chave estrangeira única para o aeroporto
-  city      String // Nome da cidade
-  image     String // Caminho da imagem representando o local
-  active    Boolean   @default(true) // Indicador se o local está ativo para exibição
+  id            Int       @id @default(autoincrement()) // ID primário auto incremental
+  airportId     Int       @unique // Chave estrangeira única para o aeroporto
+  city          String // Nome da cidade
+  country       String // Nome do Pais
+  passagePrice  Decimal // Preço da Passagem
+  image         String // Caminho da imagem representando o local
+  active        Boolean   @default(true) // Indicador se o local está ativo para exibição
 
   // Relação com a tabela Airports (obrigatória)
   airport   Airports  @relation("AirportToLocal", fields: [airportId], references: [id], onDelete: Cascade, onUpdate: Cascade)

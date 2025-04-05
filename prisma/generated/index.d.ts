@@ -3578,17 +3578,21 @@ export namespace Prisma {
   export type LocalsAvgAggregateOutputType = {
     id: number | null
     airportId: number | null
+    passagePrice: Decimal | null
   }
 
   export type LocalsSumAggregateOutputType = {
     id: number | null
     airportId: number | null
+    passagePrice: Decimal | null
   }
 
   export type LocalsMinAggregateOutputType = {
     id: number | null
     airportId: number | null
     city: string | null
+    country: string | null
+    passagePrice: Decimal | null
     image: string | null
     active: boolean | null
   }
@@ -3597,6 +3601,8 @@ export namespace Prisma {
     id: number | null
     airportId: number | null
     city: string | null
+    country: string | null
+    passagePrice: Decimal | null
     image: string | null
     active: boolean | null
   }
@@ -3605,6 +3611,8 @@ export namespace Prisma {
     id: number
     airportId: number
     city: number
+    country: number
+    passagePrice: number
     image: number
     active: number
     _all: number
@@ -3614,17 +3622,21 @@ export namespace Prisma {
   export type LocalsAvgAggregateInputType = {
     id?: true
     airportId?: true
+    passagePrice?: true
   }
 
   export type LocalsSumAggregateInputType = {
     id?: true
     airportId?: true
+    passagePrice?: true
   }
 
   export type LocalsMinAggregateInputType = {
     id?: true
     airportId?: true
     city?: true
+    country?: true
+    passagePrice?: true
     image?: true
     active?: true
   }
@@ -3633,6 +3645,8 @@ export namespace Prisma {
     id?: true
     airportId?: true
     city?: true
+    country?: true
+    passagePrice?: true
     image?: true
     active?: true
   }
@@ -3641,6 +3655,8 @@ export namespace Prisma {
     id?: true
     airportId?: true
     city?: true
+    country?: true
+    passagePrice?: true
     image?: true
     active?: true
     _all?: true
@@ -3736,6 +3752,8 @@ export namespace Prisma {
     id: number
     airportId: number
     city: string
+    country: string
+    passagePrice: Decimal
     image: string
     active: boolean
     _count: LocalsCountAggregateOutputType | null
@@ -3763,6 +3781,8 @@ export namespace Prisma {
     id?: boolean
     airportId?: boolean
     city?: boolean
+    country?: boolean
+    passagePrice?: boolean
     image?: boolean
     active?: boolean
     airport?: boolean | AirportsDefaultArgs<ExtArgs>
@@ -3772,6 +3792,8 @@ export namespace Prisma {
     id?: boolean
     airportId?: boolean
     city?: boolean
+    country?: boolean
+    passagePrice?: boolean
     image?: boolean
     active?: boolean
     airport?: boolean | AirportsDefaultArgs<ExtArgs>
@@ -3781,6 +3803,8 @@ export namespace Prisma {
     id?: boolean
     airportId?: boolean
     city?: boolean
+    country?: boolean
+    passagePrice?: boolean
     image?: boolean
     active?: boolean
     airport?: boolean | AirportsDefaultArgs<ExtArgs>
@@ -3790,11 +3814,13 @@ export namespace Prisma {
     id?: boolean
     airportId?: boolean
     city?: boolean
+    country?: boolean
+    passagePrice?: boolean
     image?: boolean
     active?: boolean
   }
 
-  export type LocalsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "airportId" | "city" | "image" | "active", ExtArgs["result"]["locals"]>
+  export type LocalsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "airportId" | "city" | "country" | "passagePrice" | "image" | "active", ExtArgs["result"]["locals"]>
   export type LocalsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     airport?: boolean | AirportsDefaultArgs<ExtArgs>
   }
@@ -3814,6 +3840,8 @@ export namespace Prisma {
       id: number
       airportId: number
       city: string
+      country: string
+      passagePrice: Prisma.Decimal
       image: string
       active: boolean
     }, ExtArgs["result"]["locals"]>
@@ -4243,6 +4271,8 @@ export namespace Prisma {
     readonly id: FieldRef<"Locals", 'Int'>
     readonly airportId: FieldRef<"Locals", 'Int'>
     readonly city: FieldRef<"Locals", 'String'>
+    readonly country: FieldRef<"Locals", 'String'>
+    readonly passagePrice: FieldRef<"Locals", 'Decimal'>
     readonly image: FieldRef<"Locals", 'String'>
     readonly active: FieldRef<"Locals", 'Boolean'>
   }
@@ -8039,6 +8069,8 @@ export namespace Prisma {
     id: 'id',
     airportId: 'airportId',
     city: 'city',
+    country: 'country',
+    passagePrice: 'passagePrice',
     image: 'image',
     active: 'active'
   };
@@ -8313,6 +8345,8 @@ export namespace Prisma {
     id?: IntFilter<"Locals"> | number
     airportId?: IntFilter<"Locals"> | number
     city?: StringFilter<"Locals"> | string
+    country?: StringFilter<"Locals"> | string
+    passagePrice?: DecimalFilter<"Locals"> | Decimal | DecimalJsLike | number | string
     image?: StringFilter<"Locals"> | string
     active?: BoolFilter<"Locals"> | boolean
     airport?: XOR<AirportsScalarRelationFilter, AirportsWhereInput>
@@ -8322,6 +8356,8 @@ export namespace Prisma {
     id?: SortOrder
     airportId?: SortOrder
     city?: SortOrder
+    country?: SortOrder
+    passagePrice?: SortOrder
     image?: SortOrder
     active?: SortOrder
     airport?: AirportsOrderByWithRelationInput
@@ -8334,6 +8370,8 @@ export namespace Prisma {
     OR?: LocalsWhereInput[]
     NOT?: LocalsWhereInput | LocalsWhereInput[]
     city?: StringFilter<"Locals"> | string
+    country?: StringFilter<"Locals"> | string
+    passagePrice?: DecimalFilter<"Locals"> | Decimal | DecimalJsLike | number | string
     image?: StringFilter<"Locals"> | string
     active?: BoolFilter<"Locals"> | boolean
     airport?: XOR<AirportsScalarRelationFilter, AirportsWhereInput>
@@ -8343,6 +8381,8 @@ export namespace Prisma {
     id?: SortOrder
     airportId?: SortOrder
     city?: SortOrder
+    country?: SortOrder
+    passagePrice?: SortOrder
     image?: SortOrder
     active?: SortOrder
     _count?: LocalsCountOrderByAggregateInput
@@ -8359,6 +8399,8 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"Locals"> | number
     airportId?: IntWithAggregatesFilter<"Locals"> | number
     city?: StringWithAggregatesFilter<"Locals"> | string
+    country?: StringWithAggregatesFilter<"Locals"> | string
+    passagePrice?: DecimalWithAggregatesFilter<"Locals"> | Decimal | DecimalJsLike | number | string
     image?: StringWithAggregatesFilter<"Locals"> | string
     active?: BoolWithAggregatesFilter<"Locals"> | boolean
   }
@@ -8659,6 +8701,8 @@ export namespace Prisma {
 
   export type LocalsCreateInput = {
     city: string
+    country: string
+    passagePrice: Decimal | DecimalJsLike | number | string
     image: string
     active?: boolean
     airport: AirportsCreateNestedOneWithoutLocalInput
@@ -8668,12 +8712,16 @@ export namespace Prisma {
     id?: number
     airportId: number
     city: string
+    country: string
+    passagePrice: Decimal | DecimalJsLike | number | string
     image: string
     active?: boolean
   }
 
   export type LocalsUpdateInput = {
     city?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    passagePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     image?: StringFieldUpdateOperationsInput | string
     active?: BoolFieldUpdateOperationsInput | boolean
     airport?: AirportsUpdateOneRequiredWithoutLocalNestedInput
@@ -8683,6 +8731,8 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     airportId?: IntFieldUpdateOperationsInput | number
     city?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    passagePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     image?: StringFieldUpdateOperationsInput | string
     active?: BoolFieldUpdateOperationsInput | boolean
   }
@@ -8691,12 +8741,16 @@ export namespace Prisma {
     id?: number
     airportId: number
     city: string
+    country: string
+    passagePrice: Decimal | DecimalJsLike | number | string
     image: string
     active?: boolean
   }
 
   export type LocalsUpdateManyMutationInput = {
     city?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    passagePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     image?: StringFieldUpdateOperationsInput | string
     active?: BoolFieldUpdateOperationsInput | boolean
   }
@@ -8705,6 +8759,8 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     airportId?: IntFieldUpdateOperationsInput | number
     city?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    passagePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     image?: StringFieldUpdateOperationsInput | string
     active?: BoolFieldUpdateOperationsInput | boolean
   }
@@ -9077,6 +9133,17 @@ export namespace Prisma {
     id?: SortOrder
   }
 
+  export type DecimalFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+  }
+
   export type AirportsScalarRelationFilter = {
     is?: AirportsWhereInput
     isNot?: AirportsWhereInput
@@ -9086,6 +9153,8 @@ export namespace Prisma {
     id?: SortOrder
     airportId?: SortOrder
     city?: SortOrder
+    country?: SortOrder
+    passagePrice?: SortOrder
     image?: SortOrder
     active?: SortOrder
   }
@@ -9093,12 +9162,15 @@ export namespace Prisma {
   export type LocalsAvgOrderByAggregateInput = {
     id?: SortOrder
     airportId?: SortOrder
+    passagePrice?: SortOrder
   }
 
   export type LocalsMaxOrderByAggregateInput = {
     id?: SortOrder
     airportId?: SortOrder
     city?: SortOrder
+    country?: SortOrder
+    passagePrice?: SortOrder
     image?: SortOrder
     active?: SortOrder
   }
@@ -9107,6 +9179,8 @@ export namespace Prisma {
     id?: SortOrder
     airportId?: SortOrder
     city?: SortOrder
+    country?: SortOrder
+    passagePrice?: SortOrder
     image?: SortOrder
     active?: SortOrder
   }
@@ -9114,6 +9188,23 @@ export namespace Prisma {
   export type LocalsSumOrderByAggregateInput = {
     id?: SortOrder
     airportId?: SortOrder
+    passagePrice?: SortOrder
+  }
+
+  export type DecimalWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedDecimalFilter<$PrismaModel>
+    _sum?: NestedDecimalFilter<$PrismaModel>
+    _min?: NestedDecimalFilter<$PrismaModel>
+    _max?: NestedDecimalFilter<$PrismaModel>
   }
 
   export type CabinsRouteListRelationFilter = {
@@ -9153,17 +9244,6 @@ export namespace Prisma {
 
   export type RouteSumOrderByAggregateInput = {
     id?: SortOrder
-  }
-
-  export type DecimalFilter<$PrismaModel = never> = {
-    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
   }
 
   export type RouteScalarRelationFilter = {
@@ -9222,22 +9302,6 @@ export namespace Prisma {
     bagsAmount?: SortOrder
     passagePrice?: SortOrder
     cancellationPrice?: SortOrder
-  }
-
-  export type DecimalWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedDecimalFilter<$PrismaModel>
-    _sum?: NestedDecimalFilter<$PrismaModel>
-    _min?: NestedDecimalFilter<$PrismaModel>
-    _max?: NestedDecimalFilter<$PrismaModel>
   }
 
   export type AirportsRouteCountOrderByAggregateInput = {
@@ -9374,6 +9438,14 @@ export namespace Prisma {
     connect?: AirportsWhereUniqueInput
   }
 
+  export type DecimalFieldUpdateOperationsInput = {
+    set?: Decimal | DecimalJsLike | number | string
+    increment?: Decimal | DecimalJsLike | number | string
+    decrement?: Decimal | DecimalJsLike | number | string
+    multiply?: Decimal | DecimalJsLike | number | string
+    divide?: Decimal | DecimalJsLike | number | string
+  }
+
   export type AirportsUpdateOneRequiredWithoutLocalNestedInput = {
     create?: XOR<AirportsCreateWithoutLocalInput, AirportsUncheckedCreateWithoutLocalInput>
     connectOrCreate?: AirportsCreateOrConnectWithoutLocalInput
@@ -9470,14 +9542,6 @@ export namespace Prisma {
     create?: XOR<RouteCreateWithoutCabinsInput, RouteUncheckedCreateWithoutCabinsInput>
     connectOrCreate?: RouteCreateOrConnectWithoutCabinsInput
     connect?: RouteWhereUniqueInput
-  }
-
-  export type DecimalFieldUpdateOperationsInput = {
-    set?: Decimal | DecimalJsLike | number | string
-    increment?: Decimal | DecimalJsLike | number | string
-    decrement?: Decimal | DecimalJsLike | number | string
-    multiply?: Decimal | DecimalJsLike | number | string
-    divide?: Decimal | DecimalJsLike | number | string
   }
 
   export type RouteUpdateOneRequiredWithoutCabinsNestedInput = {
@@ -9688,6 +9752,8 @@ export namespace Prisma {
 
   export type LocalsCreateWithoutAirportInput = {
     city: string
+    country: string
+    passagePrice: Decimal | DecimalJsLike | number | string
     image: string
     active?: boolean
   }
@@ -9695,6 +9761,8 @@ export namespace Prisma {
   export type LocalsUncheckedCreateWithoutAirportInput = {
     id?: number
     city: string
+    country: string
+    passagePrice: Decimal | DecimalJsLike | number | string
     image: string
     active?: boolean
   }
@@ -9736,6 +9804,8 @@ export namespace Prisma {
 
   export type LocalsUpdateWithoutAirportInput = {
     city?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    passagePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     image?: StringFieldUpdateOperationsInput | string
     active?: BoolFieldUpdateOperationsInput | boolean
   }
@@ -9743,6 +9813,8 @@ export namespace Prisma {
   export type LocalsUncheckedUpdateWithoutAirportInput = {
     id?: IntFieldUpdateOperationsInput | number
     city?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    passagePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     image?: StringFieldUpdateOperationsInput | string
     active?: BoolFieldUpdateOperationsInput | boolean
   }

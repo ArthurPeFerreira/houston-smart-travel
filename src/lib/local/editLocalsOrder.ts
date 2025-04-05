@@ -1,36 +1,45 @@
-import { prismaClient } from "../prisma/prisma"; // Importa o cliente do Prisma para interagir com o banco de dados
-import { updateLocalCache } from "./cacheLocal"; // Importa a função para atualizar o cache de Locais
-import { CreateLocalType, LocalType } from "./types"; // Importa os tipos para garantir a tipagem correta
+// Importa o cliente do Prisma para interagir com o banco de dados
+import { prismaClient } from "../prisma/prisma";
 
-// Função assíncrona para editar a ordem dos Locais no banco de dados
-export async function editLocalsOrder(localInfo: LocalType[]): Promise<LocalType[] | undefined> {
-    try {
-        // Mapeia os objetos da lista de locais para o formato exigido ao criar registros no banco
-        const newLocalOrder: CreateLocalType[] = localInfo.map((local) => {
-            return ({
-                city: local.city,       // Cidade do local
-                image: local.image,     // URL da imagem do local
-                airportId: local.airport.id // ID do aeroporto associado ao local
-            });
-        });
+// Importa a função responsável por atualizar o cache local dos Locais
+import { updateLocalCache } from "./cacheLocal";
 
-        // Remove todos os registros existentes na tabela 'locals'
-        await prismaClient.locals.deleteMany();
+// Importa os tipos utilizados para garantir tipagem correta dos dados de entrada e saída
+import { CreateLocalType, LocalType } from "./types";
 
-        // Insere os novos registros de locais no banco de dados
-        await prismaClient.locals.createMany({ data: newLocalOrder });
+// Função assíncrona responsável por reordenar os Locais no banco de dados
+export async function editLocalsOrder(
+  localInfo: LocalType[] // Lista de Locais contendo a nova ordem desejada
+): Promise<LocalType[] | undefined> {
+  try {
+    // Transforma a lista recebida (LocalType[]) no formato exigido pelo método createMany (CreateLocalType[])
+    const newLocalOrder: CreateLocalType[] = localInfo.map((local) => {
+      return {
+        city: local.city, // Atribui a cidade do local
+        country: local.country, // Atribui o país do local
+        passagePrice: local.passagePrice, // Atribui o preço da passagem
+        image: local.image, // Atribui a URL da imagem
+        airportId: local.airport.id, // Usa o ID do aeroporto relacionado como chave estrangeira
+      };
+    });
 
-        // Atualiza o cache dos locais para refletir as novas alterações
-        const newLocals = await updateLocalCache();
+    // Remove todos os registros da tabela 'locals' para redefinir completamente a ordem
+    await prismaClient.locals.deleteMany();
 
-        // Retorna a lista de locais atualizada
-        return newLocals;
-    } catch {
-        // Em caso de erro, exibe uma mensagem no console
-        console.error("Failed to Edit Locals Order!");
-        return undefined; // Retorna undefined para indicar falha na operação
-    } finally {
-        // Garante que o cliente do Prisma seja desconectado após a execução da função
-        await prismaClient.$disconnect();
-    }
+    // Insere todos os Locais novamente na nova ordem definida, em operação em massa
+    await prismaClient.locals.createMany({ data: newLocalOrder });
+
+    // Atualiza o cache local para refletir o novo estado dos dados no banco
+    const newLocals = await updateLocalCache();
+
+    // Retorna a lista atualizada de Locais com a nova ordenação
+    return newLocals;
+  } catch {
+    // Captura qualquer erro durante o processo e registra no console
+    console.error("Failed to Edit Locals Order!");
+    return undefined; // Retorna undefined indicando falha na reordenação
+  } finally {
+    // Finaliza a conexão com o banco de dados, liberando os recursos
+    await prismaClient.$disconnect();
+  }
 }

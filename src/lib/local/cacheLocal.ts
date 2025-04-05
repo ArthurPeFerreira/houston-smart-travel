@@ -24,7 +24,9 @@ export async function updateLocalCache(): Promise<LocalType[] | undefined> {
 }
 
 // Função assíncrona para buscar um local específico ou todos os locais do cache do Redis
-export async function getLocalByCache(LocalId: number): Promise<LocalType[] | undefined> {
+export async function getLocalByCache(
+  LocalId: number
+): Promise<LocalType[] | undefined> {
   try {
     // Obtém os dados dos locais armazenados no Redis
     const localsData = await redis.get(cacheKey);
