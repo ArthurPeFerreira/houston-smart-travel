@@ -21,6 +21,7 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 // Importa o hook useState do React
 import { useState } from "react";
 import { LocalType } from "@/lib/local/types";
+import { useRouter } from "next/navigation";
 
 interface LocalsProps {
   locals: LocalType[] | undefined;
@@ -31,19 +32,26 @@ export default function Locals({ locals }: LocalsProps) {
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
 
+  const router = useRouter();
+
   if (!locals || locals?.length == 0) {
     return null;
   }
 
   return (
-    <section className="bg-[#E6DCD1] w-full text-black">
+    <section className="bg-[#E6DCD1] w-full text-[#141414]">
       <div className="py-8 px-4 max-w-7xl mx-auto">
-        <h1 className="text-[#141414] text-2xl sm:text-4xl">Deals leaving from Houston:</h1>
+        {/* <h1 className="text-2xl sm:text-4xl w-fit bg-[#FFFFFF]  p-3 rounded">
+          Deals departing from Houston:
+        </h1> */}
+        <h1 className="text-4xl text-center font-medium sm:text-5xl md:text-5xl w-full">
+          Deals departing from Houston
+        </h1>
         <Swiper
           // Define os módulos que serão utilizados no Swiper
           modules={[Navigation, Pagination, Autoplay]}
           // Configura a paginação automática
-          autoplay={{ delay: 30000, disableOnInteraction: false }}
+          // autoplay={{ delay: 30000, disableOnInteraction: false }}
           // Configura a navegação personalizada com botões externos
           navigation={{
             nextEl: ".custom-next",
@@ -62,9 +70,10 @@ export default function Locals({ locals }: LocalsProps) {
           spaceBetween={10}
           // Configura o comportamento responsivo-
           breakpoints={{
-            0: { slidesPerView: 2 },
+            0: { slidesPerView: 1 },
+            540: { slidesPerView: 2 },
             800: { slidesPerView: 3 },
-            1000: { slidesPerView: 4 },
+            1050: { slidesPerView: 4 },
           }}
           // Atualiza os estados ao mudar de slide
           onSlideChange={(swiper) => {
@@ -74,24 +83,40 @@ export default function Locals({ locals }: LocalsProps) {
         >
           {locals.map((local) =>
             local.active ? (
-              <SwiperSlide key={local.id} className="w-fit px-2">
-                <div className="xl:w-[300px] xl:h-[250px] lg:w-[276px] lg:h-[230px] w-[300px] h-[250px] sm:text-md text-sm flex items-center justify-center relative">
-                  {/* Exibe a imagem de cada destino */}
+              <SwiperSlide
+                key={local.id}
+                className="w-fit flex flex-col items-center"
+              >
+                <div className="relative w-full max-w-[330px] h-[250px]">
                   <Image
                     src={local.image}
                     alt={local.city}
                     fill
                     quality={100}
                     unoptimized
-                    className="rounded-xl shadow-md object-cover"
+                    className="shadow-md object-cover rounded-t-xl"
                   />
-                  {/* Nome do destino exibido abaixo da imagem */}
-                  <span className="absolute top-[-16px] left-1/2 transform -translate-x-1/2 bg-[#141414] text-white px-4 py-1 rounded-full whitespace-nowrap">
-                    {local.city}
-                  </span>
-                  <span className="absolute bottom-[-16px] left-1/2 transform -translate-x-1/2 bg-[#141414] text-white px-4 py-1 rounded-full whitespace-nowrap">
-                    Rounded Trip: $350
-                  </span>
+                </div>
+
+                {/* Informações abaixo da imagem */}
+                <div className="bg-[#F1F1F1] h-fit w-full max-w-[330px] p-2 flex flex-col rounded-b-xl">
+                  <div className="flex flex-col mb-4">
+                    <span className="text-xl font-semibold text-[#141414]">
+                      {local.city}
+                    </span>
+                    <span className="text-xl font-bold h-fit ">
+                      ${"350.30"}{" "}
+                      <span className="text-sm font-semibold text-gray-600">
+                        (Round Trip)
+                      </span>
+                    </span>
+                  </div>
+
+                  <button 
+                  onClick={() => router.push(`/check-flights?airportId=${local.airport.id}`)}
+                  className="absolute bottom-[-16px] left-1/2 transform -translate-x-1/2 bg-[#141414] text-white px-4 py-1 rounded-full whitespace-nowrap cursor-pointer">
+                    Check Availability
+                  </button>
                 </div>
               </SwiperSlide>
             ) : null
@@ -103,8 +128,10 @@ export default function Locals({ locals }: LocalsProps) {
           <div className="w-fit flex items-center justify-center gap-4 mb-4">
             {/* Botão para voltar ao slide anterior */}
             <button
-              className={`custom-prev p-2 cursor-pointer ${
-                isBeginning ? "invisible" : ""
+              className={`custom-prev p-2 ${
+                isBeginning
+                  ? "opacity-50 disabled cursor-default"
+                  : "cursor-pointer"
               }`}
             >
               <FaChevronLeft />
@@ -115,8 +142,8 @@ export default function Locals({ locals }: LocalsProps) {
 
             {/* Botão para avançar para o próximo slide */}
             <button
-              className={`custom-next p-2 cursor-pointer ${
-                isEnd ? "invisible" : ""
+              className={`custom-next p-2 ${
+                isEnd ? "opacity-50 disabled cursor-default" : "cursor-pointer"
               }`}
             >
               <FaChevronRight />

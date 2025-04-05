@@ -12,18 +12,18 @@ interface SidebarProps {
 
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   // Efeito colateral para travar o scroll do body
-  useEffect(() => {
-    if (isOpen) {
-      document.body.classList.add("overflow-y-hidden");
-    } else {
-      document.body.classList.remove("overflow-y-hidden");
-    }
+  // useEffect(() => {
+  //   if (isOpen) {
+  //     document.body.classList.add("overflow-y-hidden");
+  //   } else {
+  //     document.body.classList.remove("overflow-y-hidden");
+  //   }
 
-    // Remove caso o componente seja desmontado
-    return () => {
-      document.body.classList.remove("overflow-y-hidden");
-    };
-  }, [isOpen]);
+  //   // Remove caso o componente seja desmontado
+  //   return () => {
+  //     document.body.classList.remove("overflow-y-hidden");
+  //   };
+  // }, [isOpen]);
 
   return (
     <div>

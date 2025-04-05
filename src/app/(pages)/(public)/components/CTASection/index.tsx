@@ -3,6 +3,7 @@
 import Image from "next/image";
 import adventure from "@/../public/static/Imagem Aventura.jpg";
 import Link from "next/link";
+import { FaWhatsapp } from "react-icons/fa";
 
 export default function CTASection() {
   return (
@@ -14,19 +15,34 @@ export default function CTASection() {
             Find Your Next Adventure
           </h1>
           <p className="text-gray-700 text-base md:text-lg mb-5 [text-align:justify]">
-            Discover the best destinations at the best prices! Whether you&apos;re exploring
-            historic cities, relaxing on paradise beaches, or seeking adventure in
-            breathtaking landscapes, we have the perfect flight for you.
+            Whether you're exploring historic cities, unwinding on paradise
+            beaches, or seeking adventure in breathtaking landscapes, we have
+            the perfect flight for you.
           </p>
 
-          <ul className="text-gray-700 mb-6 space-y-2">
-            <li>🌎 Unmissable destinations around the world</li>
-            <li>💰 The best prices for your next trip</li>
-            <li>⏱ Real-time availability to secure your booking</li>
-          </ul>
+          <p className="text-gray-700 text-base md:text-lg mb-5 [text-align:justify]">
+            At Houston SmarTravel, we specialize in flight tickets issued with
+            miles. By focusing on direct flights, we ensure comfort and
+            convenience, all at affordable prices on specific travel dates.
+          </p>
+
+          <h1 className="text-lg md:text-xl font-bold text-gray-900 mb-4">
+            Interested in our weekly flight availability?
+          </h1>
+
+          <p className="text-gray-700 text-base md:text-lg mb-5 [text-align:justify]">
+            Click the link below to join our WhatsApp distribution list and
+            receive exclusive offers and updates on selected routes departing
+            from Houston:
+          </p>
           <div className="w-full flex justify-center">
-            <Link href={"/check-flights"} className="bg-black text-white rounded-full px-6 py-3 font-medium hover:bg-gray-800 transition-colors">
-              Check Flights
+            <Link
+              target="_blank"
+              href={"https://go.wa.link/houstonsmartravel"}
+              className="bg-black text-white rounded-full px-6 py-3 font-medium hover:bg-gray-800 transition-colors flex flex-row items-center gap-2"
+            >
+              <FaWhatsapp />
+              Join the WhatsApp List
             </Link>
           </div>
         </div>
