@@ -15,7 +15,7 @@ export default function CTASection() {
             Find Your Next Adventure
           </h1>
           <p className="text-gray-700 text-base md:text-lg mb-5 [text-align:justify]">
-            Whether you're exploring historic cities, unwinding on paradise
+            Whether you&apos;re exploring historic cities, unwinding on paradise
             beaches, or seeking adventure in breathtaking landscapes, we have
             the perfect flight for you.
           </p>
