@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 // Indica que este é um componente do lado do cliente no Next.js (App Router)
 "use client";
 
@@ -9,8 +8,8 @@ import { useEffect } from "react";
 import { FaEye, FaSpinner } from "react-icons/fa";
 import { GoXCircle } from "react-icons/go";
 import { MdOutlineExpandCircleDown } from "react-icons/md";
-import { toast } from "react-toastify";
 import getRoutes from "../../functions/getRoutes";
+import Image from "next/image";
 
 // Tipagem das propriedades esperadas pelo componente RouteInfo
 interface RouteInfoModalProps {
@@ -55,7 +54,7 @@ export default function RouteInfo({
         setIsLoading: setIsLoading,
       });
     }
-  }, [airportIdSelected]);
+  }, [airportIdSelected, setFilteredRoutes, setIsLoading]);
 
   // Se o modal não estiver aberto, não renderiza nada
   if (!isOpen) return null;
@@ -113,10 +112,12 @@ export default function RouteInfo({
                       {/* Coluna com o programa de milhagem */}
                       <td className={classItens}>
                         <div className="flex items-center justify-center">
-                          <img
+                          <Image
                             src={mileagePrograms[route.mileageProgram].logoUrl}
                             alt={mileagePrograms[route.mileageProgram].key}
-                            className="w-5 h-5 mr-2"
+                            width={20}
+                            height={20}
+                            className="mr-2"
                           />
                           {mileagePrograms[route.mileageProgram].label} -{" "}
                           {mileagePrograms[route.mileageProgram].iataCode}

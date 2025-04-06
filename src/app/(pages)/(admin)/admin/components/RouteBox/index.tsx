@@ -3,7 +3,7 @@
 "use client";
 
 // Hooks do React para controle de estado e efeito
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 // Importação do componente Select do react-select para dropdowns customizados
 import Select, {
@@ -35,7 +35,6 @@ import { toastConfigs } from "@/lib/toastify/toastify";
 import { toast } from "react-toastify";
 import { api } from "@/lib/api/api";
 import RouteInfo from "./components/RouteInfo";
-import eventEmitter from "@/lib/event/eventEmmiter";
 import getRoutes from "./functions/getRoutes";
 
 // Tipagem para opções do Select que representam os programas de milhagem

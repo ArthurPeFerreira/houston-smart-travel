@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // Indica que este componente é executado no lado do cliente no Next.js
 "use client";
 

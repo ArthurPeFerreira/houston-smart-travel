@@ -26,27 +26,7 @@ export default function Search() {
 
   return (
     <main className="w-full flex items-center justify-center">
-      <div className="p-4 max-w-7xl">
-        <h1 className="text-[#141414] text-xl [text-align:justify]">
-          You have chosen the Business cabin, your reservation includes the
-          option to check up to 2 bags at no extra cost. The ticket price is
-          $2,500.00. Please note that in the event of a cancellation, a fee of
-          $500.00 will be applied according to our terms of services.
-        </h1>
-        <div className="flex flex-row gap-3 font-bold mt-4">
-          <div className="flex flex-row items-center gap-2">
-            <div className="bg-blue-400 w-fit p-5 relative">
-              <label className="absolute right-1 top-0.5">19</label>
-            </div>
-            <div>Direct flight</div>
-          </div>
-          <div className="flex flex-row items-center gap-2">
-            <div className="bg-green-400 w-fit p-5 relative">
-              <label className="absolute right-1 top-0.5">19</label>
-            </div>
-            <div>Flight with connection(s)</div>
-          </div>
-        </div>
+      <div className="px-2 max-w-7xl">
         <div className="w-full h-fit rounded-lg">
           <FullCalendar
             ref={calendarRef}
@@ -115,6 +95,41 @@ export default function Search() {
               },
             ]}
           />
+        </div>
+        <div className="flex flex-col-reverse gap-4 lg:flex-row justify-between items-start my-4">
+          <div className="text-[#141414] text-lg [text-align:justify] space-y-2">
+            <p>
+              • You have chosen the <strong>Business</strong> cabin.
+            </p>
+            <p>
+              • Your reservation includes <strong>2 checked bags</strong> at no
+              extra cost.
+            </p>
+            <p>
+              • The ticket price is <strong>$2,500.00</strong>.
+            </p>
+            <p>
+              • In case of cancellation, a <strong>$500.00 fee</strong> will
+              apply.
+            </p>
+            <p>
+              • This policy follows our <strong>terms of services</strong>.
+            </p>
+          </div>
+          <div className="flex flex-row gap-3 font-bold">
+            <div className="flex flex-row items-center gap-2">
+              <div className="bg-blue-400 w-fit p-5 relative">
+                <label className="absolute right-1 top-0.5">19</label>
+              </div>
+              <div>Direct flight</div>
+            </div>
+            <div className="flex flex-row items-center gap-2">
+              <div className="bg-green-400 w-fit p-5 relative">
+                <label className="absolute right-1 top-0.5">19</label>
+              </div>
+              <div>Flight with connection(s)</div>
+            </div>
+          </div>
         </div>
       </div>
     </main>
