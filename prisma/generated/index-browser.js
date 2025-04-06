@@ -138,6 +138,8 @@ exports.Prisma.LocalsScalarFieldEnum = {
   id: 'id',
   airportId: 'airportId',
   city: 'city',
+  country: 'country',
+  passagePrice: 'passagePrice',
   image: 'image',
   active: 'active'
 };

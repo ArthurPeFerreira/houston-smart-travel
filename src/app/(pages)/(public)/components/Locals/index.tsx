@@ -41,9 +41,6 @@ export default function Locals({ locals }: LocalsProps) {
   return (
     <section className="bg-[#E6DCD1] w-full text-[#141414]">
       <div className="py-8 px-4 max-w-7xl mx-auto">
-        {/* <h1 className="text-2xl sm:text-4xl w-fit bg-[#FFFFFF]  p-3 rounded">
-          Deals departing from Houston:
-        </h1> */}
         <h1 className="text-4xl text-center font-medium sm:text-5xl md:text-5xl w-full">
           Deals departing from Houston
         </h1>
@@ -71,7 +68,7 @@ export default function Locals({ locals }: LocalsProps) {
           // Configura o comportamento responsivo-
           breakpoints={{
             0: { slidesPerView: 1 },
-            540: { slidesPerView: 2 },
+            440: { slidesPerView: 2 },
             800: { slidesPerView: 3 },
             1050: { slidesPerView: 4 },
           }}
@@ -103,18 +100,28 @@ export default function Locals({ locals }: LocalsProps) {
                   <div className="flex flex-col mb-4">
                     <span className="text-xl font-semibold text-[#141414]">
                       {local.city}
+                      {", "}
+                      <span className="text-sm">{local.country}</span>
                     </span>
                     <span className="text-xl font-bold h-fit ">
-                      ${"350.30"}{" "}
+                      {"$ "}
+                      {local.passagePrice
+                        ? Number(local.passagePrice).toFixed(2)
+                        : "0.00"}{" "}
                       <span className="text-sm font-semibold text-gray-600">
                         (Round Trip)
                       </span>
                     </span>
                   </div>
 
-                  <button 
-                  onClick={() => router.push(`/check-flights?airportId=${local.airport.id}`)}
-                  className="absolute bottom-[-16px] left-1/2 transform -translate-x-1/2 bg-[#141414] text-white px-4 py-1 rounded-full whitespace-nowrap cursor-pointer">
+                  <button
+                    onClick={() =>
+                      router.push(
+                        `/check-flights?airportId=${local.airport.id}`
+                      )
+                    }
+                    className="absolute bottom-[-16px] left-1/2 transform -translate-x-1/2 bg-[#141414] text-white px-4 py-1 rounded-full whitespace-nowrap cursor-pointer"
+                  >
                     Check Availability
                   </button>
                 </div>

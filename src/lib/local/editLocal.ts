@@ -1,39 +1,51 @@
-import { prismaClient } from "../prisma/prisma"; // Importa o cliente do Prisma para interagir com o banco de dados
-import { updateLocalCache } from "./cacheLocal"; // Importa a função para atualizar o cache de Locais
-import { EditLocalType, LocalType } from "./types"; // Importa os tipos EditLocalType e LocalType para tipagem segura
+// Importa o cliente do Prisma para interagir com o banco de dados
+import { prismaClient } from "../prisma/prisma";
 
-// Função assíncrona para editar as informações de um Local no banco de dados
-export async function editLocal(localInfo: EditLocalType): Promise<LocalType | undefined> {
-    try {
-        // Atualiza as informações do Local no banco de dados usando o Prisma
-        const localEdited = await prismaClient.locals.update({
-            where: {
-                airportId: localInfo.airportId // Localiza o Local pelo ID fornecido
-            },
-            data: {
-                city: localInfo.city, // Atualiza o nome da cidade do Local
-                active: localInfo.active, // Atualiza o status ativo/inativo do Local
-            },
-            select: {
-                id: true, // Seleciona o ID do Local atualizado
-                city: true, // Seleciona o nome da cidade
-                image: true, // Seleciona a URL da imagem
-                active: true, // Seleciona o status ativo/inativo
-                airport: true, // Seleciona as informações do aeroporto associado
-            }
-        });
+// Importa a função responsável por atualizar o cache dos Locais
+import { updateLocalCache } from "./cacheLocal";
 
-        // Atualiza o Cache dos Locais para refletir as mudanças recentes
-        await updateLocalCache();
+// Importa os tipos utilizados para validação dos dados de entrada e saída
+import { EditLocalType, LocalType } from "./types";
 
-        // Retorna o Local atualizado com as novas informações
-        return localEdited;
-    } catch {
-        // Em caso de erro, exibe uma mensagem de erro no console
-        console.error("Failed to Edit Local!");
-        return undefined; // Retorna undefined para indicar que a operação falhou
-    } finally {
-        // Desconecta o cliente do Prisma após a operação, garantindo que a conexão seja encerrada
-        await prismaClient.$disconnect();
-    }
+// Função assíncrona responsável por editar um Local existente no banco de dados
+export async function editLocal(
+  localInfo: EditLocalType // Objeto contendo os novos dados do Local a serem atualizados
+): Promise<LocalType | undefined> {
+  try {
+    // Atualiza o Local no banco de dados baseado no airportId como chave de identificação
+    const localEdited = await prismaClient.locals.update({
+      where: {
+        airportId: localInfo.airportId, // Utiliza o airportId para localizar o Local a ser editado
+      },
+      data: {
+        city: localInfo.city, // Atualiza o nome da cidade
+        country: localInfo.country, // Atualiza o país
+        passagePrice: localInfo.passagePrice, // Atualiza o valor da passagem
+        active: localInfo.active, // Atualiza o status de ativação do Local
+      },
+      // Define os campos a serem retornados após a atualização
+      select: {
+        id: true, // Retorna o ID do Local
+        city: true, // Retorna o nome da cidade
+        country: true, // Retorna o país
+        passagePrice: true, // Retorna o preço da passagem
+        image: true, // Retorna a URL da imagem associada
+        active: true, // Retorna o status de ativação
+        airport: true, // Retorna os dados do aeroporto vinculado ao Local
+      },
+    });
+
+    // Atualiza o cache local dos Locais para refletir os dados recém-editados
+    await updateLocalCache();
+
+    // Retorna o objeto do Local atualizado contendo os campos selecionados
+    return localEdited;
+  } catch {
+    // Captura e exibe erros que possam ocorrer durante a atualização
+    console.error("Failed to Edit Local!");
+    return undefined; // Retorna undefined para indicar falha na edição
+  } finally {
+    // Finaliza a conexão com o Prisma, garantindo liberação de recursos
+    await prismaClient.$disconnect();
+  }
 }

@@ -1,35 +1,45 @@
+import Decimal from "decimal.js";
 import { AirportType } from "../airport/types";
 
 export interface LocalType {
-    id: number; 
-    city: string; 
-    image: string; 
-    active: boolean;
-    airport: AirportType;
-  }
+  id: number;
+  city: string;
+  country: string;
+  passagePrice: Decimal;
+  image: string;
+  active: boolean;
+  airport: AirportType;
+}
 
 export interface CreateLocalType {
-  city: string; 
-  image: string; 
+  city: string;
+  country: string;
+  passagePrice: Decimal;
+  image: string;
   airportId: number;
 }
 
-
 export interface CreateLocalTypeFile {
-  city: string; 
-  image: File; 
+  city: string;
+  country: string;
+  passagePrice: Decimal;
+  image: File;
   airportId: number;
 }
 
 export interface EditLocalType {
-  city: string; 
-  active: boolean;
   airportId: number;
+  city: string;
+  country: string;
+  passagePrice: Decimal;
+  active: boolean;
 }
 
 export interface EditLocalTypeFile {
   airportId: number;
-  city: string; 
-  image: File; 
+  city: string;
+  country: string;
+  passagePrice: Decimal;
+  image: File;
   active: boolean;
 }

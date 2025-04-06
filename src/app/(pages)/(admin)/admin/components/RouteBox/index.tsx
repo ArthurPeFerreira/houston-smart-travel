@@ -3,7 +3,7 @@
 "use client";
 
 // Hooks do React para controle de estado e efeito
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 // Importação do componente Select do react-select para dropdowns customizados
 import Select, {
@@ -28,13 +28,14 @@ import { mileagePrograms } from "@/lib/route/mileagePrograms";
 import Decimal from "decimal.js";
 
 // Tipagem do objeto de criação de rota
-import { CreateRouteType } from "@/lib/route/types";
+import { CreateRouteType, RouteType } from "@/lib/route/types";
 
 // Configurações e instância do toast para notificações
 import { toastConfigs } from "@/lib/toastify/toastify";
 import { toast } from "react-toastify";
 import { api } from "@/lib/api/api";
 import RouteInfo from "./components/RouteInfo";
+import getRoutes from "./functions/getRoutes";
 
 // Tipagem para opções do Select que representam os programas de milhagem
 interface MileageProgramOption {
@@ -74,8 +75,9 @@ export default function RouteBox({ airportsInitialData }: RouteBoxProps) {
     })
   );
 
-  // Estado para armazenar a lista de aeroportos disponíveis
+  // Estado para armazenar a lista de aeroportos disponíveis (recebidos via props ou array vazio)
   const airports = airportsInitialData ? airportsInitialData : [];
+  // Estado para armazenar os aeroportos disponíveis para seleção após o primeiro
   const [airport2Select, setAirport2Select] = useState<AirportType[]>([]);
 
   // Estados para armazenar os IDs dos dois aeroportos selecionados
@@ -100,83 +102,69 @@ export default function RouteBox({ airportsInitialData }: RouteBoxProps) {
   // Estado que define se a rota permitirá conexões (layovers)
   const [enableLayovers, setEnableLayovers] = useState<boolean>(false);
 
+  // Estado que indica se a criação da rota está em andamento
   const [loading, setLoading] = useState<boolean>(false);
 
+  // Estado que indica se o modal com informações de rotas está carregando
+  const [loadingRoutesInfoModal, setLoadingRoutesInfoModal] =
+    useState<boolean>(true);
 
-  const [loadingRoutesInfoModal, setLoadingRoutesInfoModal] = useState<boolean>(true);
-  const [showRoutesInfoModal, setShowRoutesInfoModal] = useState<boolean>(false);
+  // Estado que controla a exibição do modal com as rotas já cadastradas
+  const [showRoutesInfoModal, setShowRoutesInfoModal] =
+    useState<boolean>(false);
 
-  // Efeito de montagem (poderá ser utilizado futuramente para buscar dados externos)
-  useEffect(() => {
-    async function fetchInitialData() {
-      try {
-        // Lógica de carregamento inicial (reservada)
-      } catch {
-        console.error("Failed to Find Initial Data!");
-      }
-    }
-    fetchInitialData();
-  }, []);
+  // Estado que armazena o ID do aeroporto selecionado no modal de rotas
+  const [airportIdSelected, setAirportIdSelected] = useState<number>(0);
 
-  // Cria o objeto da rota e valida os dados antes do envio
+  // Estado que armazena a lista de rotas filtradas com base no aeroporto selecionado
+  const [filteredRoutes, setFilteredRoutes] = useState<RouteType[]>([]);
+
+  // Função responsável por criar uma nova rota com os dados inseridos no formulário
   async function handleCreateRoute(e: React.FormEvent) {
     e.preventDefault();
 
+    // Validações dos campos obrigatórios
     if (!mileageProgram || !mileageProgram?.value) {
       toast.error("Please select the mileage program", toastConfigs);
       return;
     }
-
     if (!airportId1) {
       toast.error("Please select airport 1", toastConfigs);
       return;
     }
-
     if (!airportId2) {
       toast.error("Please select airport 2", toastConfigs);
       return;
     }
-
     if (!cabinList || cabinList.length == 0) {
       toast.error("Please select at least one cabin", toastConfigs);
       return;
     }
 
-    // Cria o objeto de rota com os dados preenchidos
+    // Monta objeto com os dados da rota conforme tipagem da API
     const route: CreateRouteType = {
       mileageProgram: mileageProgram.value,
       enableLayovers: enableLayovers,
-      // Garante ordem consistente dos IDs dos aeroportos
       airportsId:
         airportId1 < airportId2
           ? [airportId1, airportId2]
           : [airportId2, airportId1],
-      // Mapeia as cabines para o formato esperado na API
-      cabins: cabinList.map((cabin) => {
-        return {
-          key: cabin.key,
-          maximumPoints: cabin.maximumPoints,
-          bagsAmount: cabin.bagsAmount,
-          passagePrice: cabin.passagePrice,
-          cancellationPrice: cabin.cancellationPrice,
-        };
-      }),
+      cabins: cabinList.map((cabin) => ({
+        key: cabin.key,
+        maximumPoints: cabin.maximumPoints,
+        bagsAmount: cabin.bagsAmount,
+        passagePrice: cabin.passagePrice,
+        cancellationPrice: cabin.cancellationPrice,
+      })),
     };
 
     try {
       setLoading(true);
-
-      // Tenta criar a rota via POST
       await api.post("api/admin/route", route);
-
-      // Exibe mensagem de sucesso
       toast.success("Route created successfully!", toastConfigs);
     } catch (error: any) {
-      // Tenta extrair mensagem de erro do servidor
       const errorMessage =
         error?.response?.data?.error || "Failed to create route.";
-
-      // Exibe mensagem de erro
       toast.error(errorMessage, toastConfigs);
     } finally {
       setAirportId1(0);
@@ -187,21 +175,34 @@ export default function RouteBox({ airportsInitialData }: RouteBoxProps) {
     }
   }
 
+  // Função que exclui uma rota específica a partir do ID
+  async function handleDeleteRoute(routeId: number) {
+    try {
+      await api.delete(`api/admin/route/${routeId}`);
+      toast.success("Route deleted successfully!", toastConfigs);
+    } catch (error: any) {
+      const errorMessage =
+        error?.response?.data?.error || "Failed to delete route.";
+      toast.error(errorMessage, toastConfigs);
+    } finally {
+      getRoutes({
+        airportIdSelected: airportIdSelected,
+        setFilteredRoutes: setFilteredRoutes,
+        setIsLoading: setLoadingRoutesInfoModal,
+      });
+    }
+  }
+
+  // Ao selecionar o primeiro aeroporto, busca os possíveis destinos que ainda não têm rota
   async function handleSelectAirport1(id: number) {
     try {
       setAirport2Select([]);
-
       setAirportId1(id);
-
       const data = await api.get(`/api/admin/route/filter/${id}/no-route`);
-
       setAirport2Select(data.data);
     } catch (error: any) {
-      // Tenta extrair mensagem de erro do servidor
       const errorMessage =
         error?.response?.data?.error || "Failed to get airports.";
-
-      // Exibe mensagem de erro
       toast.error(errorMessage, toastConfigs);
     }
   }
@@ -637,15 +638,20 @@ export default function RouteBox({ airportsInitialData }: RouteBoxProps) {
             setShowRoutesInfoModal(true);
           }}
         >
-         See Routes
+          See Routes
         </button>
 
-        <RouteInfo 
-        airports={airports} 
-        isOpen={showRoutesInfoModal}
-        onClose={() => setShowRoutesInfoModal(false)} 
-        isLoading={loadingRoutesInfoModal}
-        setIsLoading={(value:boolean) => setLoadingRoutesInfoModal(value)}
+        <RouteInfo
+          airports={airports}
+          isOpen={showRoutesInfoModal}
+          onClose={() => setShowRoutesInfoModal(false)}
+          isLoading={loadingRoutesInfoModal}
+          setIsLoading={(value: boolean) => setLoadingRoutesInfoModal(value)}
+          airportIdSelected={airportIdSelected}
+          setAirportIdSelected={setAirportIdSelected}
+          filteredRoutes={filteredRoutes}
+          setFilteredRoutes={setFilteredRoutes}
+          onDeleteRoute={handleDeleteRoute}
         />
       </div>
     </div>

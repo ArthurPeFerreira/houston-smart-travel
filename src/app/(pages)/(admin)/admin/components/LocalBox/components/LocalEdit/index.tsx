@@ -2,6 +2,7 @@
 
 import { api } from "@/lib/api/api";
 import { EditLocalTypeFile, LocalType } from "@/lib/local/types";
+import Decimal from "decimal.js";
 import React, { useEffect, useState } from "react";
 import { FaSpinner } from "react-icons/fa";
 
@@ -9,7 +10,10 @@ import { FaSpinner } from "react-icons/fa";
 interface LocalEditProps {
   isOpen: boolean; // Controla a exibição do modal
   onClose: () => void; // Função chamada para fechar o modal
-  handleEditLocal: (e: React.FormEvent<HTMLFormElement>, data: EditLocalTypeFile) => void; // Função que executa a lógica de edição do local
+  handleEditLocal: (
+    e: React.FormEvent<HTMLFormElement>,
+    data: EditLocalTypeFile
+  ) => void; // Função que executa a lógica de edição do local
   isLoading: boolean; // Indica se a operação de salvamento está em andamento
   local: LocalType; // Objeto com os dados do local a ser editado
 }
@@ -28,6 +32,8 @@ export default function LocalEdit({
 
   // Estados locais para armazenar os dados do formulário
   const [city, setCity] = useState<string>(""); // Nome da cidade
+  const [country, setCountry] = useState<string>("");
+  const [passagePrice, setPassagePrice] = useState<Decimal>(Decimal(0.0));
   const [active, setActive] = useState<boolean>(false); // Status de atividade do local
   const [selectedEditFile, setSelectedEditFile] = useState<File | null>(null); // Arquivo de imagem selecionado
   const [previewEdit, setPreviewEdit] = useState<string | null>(null); // Preview da imagem selecionada
@@ -36,6 +42,8 @@ export default function LocalEdit({
   useEffect(() => {
     async function setInitialData() {
       setCity(local.city); // Preenche o nome da cidade
+      setCountry(local.country); // Preenche o nome da cidade
+      setPassagePrice(local.passagePrice); // Preenche o nome da cidade
       setActive(local.active); // Preenche o status de atividade
 
       try {
@@ -96,6 +104,8 @@ export default function LocalEdit({
               airportId: local.airport.id,
               city: city,
               image: selectedEditFile,
+              country: country,
+              passagePrice: passagePrice,
             });
           }}
         >
@@ -111,6 +121,31 @@ export default function LocalEdit({
             required
           />
 
+          {/* Input para nome da cidade */}
+          <label className="block mb-1 text-white mt-4">Country</label>
+          <input
+            id="local country edit"
+            type="text"
+            value={country}
+            placeholder="Type airport country"
+            onChange={(e) => setCountry(e.target.value)}
+            className={inputs}
+            required
+          />
+
+          <label className="block mb-1 text-white mt-4">Passage Price</label>
+          <input
+            id="passage price edit"
+            type="number"
+            inputMode="decimal"
+            step="0.01"
+            value={Number(passagePrice)}
+            onChange={(e) => setPassagePrice(Decimal(e.target.value))}
+            className={inputs}
+            required
+            min={0}
+          />
+
           {/* Checkbox para indicar se o local está ativo */}
           <div className="mt-2 cursor-pointer">
             <input
@@ -122,10 +157,7 @@ export default function LocalEdit({
               }}
               className="mr-2"
             />
-            <label
-              htmlFor="active"
-              className="text-white cursor-pointer"
-            >
+            <label htmlFor="active" className="text-white cursor-pointer">
               Active
             </label>
           </div>

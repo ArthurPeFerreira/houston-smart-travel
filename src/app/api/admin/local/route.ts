@@ -19,13 +19,16 @@ import path from "path";
 // Importa função para editar a ordem dos Locais
 import { editLocalsOrder } from "@/lib/local/editLocalsOrder";
 
+// Importa biblioteca para manipulação precisa de valores decimais
+import Decimal from "decimal.js";
+
 // Função HTTP GET — Responsável por retornar todos os locais existentes
 export async function GET() {
     try {
         // Recupera todos os locais armazenados em cache (passando 0 como argumento)
         const locals = await getLocalByCache(0);
 
-        // Caso nenhum local seja encontrado, retorna erro 400
+        // Caso nenhum local seja encontrado, retorna erro 400 (bad request)
         if (!locals) {
             return NextResponse.json(
                 { message: "Failed to Find Locals!" },
@@ -33,10 +36,10 @@ export async function GET() {
             );
         }
 
-        // Retorna os locais encontrados como resposta em JSON
+        // Retorna os locais encontrados como resposta JSON
         return NextResponse.json(locals);
     } catch {
-        // Em caso de erro inesperado, retorna erro 500
+        // Em caso de erro inesperado, retorna erro 500 (internal server error)
         return NextResponse.json(
             { error: "Failed to Find Locals!" },
             { status: 500 }
@@ -52,11 +55,13 @@ export async function POST(req: NextRequest) {
 
         // Extrai os campos específicos do formulário
         const city = formData.get("city"); // Nome da cidade
+        const country = formData.get("country"); // Nome do país
+        const passagePrice = formData.get("passagePrice"); // Preço da passagem
         const airportId = formData.get("airportId"); // ID do aeroporto
         const file = formData.get("image") as File | null; // Arquivo de imagem
 
         // Valida se todos os campos obrigatórios foram preenchidos
-        if (!city || !airportId || !file) {
+        if (!city || !airportId || !file || !country || !passagePrice) {
             return NextResponse.json(
                 { error: "Missing Required Fields!" },
                 { status: 400 }
@@ -84,7 +89,7 @@ export async function POST(req: NextRequest) {
             }
         }
 
-        // Converte o arquivo da imagem para um buffer (binário)
+        // Converte o arquivo da imagem para um buffer binário
         const arrayBuffer = await file.arrayBuffer();
         const buffer = Buffer.from(arrayBuffer);
 
@@ -92,15 +97,17 @@ export async function POST(req: NextRequest) {
         const dirPath = path.join(process.cwd(), "public/locals/images");
         const filePath = path.join(dirPath, `${airportIdNumber}.jpg`);
 
-        // Cria o diretório, caso ainda não exista
+        // Cria o diretório, caso ainda não exista (recursivamente)
         await fs.mkdir(dirPath, { recursive: true });
 
         // Salva a imagem no caminho especificado
         await fs.writeFile(filePath, buffer);
 
-        // Cria o objeto com os dados para persistência no banco
+        // Cria o objeto com os dados prontos para serem salvos no banco de dados
         const localToCreate: CreateLocalType = {
             city: city.toString(),
+            country: country.toString(),
+            passagePrice: Decimal(passagePrice.toString()),
             airportId: airportIdNumber,
             image: `/locals/images/${airportIdNumber}.jpg`
         };
@@ -111,7 +118,7 @@ export async function POST(req: NextRequest) {
         // Retorna os dados do local recém-criado
         return NextResponse.json(localCreated);
     } catch {
-        // Em caso de erro interno, retorna status 500
+        // Em caso de erro interno, retorna erro 500
         return NextResponse.json(
             { error: "Failed to Create Local!" },
             { status: 500 }
@@ -136,7 +143,7 @@ export async function PUT(req: NextRequest) {
         // Busca os locais atuais no cache
         const locals = await getLocalByCache(0);
 
-        // Valida se todos os locais ainda existem e se não há discrepâncias no array
+        // Verifica se todos os locais ainda existem e se o array não possui inconsistências
         if (
             locals?.length !== newLocalsOrder.length ||
             !locals.every((oldLocal) =>
@@ -149,7 +156,7 @@ export async function PUT(req: NextRequest) {
             );
         }
 
-        // Atualiza a ordem dos locais no banco
+        // Atualiza a ordem dos locais no banco de dados
         const localCreated = await editLocalsOrder(newLocalsOrder);
 
         // Retorna a nova ordenação salva

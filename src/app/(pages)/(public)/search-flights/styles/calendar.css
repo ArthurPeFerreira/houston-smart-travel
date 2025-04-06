@@ -1,5 +1,5 @@
 :root{
-  --month-per-row: 4;
+  --month-per-row: 2;
   --spaces-per-month: calc(var(--month-per-row) - 1);
 }
 

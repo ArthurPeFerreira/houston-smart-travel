@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Locals" ADD COLUMN     "country" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "passagePrice" DECIMAL(65,30) NOT NULL DEFAULT 0.0;
