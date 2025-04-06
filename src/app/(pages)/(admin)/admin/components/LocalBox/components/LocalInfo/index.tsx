@@ -134,7 +134,8 @@ export default function LocalsInfo({
                 <tr className="bg-gray-700">
                   <th className={classItens}>Order</th>
                   <th className={classItens}>Airport</th>
-                  <th className={classItens}>City</th>
+                  <th className={classItens}>Description</th>
+                  <th className={classItens}>Passage Price</th>
                   <th className={classItens}>Image</th>
                   <th className={classItens}>Active</th>
                   <th className={classItens}>Edit</th>
@@ -180,7 +181,18 @@ export default function LocalsInfo({
                     </td>
 
                     {/* Coluna com o nome da cidade */}
-                    <td className={classItens}>{local.city}</td>
+                    <td className={classItens}>
+                      {local.city}
+                      {", "}
+                      {local.country}
+                    </td>
+
+                    <td className={classItens}>
+                      {"$ "}
+                      {local.passagePrice
+                        ? Number(local.passagePrice).toFixed(2)
+                        : "0.00"}
+                    </td>
 
                     {/* Botão para visualizar a imagem do local */}
                     <td className={classItens}>

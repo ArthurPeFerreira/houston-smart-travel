@@ -26,6 +26,7 @@ import LocalsInfo from "./components/LocalInfo";
 
 // Tipos utilizados para criação e edição de locais
 import { EditLocalTypeFile, LocalType } from "@/lib/local/types";
+import Decimal from "decimal.js";
 
 // Define a estrutura das props recebidas pelo componente
 interface LocalBoxProps {
@@ -42,17 +43,18 @@ export default function LocalBox({
   const inputs =
     "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white";
 
-
   // Estados para armazenar os dados de aeroportos e locais
-  const [airports, setAirports] = useState<AirportType[] | undefined>();
+  const [airports, setAirports] = useState<AirportType[] | undefined>(airportsInitialData);
   const [airportsToShow, setAirportsToShow] = useState<
     AirportType[] | undefined
   >();
-  const [locals, setLocals] = useState<LocalType[] | undefined>();
+  const [locals, setLocals] = useState<LocalType[] | undefined>(localsInitialData);
 
   // Estados para o formulário de criação de local
   const [airportId, setAirportId] = useState<number>(0);
   const [city, setCity] = useState<string>("");
+  const [country, setCountry] = useState<string>("");
+  const [passagePrice, setPassagePrice] = useState<Decimal>(Decimal(0.0));
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -75,13 +77,13 @@ export default function LocalBox({
     active: true,
     airport: { id: 0, city: "", airportCode: "" },
     city: "",
+    country: "",
+    passagePrice: Decimal(0.0),
     image: "",
   });
 
   // useEffect inicial: popula dados iniciais e escuta eventos globais
   useEffect(() => {
-    setLocals(localsInitialData);
-    setAirports(airportsInitialData);
     setLoadingLocalsInfoModal(false);
 
     // Função executada ao disparar evento global "updateAirports"
@@ -98,7 +100,7 @@ export default function LocalBox({
     return () => {
       eventEmitter.off("updateAirports", handleEvent);
     };
-  }, [localsInitialData, airportsInitialData]);
+  }, []);
 
   // useEffect que filtra os aeroportos que ainda não têm locais associados
   useEffect(() => {
@@ -150,10 +152,24 @@ export default function LocalBox({
       return;
     }
 
+    if (city === "") {
+      toast.error("Please type an city.", toastConfigs);
+      setLoading(false);
+      return;
+    }
+
+    if (country === "") {
+      toast.error("Please type an country.", toastConfigs);
+      setLoading(false);
+      return;
+    }
+
     // Prepara dados para envio multipart (com imagem)
     const formData = new FormData();
     formData.append("airportId", airportId.toString());
     formData.append("city", city);
+    formData.append("country", country);
+    formData.append("passagePrice", passagePrice.toString());
     formData.append("image", selectedFile);
 
     try {
@@ -164,13 +180,20 @@ export default function LocalBox({
       if (response.status === 200) {
         toast.success("Local created successfully!", toastConfigs);
       }
-    } catch {
-      toast.error("Failed to create local!", toastConfigs);
+    } catch (error: any) {
+      // Tenta extrair mensagem de erro do servidor
+      const errorMessage =
+        error?.response?.data?.error || "Failed to create local.";
+
+      // Exibe mensagem de erro
+      toast.error(errorMessage, toastConfigs);
     } finally {
       // Reseta os campos do formulário
       setLoading(false);
       setAirportId(0);
       setCity("");
+      setCountry("");
+      setPassagePrice(Decimal(0.0));
       setSelectedFile(null);
       setPreview(null);
 
@@ -189,8 +212,13 @@ export default function LocalBox({
         setLocals(response.data);
         toast.success("Local deleted successfully!", toastConfigs);
       }
-    } catch {
-      toast.error("Failed to delete Local!", toastConfigs);
+    } catch (error: any) {
+      // Tenta extrair mensagem de erro do servidor
+      const errorMessage =
+        error?.response?.data?.error || "Failed to delete local.";
+
+      // Exibe mensagem de erro
+      toast.error(errorMessage, toastConfigs);
     }
   }
 
@@ -216,6 +244,8 @@ export default function LocalBox({
     const formData = new FormData();
     formData.append("airportId", data.airportId.toString());
     formData.append("city", data.city);
+    formData.append("country", data.country);
+    formData.append("passagePrice", data.passagePrice.toString());
     formData.append("active", data.active.toString());
     formData.append("image", data.image);
 
@@ -231,8 +261,13 @@ export default function LocalBox({
       if (response.status === 200) {
         toast.success("Local edited successfully!", toastConfigs);
       }
-    } catch {
-      toast.error("Failed to edit local!", toastConfigs);
+    } catch (error: any) {
+      // Tenta extrair mensagem de erro do servidor
+      const errorMessage =
+        error?.response?.data?.error || "Failed to edit local.";
+
+      // Exibe mensagem de erro
+      toast.error(errorMessage, toastConfigs);
     } finally {
       const responseLocals = await api.get("api/admin/local");
       setLocals(responseLocals.data);
@@ -303,6 +338,31 @@ export default function LocalBox({
             onChange={(e) => setCity(e.target.value)}
             className={inputs}
             required
+          />
+
+          {/* Input para nome da cidade */}
+          <label className="block mb-1 text-white mt-4">Country</label>
+          <input
+            id="local country"
+            type="text"
+            value={country}
+            placeholder="Type airport country"
+            onChange={(e) => setCountry(e.target.value)}
+            className={inputs}
+            required
+          />
+
+          <label className="block mb-1 text-white mt-4">Passage Price</label>
+          <input
+            id="passage price"
+            type="number"
+            inputMode="decimal"
+            step="0.01"
+            value={Number(passagePrice)}
+            onChange={(e) => setPassagePrice(Decimal(e.target.value))}
+            className={inputs}
+            required
+            min={0}
           />
 
           {/* Upload de imagem com botão e preview */}
