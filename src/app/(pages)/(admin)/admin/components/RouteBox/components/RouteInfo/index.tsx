@@ -10,7 +10,7 @@ import { GoXCircle } from "react-icons/go";
 import { MdOutlineExpandCircleDown } from "react-icons/md";
 import getRoutes from "../../functions/getRoutes";
 import Image from "next/image";
-import SeeCabins from "./components/seeCabins";
+import SeeCabins from "./components/SeeCabins";
 
 // Tipagem das propriedades esperadas pelo componente RouteInfo
 interface RouteInfoModalProps {
