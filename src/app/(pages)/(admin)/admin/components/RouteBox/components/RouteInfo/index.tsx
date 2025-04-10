@@ -3,13 +3,14 @@
 
 import { AirportType } from "@/lib/airport/types";
 import { mileagePrograms } from "@/lib/route/mileagePrograms";
-import { RouteType } from "@/lib/route/types";
-import { useEffect } from "react";
+import { CabinsType, RouteType } from "@/lib/route/types";
+import { useEffect, useState } from "react";
 import { FaEye, FaSpinner } from "react-icons/fa";
 import { GoXCircle } from "react-icons/go";
 import { MdOutlineExpandCircleDown } from "react-icons/md";
 import getRoutes from "../../functions/getRoutes";
 import Image from "next/image";
+import SeeCabins from "./components/seeCabins";
 
 // Tipagem das propriedades esperadas pelo componente RouteInfo
 interface RouteInfoModalProps {
@@ -45,6 +46,9 @@ export default function RouteInfo({
   // Classe de estilo para os itens da tabela
   const classItens = "border border-gray-800 p-2 text-center";
 
+  const [cabinsSelected, setCabinsSelected] = useState<CabinsType[]>([]);
+  const [isOpenCabins, setIsOpenCabins] = useState(false);
+
   // Hook de efeito responsável por buscar as rotas sempre que o aeroporto selecionado muda
   useEffect(() => {
     if (airportIdSelected !== 0) {
@@ -54,7 +58,7 @@ export default function RouteInfo({
         setIsLoading: setIsLoading,
       });
     }
-  }, [airportIdSelected, setFilteredRoutes, setIsLoading]);
+  }, [airportIdSelected]);
 
   // Se o modal não estiver aberto, não renderiza nada
   if (!isOpen) return null;
@@ -64,6 +68,8 @@ export default function RouteInfo({
     <div className="fixed inset-0 text-white flex items-center justify-center z-50 w-full h-full bg-gray-900">
       {/* Conteúdo do modal */}
       <div className={`bg-gray-800 p-6 rounded shadow-lg h-fit w-10/12`}>
+        <h1 className="text-center font-bold text-3xl mb-5 relative">Routes</h1>
+
         {/* Dropdown para selecionar o aeroporto e filtrar as rotas */}
         <select
           name="filterRouteByAirport"
@@ -169,7 +175,13 @@ export default function RouteInfo({
                       {/* Coluna com botão para visualizar as cabines da rota */}
                       <td className={classItens}>
                         <div className="flex w-full items-center justify-center">
-                          <button className="bg-green-500 py-2 px-5 rounded cursor-pointer hover:bg-green-600 flex flex-row gap-2 items-center">
+                          <button
+                            className="bg-green-500 py-2 px-5 rounded cursor-pointer hover:bg-green-600 flex flex-row gap-2 items-center"
+                            onClick={() => {
+                              setCabinsSelected(route.cabins);
+                              setIsOpenCabins(true);
+                            }}
+                          >
                             <FaEye size={25} color="white" />{" "}
                             <label>({route.cabins.length})</label>
                           </button>
@@ -217,6 +229,15 @@ export default function RouteInfo({
         >
           Close
         </button>
+
+        <SeeCabins
+          cabinsToShow={cabinsSelected}
+          isOpen={isOpenCabins}
+          onClose={() => {
+            setCabinsSelected([]);
+            setIsOpenCabins(false);
+          }}
+        />
       </div>
     </div>
   );
