@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { mileagePrograms } from "@/lib/route/mileagePrograms";
 import { components, OptionProps, SingleValueProps } from "react-select";
 
