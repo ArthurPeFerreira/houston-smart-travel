@@ -6,11 +6,7 @@
 import { useState } from "react";
 
 // Importação do componente Select do react-select para dropdowns customizados
-import Select, {
-  components,
-  OptionProps,
-  SingleValueProps,
-} from "react-select";
+import Select from "react-select";
 
 // Tipagem dos dados de aeroporto
 import { AirportType } from "@/lib/airport/types";
@@ -28,7 +24,7 @@ import { mileagePrograms } from "@/lib/route/mileagePrograms";
 import Decimal from "decimal.js";
 
 // Tipagem do objeto de criação de rota
-import { CreateRouteType, RouteType } from "@/lib/route/types";
+import { CreateRouteType, EditRouteType, RouteType } from "@/lib/route/types";
 
 // Configurações e instância do toast para notificações
 import { toastConfigs } from "@/lib/toastify/toastify";
@@ -36,13 +32,13 @@ import { toast } from "react-toastify";
 import { api } from "@/lib/api/api";
 import RouteInfo from "./components/RouteInfo";
 import getRoutes from "./functions/getRoutes";
-
-// Tipagem para opções do Select que representam os programas de milhagem
-interface MileageProgramOption {
-  value: string;
-  label: string;
-  logoUrl: string;
-}
+import {
+  customStyles,
+  MileageProgramOption,
+  options,
+  ProgramOption,
+  ProgramSingleValue,
+} from "./functions/selectMileageProgram";
 
 // Tipagem interna das cabines utilizadas no componente
 interface CabinData {
@@ -65,15 +61,6 @@ export default function RouteBox({ airportsInitialData }: RouteBoxProps) {
   // Classe de estilo aplicada aos inputs do formulário
   const inputs =
     "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white";
-
-  // Mapeamento dos programas de milhagem para serem usados como opções no Select
-  const options: MileageProgramOption[] = Object.values(mileagePrograms).map(
-    (program) => ({
-      value: program.key,
-      label: program.label,
-      logoUrl: program.logoUrl,
-    })
-  );
 
   // Estado para armazenar a lista de aeroportos disponíveis (recebidos via props ou array vazio)
   const airports = airportsInitialData ? airportsInitialData : [];
@@ -109,9 +96,14 @@ export default function RouteBox({ airportsInitialData }: RouteBoxProps) {
   const [loadingRoutesInfoModal, setLoadingRoutesInfoModal] =
     useState<boolean>(true);
 
+  const [loadingEditRouteModal, setLoadingEditRouteModal] =
+    useState<boolean>(false);
+
   // Estado que controla a exibição do modal com as rotas já cadastradas
   const [showRoutesInfoModal, setShowRoutesInfoModal] =
     useState<boolean>(false);
+
+  const [showEditRouteModal, setShowEditRouteModal] = useState<boolean>(false);
 
   // Estado que armazena o ID do aeroporto selecionado no modal de rotas
   const [airportIdSelected, setAirportIdSelected] = useState<number>(0);
@@ -175,6 +167,8 @@ export default function RouteBox({ airportsInitialData }: RouteBoxProps) {
     }
   }
 
+  async function handleEditRoute(route: EditRouteType) {}
+
   // Função que exclui uma rota específica a partir do ID
   async function handleDeleteRoute(routeId: number) {
     try {
@@ -205,82 +199,6 @@ export default function RouteBox({ airportsInitialData }: RouteBoxProps) {
         error?.response?.data?.error || "Failed to get airports.";
       toast.error(errorMessage, toastConfigs);
     }
-  }
-
-  // Estilos customizados para o componente Select do react-select
-  const customStyles = {
-    control: (provided: any) => ({
-      ...provided,
-      backgroundColor: "#101828",
-      borderColor: "#4b5563",
-      color: "#fff",
-      borderRadius: "0.25rem",
-      minHeight: "auto",
-      height: "auto",
-      boxShadow: "none",
-      "&:hover": {
-        borderColor: "#4b5563",
-      },
-    }),
-    indicatorSeparator: () => ({
-      display: "none",
-    }),
-    dropdownIndicator: (provided: any) => ({
-      ...provided,
-      color: "#fff",
-      padding: "0",
-      svg: {
-        width: "16px",
-        height: "16px",
-      },
-      "&:hover": {
-        color: "#fff",
-      },
-    }),
-    menu: (provided: any) => ({
-      ...provided,
-      backgroundColor: "#101828",
-    }),
-    option: (provided: any, state: any) => ({
-      ...provided,
-      backgroundColor: state.isSelected ? "#1967d2" : "#101828",
-      color: "#fff",
-      ":hover": {
-        backgroundColor: "#1967d2",
-      },
-    }),
-    singleValue: (provided: any) => ({
-      ...provided,
-      color: "#fff",
-    }),
-  };
-
-  // Componente customizado de item da lista de opções do Select (com ícone)
-  function ProgramOption(props: OptionProps<MileageProgramOption>) {
-    const { data } = props;
-    return (
-      <components.Option {...props}>
-        <div className="flex items-center">
-          {/* eslint-disable @next/next/no-img-element */}
-          <img src={data.logoUrl} alt={data.label} className="w-5 h-5 mr-2" />
-          {data.label}
-        </div>
-      </components.Option>
-    );
-  }
-
-  // Componente customizado para valor selecionado no Select (com ícone)
-  function ProgramSingleValue(props: SingleValueProps<MileageProgramOption>) {
-    const { data } = props;
-    return (
-      <components.SingleValue {...props}>
-        <div className="flex items-center">
-          {/* eslint-disable @next/next/no-img-element */}
-          <img src={data.logoUrl} alt={data.label} className="w-5 h-5 mr-2" />
-          {data.label}
-        </div>
-      </components.SingleValue>
-    );
   }
 
   // Adiciona uma nova cabine à lista de seleção
@@ -636,6 +554,7 @@ export default function RouteBox({ airportsInitialData }: RouteBoxProps) {
           className="mt-2 w-full text-start text-blue-500 cursor-pointer hover:underline"
           onClick={() => {
             setShowRoutesInfoModal(true);
+            document.body.classList.add("overflow-hidden");
           }}
         >
           See Routes
@@ -644,14 +563,25 @@ export default function RouteBox({ airportsInitialData }: RouteBoxProps) {
         <RouteInfo
           airports={airports}
           isOpen={showRoutesInfoModal}
-          onClose={() => setShowRoutesInfoModal(false)}
+          isOpenEditModal={showEditRouteModal}
+          setIsOpenEditModal={() => setShowEditRouteModal(true)}
+          onClose={() => {
+            setShowRoutesInfoModal(false);
+            document.body.classList.remove("overflow-hidden");
+          }}
+          onCloseEditModal={() => setShowEditRouteModal(false)}
           isLoading={loadingRoutesInfoModal}
+          isLoadingEditModal={loadingEditRouteModal}
           setIsLoading={(value: boolean) => setLoadingRoutesInfoModal(value)}
+          setIsLoadingEditModal={(value: boolean) =>
+            setLoadingEditRouteModal(value)
+          }
           airportIdSelected={airportIdSelected}
           setAirportIdSelected={setAirportIdSelected}
           filteredRoutes={filteredRoutes}
           setFilteredRoutes={setFilteredRoutes}
           onDeleteRoute={handleDeleteRoute}
+          onEditRoute={handleEditRoute}
         />
       </div>
     </div>

@@ -3,7 +3,7 @@
 
 import { AirportType } from "@/lib/airport/types";
 import { mileagePrograms } from "@/lib/route/mileagePrograms";
-import { CabinsType, RouteType } from "@/lib/route/types";
+import { CabinsType, EditRouteType, RouteType } from "@/lib/route/types";
 import { useEffect, useState } from "react";
 import { FaEye, FaSpinner } from "react-icons/fa";
 import { GoXCircle } from "react-icons/go";
@@ -11,26 +11,36 @@ import { MdOutlineExpandCircleDown } from "react-icons/md";
 import getRoutes from "../../functions/getRoutes";
 import Image from "next/image";
 import SeeCabins from "./components/SeeCabins";
+import EditRoute from "./components/EditRoute";
 
 // Tipagem das propriedades esperadas pelo componente RouteInfo
 interface RouteInfoModalProps {
   airports: AirportType[]; // Lista de aeroportos disponíveis
   isOpen: boolean; // Define se o modal está visível
+  isOpenEditModal: boolean; // Define se o modal está visível
+  setIsOpenEditModal: () => void; // Função para alterar o estado de carregamento
   onClose: () => void; // Função para fechar o modal
+  onCloseEditModal: () => void; // Função para fechar o modal
   isLoading: boolean; // Indica se os dados estão sendo carregados
+  isLoadingEditModal: boolean; // Indica se os dados estão sendo carregados
   setIsLoading: (value: boolean) => void; // Função para alterar o estado de carregamento
+  setIsLoadingEditModal: (value: boolean) => void; // Função para alterar o estado de carregamento
   airportIdSelected: number; // ID do aeroporto atualmente selecionado
   setAirportIdSelected: (value: number) => void; // Função para alterar o aeroporto selecionado
   filteredRoutes: RouteType[]; // Lista de rotas filtradas associadas ao aeroporto selecionado
   setFilteredRoutes: (value: RouteType[]) => void; // Função para atualizar a lista de rotas filtradas
   onDeleteRoute: (routeId: number) => void; // Função para excluir uma rota
+  onEditRoute: (route: EditRouteType) => void;
 }
 
 // Componente responsável por exibir um modal com informações das rotas de um aeroporto selecionado
 export default function RouteInfo({
   airports,
   isOpen,
+  isOpenEditModal,
+  setIsOpenEditModal,
   onClose,
+  onCloseEditModal,
   isLoading,
   setIsLoading,
   airportIdSelected,
@@ -48,6 +58,8 @@ export default function RouteInfo({
 
   const [cabinsSelected, setCabinsSelected] = useState<CabinsType[]>([]);
   const [isOpenCabins, setIsOpenCabins] = useState(false);
+
+  const [routeToEdit, setRouteToEdit] = useState<RouteType | undefined>();
 
   // Hook de efeito responsável por buscar as rotas sempre que o aeroporto selecionado muda
   useEffect(() => {
@@ -190,7 +202,13 @@ export default function RouteInfo({
 
                       {/* Botão de edição da rota (ainda não implementado) */}
                       <td className={classItens}>
-                        <button className="bg-yellow-500 py-2 px-5 rounded cursor-pointer hover:bg-yellow-600">
+                        <button
+                          className="bg-yellow-500 py-2 px-5 rounded cursor-pointer hover:bg-yellow-600"
+                          onClick={() => {
+                            setRouteToEdit(route);
+                            setIsOpenEditModal();
+                          }}
+                        >
                           Edit
                         </button>
                       </td>
@@ -238,6 +256,17 @@ export default function RouteInfo({
             setIsOpenCabins(false);
           }}
         />
+        {routeToEdit ? (
+          <EditRoute
+            isOpen={isOpenEditModal}
+            onClose={() => {
+              onCloseEditModal();
+              setRouteToEdit(undefined);
+            }}
+            onSave={() => {}}
+            initialData={routeToEdit}
+          />
+        ) : null}
       </div>
     </div>
   );
