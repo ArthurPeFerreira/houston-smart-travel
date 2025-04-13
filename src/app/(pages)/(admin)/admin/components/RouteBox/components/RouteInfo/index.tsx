@@ -12,6 +12,7 @@ import getRoutes from "../../functions/getRoutes";
 import Image from "next/image";
 import SeeCabins from "./components/SeeCabins";
 import EditRoute from "./components/EditRoute";
+import eventEmitter from "@/lib/event/eventEmmiter";
 
 // Tipagem das propriedades esperadas pelo componente RouteInfo
 interface RouteInfoModalProps {
@@ -24,7 +25,6 @@ interface RouteInfoModalProps {
   isLoading: boolean; // Indica se os dados estão sendo carregados
   isLoadingEditModal: boolean; // Indica se os dados estão sendo carregados
   setIsLoading: (value: boolean) => void; // Função para alterar o estado de carregamento
-  setIsLoadingEditModal: (value: boolean) => void; // Função para alterar o estado de carregamento
   airportIdSelected: number; // ID do aeroporto atualmente selecionado
   setAirportIdSelected: (value: number) => void; // Função para alterar o aeroporto selecionado
   filteredRoutes: RouteType[]; // Lista de rotas filtradas associadas ao aeroporto selecionado
@@ -42,12 +42,14 @@ export default function RouteInfo({
   onClose,
   onCloseEditModal,
   isLoading,
+  isLoadingEditModal,
   setIsLoading,
   airportIdSelected,
   setAirportIdSelected,
   filteredRoutes,
   setFilteredRoutes,
   onDeleteRoute,
+  onEditRoute,
 }: RouteInfoModalProps) {
   // Classe de estilo para os inputs do modal
   const inputs =
@@ -71,6 +73,26 @@ export default function RouteInfo({
       });
     }
   }, [airportIdSelected]);
+
+  useEffect(() => {
+    // Define o callback separado para poder referenciar na hora de remover
+    const handleUpdateRoutes = () => {
+      getRoutes({
+        airportIdSelected: airportIdSelected,
+        setFilteredRoutes: setFilteredRoutes,
+        setIsLoading: setIsLoading,
+      });
+    };
+
+    // Inscreve o listener no evento "updateRoutes"
+    eventEmitter.on("updateRoutes", handleUpdateRoutes);
+
+    // Função de limpeza chamada quando o componente desmonta ou o effect é reexecutado
+    return () => {
+      // Remove o listener para evitar múltiplas inscrições
+      eventEmitter.off("updateRoutes", handleUpdateRoutes);
+    };
+  }, []);
 
   // Se o modal não estiver aberto, não renderiza nada
   if (!isOpen) return null;
@@ -259,11 +281,12 @@ export default function RouteInfo({
         {routeToEdit ? (
           <EditRoute
             isOpen={isOpenEditModal}
+            isLoading={isLoadingEditModal}
             onClose={() => {
               onCloseEditModal();
               setRouteToEdit(undefined);
             }}
-            onSave={() => {}}
+            onSave={(data) => onEditRoute(data)}
             initialData={routeToEdit}
           />
         ) : null}

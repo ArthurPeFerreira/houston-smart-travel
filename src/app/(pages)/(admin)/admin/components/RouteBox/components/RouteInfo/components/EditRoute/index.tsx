@@ -1,6 +1,6 @@
 "use client";
 
-import { CabinsType, RouteType } from "@/lib/route/types";
+import { EditRouteType, RouteType } from "@/lib/route/types";
 
 import Select from "react-select";
 import {
@@ -14,7 +14,7 @@ import { act, useEffect, useState } from "react";
 import { mileagePrograms } from "@/lib/route/mileagePrograms";
 import { Cabin, CabinKey, cabinPriority, cabins } from "@/lib/route/cabins";
 import Decimal from "decimal.js";
-import { FaPlus, FaTrash } from "react-icons/fa";
+import { FaPlus, FaSpinner, FaTrash } from "react-icons/fa";
 
 interface CabinData {
   key: CabinKey;
@@ -29,14 +29,17 @@ interface CabinData {
 // Tipagem das propriedades esperadas pelo componente EditRoute
 interface EditRouteModalProps {
   isOpen: boolean; // Define se o modal está visível
+  isLoading: boolean;
   onClose: () => void; // Função para fechar o modal
-  onSave: () => void; // Função para fechar o modal
+  onSave: (data: EditRouteType) => void; // Função para fechar o modal
   initialData: RouteType; // Dados iniciais a serem exibidos no modal
 }
 
 export default function EditRoute({
   isOpen,
+  isLoading,
   onClose,
+  onSave,
   initialData,
 }: EditRouteModalProps) {
   const inputs =
@@ -158,11 +161,43 @@ export default function EditRoute({
     <div className="fixed inset-0 text-white flex items-center justify-center z-50 w-full h-full bg-gray-900">
       {/* Caixa interna do modal com padding e aparência arredondada */}
       <div className="bg-gray-800 p-6 rounded shadow-lg max-w-96 sm:max-w-11/12 w-fit max-h-11/12 overflow-y-auto">
-        <div>
-          {/* Título centralizado do modal */}
-          <h1 className="text-center font-bold text-3xl mb-5 relative">
-            Edit Route
-          </h1>
+        {/* Título centralizado do modal */}
+        <h1 className="text-center font-bold text-3xl mb-5 relative">
+          Edit Route
+        </h1>
+        <form
+          className="flex flex-col gap-2"
+          onSubmit={(e) => {
+            e.preventDefault();
+            const cabinsToSend = cabinList.map((cabin) => ({
+              key: cabin.key,
+              maximumPoints: cabin.maximumPoints,
+              bagsAmount: cabin.bagsAmount,
+              passagePrice: cabin.passagePrice,
+              cancellationPrice: cabin.cancellationPrice,
+            }));
+
+            const data: EditRouteType = {
+              id: initialData.id,
+              cabins: cabinsToSend,
+              mileageProgram: mileageProgram?.value as string,
+              enableLayovers,
+              active,
+            };
+
+            onSave(data);
+          }}
+        >
+          <div className="flex flex-col gap-2">
+            {initialData.airports.map((airport) => (
+              <div
+                key={airport.id}
+                className="bg-gray-700 p-2 rounded text-sm text-white"
+              >
+                {airport.city} - {airport.airportCode}
+              </div>
+            ))}
+          </div>
           <div className="flex flex-col gap-2">
             {/* Seção de seleção e adição de cabines à rota */}
             <div className="flex flex-col">
@@ -383,16 +418,34 @@ export default function EditRoute({
               </label>
             </div>
           </div>
-          {/* Botão para fechar o modal e resetar a seleção de aeroporto */}
-          <button
-            onClick={() => {
-              onClose();
-            }}
-            className="w-full p-2 mt-3 rounded bg-red-500 hover:bg-red-600 transition cursor-pointer"
-          >
-            Close
-          </button>
-        </div>
+          {/* Botões de ação do formulário */}
+          <div className="flex justify-end">
+            {/* Botão de cancelar */}
+            <button
+              type="button"
+              onClick={() => {
+                onClose();
+              }}
+              className="mr-2 bg-gray-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-gray-600"
+            >
+              Cancel
+            </button>
+
+            {/* Botão de salvar ou indicador de carregamento */}
+            {isLoading ? (
+              <div className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600">
+                <FaSpinner className="animate-spin" size={24} />
+              </div>
+            ) : (
+              <button
+                type="submit"
+                className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600"
+              >
+                Save
+              </button>
+            )}
+          </div>
+        </form>
       </div>
     </div>
   );

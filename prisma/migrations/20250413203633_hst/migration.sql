@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Locals" ALTER COLUMN "country" DROP DEFAULT,
+ALTER COLUMN "passagePrice" DROP DEFAULT;

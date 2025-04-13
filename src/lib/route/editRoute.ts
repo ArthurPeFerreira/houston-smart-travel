@@ -14,22 +14,24 @@ export async function editRoute(
   routeInfo: EditRouteType
 ): Promise<RouteType | undefined> {
   try {
-    // Itera sobre a lista de cabines fornecidas para atualizar cada uma no banco
-    for (const cabin of routeInfo.cabins) {
-      await prismaClient.cabinsRoute.update({
-        where: {
-          // Utiliza a constraint composta `routeId` + `key` para identificar a cabine
-          UniqueCabinPerRoute: { routeId: routeInfo.id, key: cabin.key },
-        },
-        // Aplica as alterações nos campos da cabine
-        data: {
-          maximumPoints: cabin.maximumPoints,
-          passagePrice: cabin.passagePrice,
-          cancellationPrice: cabin.cancellationPrice,
-          bagsAmount: cabin.bagsAmount,
-        },
-      });
-    }
+    await prismaClient.cabinsRoute.deleteMany({
+      where: { routeId: routeInfo.id },
+    });
+
+    const cabinsData = routeInfo.cabins.map((cabin) => {
+      return {
+        routeId: routeInfo.id,
+        key: cabin.key,
+        maximumPoints: cabin.maximumPoints,
+        passagePrice: cabin.passagePrice,
+        cancellationPrice: cabin.cancellationPrice,
+        bagsAmount: cabin.bagsAmount,
+      };
+    });
+
+    await prismaClient.cabinsRoute.createMany({
+      data: cabinsData,
+    });
 
     // Atualiza os dados principais da rota (status e programa de milhagem)
     const route = await prismaClient.route.update({

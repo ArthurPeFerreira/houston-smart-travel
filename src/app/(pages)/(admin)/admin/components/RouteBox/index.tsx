@@ -39,6 +39,8 @@ import {
   ProgramOption,
   ProgramSingleValue,
 } from "./functions/selectMileageProgram";
+import { set } from "date-fns";
+import eventEmitter from "@/lib/event/eventEmmiter";
 
 // Tipagem interna das cabines utilizadas no componente
 interface CabinData {
@@ -167,7 +169,21 @@ export default function RouteBox({ airportsInitialData }: RouteBoxProps) {
     }
   }
 
-  async function handleEditRoute(route: EditRouteType) {}
+  async function handleEditRoute(data: EditRouteType) {
+    setLoadingEditRouteModal(true);
+    try {
+      await api.put(`api/admin/route/${data.id}`, data);
+      toast.success("Route edited successfully!", toastConfigs);
+    } catch (error: any) {
+      const errorMessage =
+        error?.response?.data?.error || "Failed to edit route.";
+      toast.error(errorMessage, toastConfigs);
+    } finally {
+      eventEmitter.emit("updateRoutes");
+      setLoadingEditRouteModal(false);
+      setShowEditRouteModal(false);
+    }
+  }
 
   // Função que exclui uma rota específica a partir do ID
   async function handleDeleteRoute(routeId: number) {
@@ -573,15 +589,12 @@ export default function RouteBox({ airportsInitialData }: RouteBoxProps) {
           isLoading={loadingRoutesInfoModal}
           isLoadingEditModal={loadingEditRouteModal}
           setIsLoading={(value: boolean) => setLoadingRoutesInfoModal(value)}
-          setIsLoadingEditModal={(value: boolean) =>
-            setLoadingEditRouteModal(value)
-          }
           airportIdSelected={airportIdSelected}
           setAirportIdSelected={setAirportIdSelected}
           filteredRoutes={filteredRoutes}
           setFilteredRoutes={setFilteredRoutes}
           onDeleteRoute={handleDeleteRoute}
-          onEditRoute={handleEditRoute}
+          onEditRoute={(data) => handleEditRoute(data)}
         />
       </div>
     </div>

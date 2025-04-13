@@ -118,7 +118,7 @@ export async function PUT(
 
     // Verifica se todos os campos obrigatórios foram fornecidos
     if (
-      !routeInfo.id ||
+      !routeIdNumber ||
       !routeInfo.mileageProgram ||
       routeInfo.enableLayovers === undefined ||
       routeInfo.active === undefined ||
@@ -142,9 +142,11 @@ export async function PUT(
       );
     }
 
+    
+
     // Edita o Rota com as informações fornecidas
     const routeEdited = await editRoute(routeInfo);
-
+    
     // Retorna o Rota editado
     return NextResponse.json(routeEdited);
   } catch {
