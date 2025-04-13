@@ -1,7 +1,10 @@
+// Indica que este é um componente do lado do cliente (Next.js App Router)
 "use client";
 
+// Importações de tipos utilizados para edição e exibição de rotas
 import { EditRouteType, RouteType } from "@/lib/route/types";
 
+// Importação do componente Select e configurações do seletor customizado
 import Select from "react-select";
 import {
   customStyles,
@@ -10,31 +13,37 @@ import {
   ProgramOption,
   ProgramSingleValue,
 } from "../../../../functions/selectMileageProgram";
-import { act, useEffect, useState } from "react";
+
+// Hooks do React e utilitários
+import { useEffect, useState } from "react";
 import { mileagePrograms } from "@/lib/route/mileagePrograms";
 import { Cabin, CabinKey, cabinPriority, cabins } from "@/lib/route/cabins";
 import Decimal from "decimal.js";
+
+// Ícones utilizados nas ações
 import { FaPlus, FaSpinner, FaTrash } from "react-icons/fa";
 
+// Tipagem interna das cabines utilizadas no formulário de edição
 interface CabinData {
-  key: CabinKey;
-  label: string;
-  code: "Y" | "J" | "F" | "W";
-  maximumPoints: number;
-  bagsAmount: number;
-  passagePrice: Decimal;
-  cancellationPrice: Decimal;
+  key: CabinKey; // Identificador único da cabine
+  label: string; // Nome da cabine
+  code: "Y" | "J" | "F" | "W"; // Código da classe
+  maximumPoints: number; // Pontuação máxima
+  bagsAmount: number; // Quantidade de bagagens
+  passagePrice: Decimal; // Preço da passagem
+  cancellationPrice: Decimal; // Taxa de cancelamento
 }
 
-// Tipagem das propriedades esperadas pelo componente EditRoute
+// Tipagem das props esperadas pelo modal de edição de rota
 interface EditRouteModalProps {
   isOpen: boolean; // Define se o modal está visível
-  isLoading: boolean;
+  isLoading: boolean; // Indica se está processando a ação de salvar
   onClose: () => void; // Função para fechar o modal
-  onSave: (data: EditRouteType) => void; // Função para fechar o modal
-  initialData: RouteType; // Dados iniciais a serem exibidos no modal
+  onSave: (data: EditRouteType) => void; // Função callback para salvar as alterações
+  initialData: RouteType; // Dados da rota a serem editados
 }
 
+// Componente de edição de rota, com formulário interativo e controle de estados
 export default function EditRoute({
   isOpen,
   isLoading,
@@ -42,26 +51,25 @@ export default function EditRoute({
   onSave,
   initialData,
 }: EditRouteModalProps) {
+  // Classe de estilo reutilizada para inputs
   const inputs =
     "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white";
-  // Extrai o programa de milhagem baseado na chave fornecida
-  const program = mileagePrograms[initialData.mileageProgram];
 
+  // Estados do formulário de edição
   const [mileageProgram, setMileageProgram] =
-    useState<MileageProgramOption | null>(null);
-  const [enableLayovers, setEnableLayovers] = useState<boolean>(false);
-  const [active, setActive] = useState<boolean>(false);
-  const [cabinList, setCabinList] = useState<CabinData[]>([]);
-  const [cabinToShow, setCabinToShow] = useState<Cabin[]>([]);
-  const [cabinKey, setCabinKey] = useState<string>("");
+    useState<MileageProgramOption | null>(null); // Programa de milhagem selecionado
+  const [enableLayovers, setEnableLayovers] = useState<boolean>(false); // Permitir conexões
+  const [active, setActive] = useState<boolean>(false); // Status ativo da rota
+  const [cabinList, setCabinList] = useState<CabinData[]>([]); // Cabines atuais da rota
+  const [cabinToShow, setCabinToShow] = useState<Cabin[]>([]); // Cabines ainda não adicionadas
+  const [cabinKey, setCabinKey] = useState<string>(""); // Chave da cabine selecionada no dropdown
 
+  // Efeito para inicializar os campos do formulário com os dados da rota
   useEffect(() => {
     if (!initialData) return;
 
-    console.log(initialData);
-
+    // Define o programa de milhagem no formato esperado pelo Select
     const program = mileagePrograms[initialData.mileageProgram];
-
     setMileageProgram({
       value: program.key,
       label: program.label,
@@ -71,6 +79,7 @@ export default function EditRoute({
     setEnableLayovers(initialData.enableLayovers);
     setActive(initialData.active);
 
+    // Mapeia as cabines existentes da rota
     setCabinList(
       initialData.cabins.map((cabin) => ({
         key: cabin.key as CabinKey,
@@ -83,6 +92,7 @@ export default function EditRoute({
       }))
     );
 
+    // Filtra e define as cabines que ainda não foram adicionadas
     setCabinToShow(
       Object.values(cabins).filter(
         (cabin) => !initialData.cabins.some((added) => added.key === cabin.key)
@@ -90,14 +100,12 @@ export default function EditRoute({
     );
   }, [initialData]);
 
-  // Adiciona uma nova cabine à lista de seleção
+  // Adiciona nova cabine à lista e remove da lista de disponíveis
   function addNewCabin(cabinKey: CabinKey) {
     const cabin = cabins[cabinKey];
 
-    // Remove a cabine da lista de disponíveis
     setCabinToShow((prev) => prev.filter((item) => item.key !== cabinKey));
 
-    // Adiciona a nova cabine e reordena conforme prioridade
     setCabinList((prev) => {
       const newList = [
         ...prev,
@@ -116,15 +124,13 @@ export default function EditRoute({
       );
     });
 
-    // Reseta a seleção de cabine
     setCabinKey("");
   }
 
-  // Remove uma cabine da lista adicionada
+  // Remove cabine da lista atual e adiciona de volta à lista de seleção
   function removeCabin(cabinKey: CabinKey) {
     const cabin = cabins[cabinKey];
 
-    // Remove da lista de cabines selecionadas
     setCabinList((prev) => {
       const newList = prev.filter((item) => item.key !== cabinKey);
       return newList.sort(
@@ -132,7 +138,6 @@ export default function EditRoute({
       );
     });
 
-    // Adiciona de volta à lista de cabines disponíveis
     setCabinToShow((prev) => {
       const newList = [...prev, cabin];
       return newList.sort(
@@ -141,7 +146,7 @@ export default function EditRoute({
     });
   }
 
-  // Atualiza um campo numérico de uma cabine específica
+  // Atualiza dinamicamente os campos numéricos de uma cabine específica
   function updateCabinField(
     cabinKey: CabinKey,
     field: keyof Omit<CabinData, "key" | "label" | "code">,
@@ -154,7 +159,7 @@ export default function EditRoute({
     );
   }
 
-  // Se o modal não estiver aberto, retorna null para não renderizar nada
+  // Evita renderização se o modal estiver fechado
   if (!isOpen) return null;
   return (
     // Container principal do modal com fundo escuro cobrindo toda a tela

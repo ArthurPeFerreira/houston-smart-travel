@@ -142,11 +142,9 @@ export async function PUT(
       );
     }
 
-    
-
     // Edita o Rota com as informações fornecidas
     const routeEdited = await editRoute(routeInfo);
-    
+
     // Retorna o Rota editado
     return NextResponse.json(routeEdited);
   } catch {
