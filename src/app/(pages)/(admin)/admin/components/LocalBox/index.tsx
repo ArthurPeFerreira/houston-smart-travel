@@ -30,30 +30,17 @@ import { EditLocalTypeFile, LocalType } from "@/lib/local/types";
 import Decimal from "decimal.js";
 
 // Define a estrutura das props recebidas pelo componente
-interface LocalBoxProps {
-  airportsInitialData: AirportType[] | undefined;
-  localsInitialData: LocalType[] | undefined;
-}
 
 // Componente principal responsável por criar e gerenciar locais turísticos vinculados a aeroportos
-export default function LocalBox({
-  airportsInitialData,
-  localsInitialData,
-}: LocalBoxProps) {
+export default function LocalBox() {
   // Classe CSS reutilizável para inputs
   const inputs =
     "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white";
 
   // Estados para armazenar os dados de aeroportos e locais
-  const [airports, setAirports] = useState<AirportType[] | undefined>(
-    airportsInitialData
-  );
-  const [airportsToShow, setAirportsToShow] = useState<
-    AirportType[] | undefined
-  >();
-  const [locals, setLocals] = useState<LocalType[] | undefined>(
-    localsInitialData
-  );
+  const [airports, setAirports] = useState<AirportType[]>();
+  const [airportsToShow, setAirportsToShow] = useState<AirportType[]>();
+  const [locals, setLocals] = useState<LocalType[]>();
 
   // Estados para o formulário de criação de local
   const [airportId, setAirportId] = useState<number>(0);
@@ -89,8 +76,6 @@ export default function LocalBox({
 
   // useEffect inicial: popula dados iniciais e escuta eventos globais
   useEffect(() => {
-    setLoadingLocalsInfoModal(false);
-
     // Função executada ao disparar evento global "updateAirports"
     async function handleEvent() {
       const responseAirports = await api.get("api/admin/airport");
@@ -99,6 +84,10 @@ export default function LocalBox({
       const responseLocals = await api.get("api/admin/local");
       setLocals(responseLocals.data);
     }
+    
+    // Carrega dados iniciais de aeroportos e locais
+    handleEvent();
+    setLoadingLocalsInfoModal(false);
 
     // Registra o evento e faz cleanup ao desmontar o componente
     eventEmitter.on("updateAirports", handleEvent);
