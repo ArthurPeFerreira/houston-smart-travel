@@ -6,11 +6,7 @@
 import { useState } from "react";
 
 // Importação do componente Select do react-select para dropdowns customizados
-import Select, {
-  components,
-  OptionProps,
-  SingleValueProps,
-} from "react-select";
+import Select from "react-select";
 
 // Tipagem dos dados de aeroporto
 import { AirportType } from "@/lib/airport/types";
@@ -21,14 +17,11 @@ import { Cabin, CabinKey, cabinPriority, cabins } from "@/lib/route/cabins";
 // Ícones para ações visuais
 import { FaPlus, FaSpinner, FaTrash } from "react-icons/fa";
 
-// Lista de programas de milhagem
-import { mileagePrograms } from "@/lib/route/mileagePrograms";
-
 // Biblioteca para operações com números decimais
 import Decimal from "decimal.js";
 
 // Tipagem do objeto de criação de rota
-import { CreateRouteType, RouteType } from "@/lib/route/types";
+import { CreateRouteType, EditRouteType, RouteType } from "@/lib/route/types";
 
 // Configurações e instância do toast para notificações
 import { toastConfigs } from "@/lib/toastify/toastify";
@@ -36,94 +29,88 @@ import { toast } from "react-toastify";
 import { api } from "@/lib/api/api";
 import RouteInfo from "./components/RouteInfo";
 import getRoutes from "./functions/getRoutes";
-
-// Tipagem para opções do Select que representam os programas de milhagem
-interface MileageProgramOption {
-  value: string;
-  label: string;
-  logoUrl: string;
-}
+import {
+  customStyles,
+  MileageProgramOption,
+  options,
+  ProgramOption,
+  ProgramSingleValue,
+} from "./functions/selectMileageProgram";
+import eventEmitter from "@/lib/event/eventEmmiter";
 
 // Tipagem interna das cabines utilizadas no componente
 interface CabinData {
-  key: CabinKey;
-  label: string;
-  code: "Y" | "J" | "F" | "W";
-  maximumPoints: number;
-  bagsAmount: number;
-  passagePrice: Decimal;
-  cancellationPrice: Decimal;
+  key: CabinKey; // Identificador único da cabine (econômica, executiva etc.)
+  label: string; // Nome descritivo da cabine
+  code: "Y" | "J" | "F" | "W"; // Código IATA da classe (Y: econômica, J: executiva etc.)
+  maximumPoints: number; // Pontos máximos permitidos pelo programa de milhagem
+  bagsAmount: number; // Quantidade de bagagens permitidas
+  passagePrice: Decimal; // Preço da passagem em dólares
+  cancellationPrice: Decimal; // Taxa de cancelamento em dólares
 }
 
 // Tipagem das props recebidas pelo componente RouteBox
 interface RouteBoxProps {
-  airportsInitialData: AirportType[] | undefined;
+  airportsInitialData: AirportType[] | undefined; // Lista inicial de aeroportos, opcional
 }
 
 // Componente principal responsável pela criação de rotas entre dois aeroportos
 export default function RouteBox({ airportsInitialData }: RouteBoxProps) {
-  // Classe de estilo aplicada aos inputs do formulário
+  // Classe de estilo aplicada a todos os inputs
   const inputs =
     "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white";
 
-  // Mapeamento dos programas de milhagem para serem usados como opções no Select
-  const options: MileageProgramOption[] = Object.values(mileagePrograms).map(
-    (program) => ({
-      value: program.key,
-      label: program.label,
-      logoUrl: program.logoUrl,
-    })
-  );
-
-  // Estado para armazenar a lista de aeroportos disponíveis (recebidos via props ou array vazio)
+  // Inicialização da lista de aeroportos (vinda de props)
   const airports = airportsInitialData ? airportsInitialData : [];
-  // Estado para armazenar os aeroportos disponíveis para seleção após o primeiro
+
+  // Lista de aeroportos filtrados para seleção como destino
   const [airport2Select, setAirport2Select] = useState<AirportType[]>([]);
 
-  // Estados para armazenar os IDs dos dois aeroportos selecionados
+  // Estados para armazenar os IDs dos aeroportos selecionados (origem e destino)
   const [airportId1, setAirportId1] = useState<number>(0);
   const [airportId2, setAirportId2] = useState<number>(0);
 
-  // Estado da cabine selecionada temporariamente antes de ser adicionada à lista
+  // Estado do identificador da cabine selecionada antes de ser adicionada à lista
   const [cabinKey, setCabinKey] = useState<string>("");
 
-  // Estado para o programa de milhagem selecionado
+  // Estado do programa de milhagem atualmente selecionado
   const [mileageProgram, setMileageProgram] =
     useState<MileageProgramOption | null>(options[0]);
 
-  // Lista de cabines adicionadas para essa rota
+  // Lista de cabines adicionadas à rota atual
   const [cabinList, setCabinList] = useState<CabinData[]>([]);
 
-  // Lista de cabines ainda disponíveis para serem adicionadas
+  // Lista de cabines disponíveis para adicionar (controla quais não estão ainda em uso)
   const [cabinToShow, setCabinToShow] = useState<Cabin[]>(
     Object.values(cabins).map((cabin) => cabin)
   );
 
-  // Estado que define se a rota permitirá conexões (layovers)
+  // Define se conexões (layovers) são permitidas na rota
   const [enableLayovers, setEnableLayovers] = useState<boolean>(false);
 
-  // Estado que indica se a criação da rota está em andamento
+  // Indicadores de carregamento para o botão de criação de rota e modais
   const [loading, setLoading] = useState<boolean>(false);
-
-  // Estado que indica se o modal com informações de rotas está carregando
   const [loadingRoutesInfoModal, setLoadingRoutesInfoModal] =
     useState<boolean>(true);
-
-  // Estado que controla a exibição do modal com as rotas já cadastradas
-  const [showRoutesInfoModal, setShowRoutesInfoModal] =
+  const [loadingEditRouteModal, setLoadingEditRouteModal] =
     useState<boolean>(false);
 
-  // Estado que armazena o ID do aeroporto selecionado no modal de rotas
+  // Controle de visibilidade dos modais de visualização e edição de rotas
+  const [showRoutesInfoModal, setShowRoutesInfoModal] =
+    useState<boolean>(false);
+  const [showEditRouteModal, setShowEditRouteModal] = useState<boolean>(false);
+
+  // Estado do aeroporto atualmente selecionado para filtragem de rotas
   const [airportIdSelected, setAirportIdSelected] = useState<number>(0);
 
-  // Estado que armazena a lista de rotas filtradas com base no aeroporto selecionado
+  // Lista de rotas filtradas com base no aeroporto selecionado
   const [filteredRoutes, setFilteredRoutes] = useState<RouteType[]>([]);
 
-  // Função responsável por criar uma nova rota com os dados inseridos no formulário
+  // Envia a requisição para criar uma nova rota com os dados preenchidos no formulário
   async function handleCreateRoute(e: React.FormEvent) {
     e.preventDefault();
 
-    // Validações dos campos obrigatórios
+    // Validação de campos obrigatórios
     if (!mileageProgram || !mileageProgram?.value) {
       toast.error("Please select the mileage program", toastConfigs);
       return;
@@ -141,7 +128,7 @@ export default function RouteBox({ airportsInitialData }: RouteBoxProps) {
       return;
     }
 
-    // Monta objeto com os dados da rota conforme tipagem da API
+    // Criação do objeto de rota a ser enviado à API
     const route: CreateRouteType = {
       mileageProgram: mileageProgram.value,
       enableLayovers: enableLayovers,
@@ -167,6 +154,7 @@ export default function RouteBox({ airportsInitialData }: RouteBoxProps) {
         error?.response?.data?.error || "Failed to create route.";
       toast.error(errorMessage, toastConfigs);
     } finally {
+      // Reseta os campos após tentativa de criação
       setAirportId1(0);
       setAirportId2(0);
       setAirport2Select([]);
@@ -175,7 +163,24 @@ export default function RouteBox({ airportsInitialData }: RouteBoxProps) {
     }
   }
 
-  // Função que exclui uma rota específica a partir do ID
+  // Atualiza rota existente com dados fornecidos no modal de edição
+  async function handleEditRoute(data: EditRouteType) {
+    setLoadingEditRouteModal(true);
+    try {
+      await api.put(`api/admin/route/${data.id}`, data);
+      toast.success("Route edited successfully!", toastConfigs);
+    } catch (error: any) {
+      const errorMessage =
+        error?.response?.data?.error || "Failed to edit route.";
+      toast.error(errorMessage, toastConfigs);
+    } finally {
+      eventEmitter.emit("updateRoutes");
+      setLoadingEditRouteModal(false);
+      setShowEditRouteModal(false);
+    }
+  }
+
+  // Remove uma rota existente pelo seu ID
   async function handleDeleteRoute(routeId: number) {
     try {
       await api.delete(`api/admin/route/${routeId}`);
@@ -193,7 +198,7 @@ export default function RouteBox({ airportsInitialData }: RouteBoxProps) {
     }
   }
 
-  // Ao selecionar o primeiro aeroporto, busca os possíveis destinos que ainda não têm rota
+  // Ao selecionar o aeroporto 1, busca os possíveis destinos ainda não relacionados
   async function handleSelectAirport1(id: number) {
     try {
       setAirport2Select([]);
@@ -207,83 +212,7 @@ export default function RouteBox({ airportsInitialData }: RouteBoxProps) {
     }
   }
 
-  // Estilos customizados para o componente Select do react-select
-  const customStyles = {
-    control: (provided: any) => ({
-      ...provided,
-      backgroundColor: "#101828",
-      borderColor: "#4b5563",
-      color: "#fff",
-      borderRadius: "0.25rem",
-      minHeight: "auto",
-      height: "auto",
-      boxShadow: "none",
-      "&:hover": {
-        borderColor: "#4b5563",
-      },
-    }),
-    indicatorSeparator: () => ({
-      display: "none",
-    }),
-    dropdownIndicator: (provided: any) => ({
-      ...provided,
-      color: "#fff",
-      padding: "0",
-      svg: {
-        width: "16px",
-        height: "16px",
-      },
-      "&:hover": {
-        color: "#fff",
-      },
-    }),
-    menu: (provided: any) => ({
-      ...provided,
-      backgroundColor: "#101828",
-    }),
-    option: (provided: any, state: any) => ({
-      ...provided,
-      backgroundColor: state.isSelected ? "#1967d2" : "#101828",
-      color: "#fff",
-      ":hover": {
-        backgroundColor: "#1967d2",
-      },
-    }),
-    singleValue: (provided: any) => ({
-      ...provided,
-      color: "#fff",
-    }),
-  };
-
-  // Componente customizado de item da lista de opções do Select (com ícone)
-  function ProgramOption(props: OptionProps<MileageProgramOption>) {
-    const { data } = props;
-    return (
-      <components.Option {...props}>
-        <div className="flex items-center">
-          {/* eslint-disable @next/next/no-img-element */}
-          <img src={data.logoUrl} alt={data.label} className="w-5 h-5 mr-2" />
-          {data.label}
-        </div>
-      </components.Option>
-    );
-  }
-
-  // Componente customizado para valor selecionado no Select (com ícone)
-  function ProgramSingleValue(props: SingleValueProps<MileageProgramOption>) {
-    const { data } = props;
-    return (
-      <components.SingleValue {...props}>
-        <div className="flex items-center">
-          {/* eslint-disable @next/next/no-img-element */}
-          <img src={data.logoUrl} alt={data.label} className="w-5 h-5 mr-2" />
-          {data.label}
-        </div>
-      </components.SingleValue>
-    );
-  }
-
-  // Adiciona uma nova cabine à lista de seleção
+  // Adiciona nova cabine à rota e remove da lista de disponíveis
   function addNewCabin(cabinKey: CabinKey) {
     const cabin = cabins[cabinKey];
 
@@ -309,15 +238,13 @@ export default function RouteBox({ airportsInitialData }: RouteBoxProps) {
       );
     });
 
-    // Reseta a seleção de cabine
     setCabinKey("");
   }
 
-  // Remove uma cabine da lista adicionada
+  // Remove cabine da lista atual e adiciona de volta na lista de disponíveis
   function removeCabin(cabinKey: CabinKey) {
     const cabin = cabins[cabinKey];
 
-    // Remove da lista de cabines selecionadas
     setCabinList((prev) => {
       const newList = prev.filter((item) => item.key !== cabinKey);
       return newList.sort(
@@ -325,7 +252,6 @@ export default function RouteBox({ airportsInitialData }: RouteBoxProps) {
       );
     });
 
-    // Adiciona de volta à lista de cabines disponíveis
     setCabinToShow((prev) => {
       const newList = [...prev, cabin];
       return newList.sort(
@@ -334,7 +260,7 @@ export default function RouteBox({ airportsInitialData }: RouteBoxProps) {
     });
   }
 
-  // Atualiza um campo numérico de uma cabine específica
+  // Atualiza um campo numérico específico de uma cabine na lista
   function updateCabinField(
     cabinKey: CabinKey,
     field: keyof Omit<CabinData, "key" | "label" | "code">,
@@ -636,6 +562,7 @@ export default function RouteBox({ airportsInitialData }: RouteBoxProps) {
           className="mt-2 w-full text-start text-blue-500 cursor-pointer hover:underline"
           onClick={() => {
             setShowRoutesInfoModal(true);
+            document.body.classList.add("overflow-hidden");
           }}
         >
           See Routes
@@ -644,14 +571,22 @@ export default function RouteBox({ airportsInitialData }: RouteBoxProps) {
         <RouteInfo
           airports={airports}
           isOpen={showRoutesInfoModal}
-          onClose={() => setShowRoutesInfoModal(false)}
+          isOpenEditModal={showEditRouteModal}
+          setIsOpenEditModal={() => setShowEditRouteModal(true)}
+          onClose={() => {
+            setShowRoutesInfoModal(false);
+            document.body.classList.remove("overflow-hidden");
+          }}
+          onCloseEditModal={() => setShowEditRouteModal(false)}
           isLoading={loadingRoutesInfoModal}
+          isLoadingEditModal={loadingEditRouteModal}
           setIsLoading={(value: boolean) => setLoadingRoutesInfoModal(value)}
           airportIdSelected={airportIdSelected}
           setAirportIdSelected={setAirportIdSelected}
           filteredRoutes={filteredRoutes}
           setFilteredRoutes={setFilteredRoutes}
           onDeleteRoute={handleDeleteRoute}
+          onEditRoute={(data) => handleEditRoute(data)}
         />
       </div>
     </div>

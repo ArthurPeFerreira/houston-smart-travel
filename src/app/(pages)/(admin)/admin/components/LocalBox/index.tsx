@@ -45,11 +45,15 @@ export default function LocalBox({
     "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white";
 
   // Estados para armazenar os dados de aeroportos e locais
-  const [airports, setAirports] = useState<AirportType[] | undefined>(airportsInitialData);
+  const [airports, setAirports] = useState<AirportType[] | undefined>(
+    airportsInitialData
+  );
   const [airportsToShow, setAirportsToShow] = useState<
     AirportType[] | undefined
   >();
-  const [locals, setLocals] = useState<LocalType[] | undefined>(localsInitialData);
+  const [locals, setLocals] = useState<LocalType[] | undefined>(
+    localsInitialData
+  );
 
   // Estados para o formulário de criação de local
   const [airportId, setAirportId] = useState<number>(0);
@@ -226,6 +230,7 @@ export default function LocalBox({
   // Fecha o modal de informações de locais
   function onCloseLocalsInfoModal() {
     setShowLocalsInfoModal(false);
+    document.body.classList.remove("overflow-hidden");
   }
 
   // Envia dados atualizados para edição de local existente
@@ -409,6 +414,8 @@ export default function LocalBox({
           className="mt-2 w-full text-start text-blue-500 cursor-pointer hover:underline"
           onClick={() => {
             setShowLocalsInfoModal(true);
+
+            document.body.classList.add("overflow-hidden");
           }}
         >
           See Locals

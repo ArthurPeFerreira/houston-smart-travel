@@ -48,6 +48,7 @@ export default function AirportBox({airportsInitialData}: AirportBoxProps) {
   // Função para fechar o modal de informações
   function onCloseAirportsInfoModal() {
     setShowAirportsInfoModal(false);
+    document.body.classList.add("overflow-hidden");
   }
 
   // Função para fechar o modal de edição
@@ -179,7 +180,9 @@ export default function AirportBox({airportsInitialData}: AirportBoxProps) {
         </form>
         <button
           className="mt-2 w-full text-start text-blue-500 cursor-pointer hover:underline"
-          onClick={() => setShowAirportsInfoModal(true)}
+          onClick={() => {setShowAirportsInfoModal(true);
+            document.body.classList.add("overflow-hidden");
+          }}
         >
           See Airports
         </button>

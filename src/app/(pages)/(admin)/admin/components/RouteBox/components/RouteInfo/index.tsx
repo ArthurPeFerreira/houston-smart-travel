@@ -1,51 +1,74 @@
 // Indica que este é um componente do lado do cliente no Next.js (App Router)
 "use client";
 
+// Importações de tipos e dependências necessárias para funcionamento do componente
 import { AirportType } from "@/lib/airport/types";
 import { mileagePrograms } from "@/lib/route/mileagePrograms";
-import { RouteType } from "@/lib/route/types";
-import { useEffect } from "react";
+import { CabinsType, EditRouteType, RouteType } from "@/lib/route/types";
+import { useEffect, useState } from "react";
 import { FaEye, FaSpinner } from "react-icons/fa";
 import { GoXCircle } from "react-icons/go";
 import { MdOutlineExpandCircleDown } from "react-icons/md";
 import getRoutes from "../../functions/getRoutes";
 import Image from "next/image";
+import SeeCabins from "./components/SeeCabins";
+import EditRoute from "./components/EditRoute";
+import eventEmitter from "@/lib/event/eventEmmiter";
 
-// Tipagem das propriedades esperadas pelo componente RouteInfo
+// Tipagem das props esperadas pelo modal de informações de rotas
 interface RouteInfoModalProps {
-  airports: AirportType[]; // Lista de aeroportos disponíveis
-  isOpen: boolean; // Define se o modal está visível
-  onClose: () => void; // Função para fechar o modal
-  isLoading: boolean; // Indica se os dados estão sendo carregados
-  setIsLoading: (value: boolean) => void; // Função para alterar o estado de carregamento
-  airportIdSelected: number; // ID do aeroporto atualmente selecionado
-  setAirportIdSelected: (value: number) => void; // Função para alterar o aeroporto selecionado
-  filteredRoutes: RouteType[]; // Lista de rotas filtradas associadas ao aeroporto selecionado
-  setFilteredRoutes: (value: RouteType[]) => void; // Função para atualizar a lista de rotas filtradas
-  onDeleteRoute: (routeId: number) => void; // Função para excluir uma rota
+  airports: AirportType[];
+  isOpen: boolean;
+  isOpenEditModal: boolean;
+  setIsOpenEditModal: () => void;
+  onClose: () => void;
+  onCloseEditModal: () => void;
+  isLoading: boolean;
+  isLoadingEditModal: boolean;
+  setIsLoading: (value: boolean) => void;
+  airportIdSelected: number;
+  setAirportIdSelected: (value: number) => void;
+  filteredRoutes: RouteType[];
+  setFilteredRoutes: (value: RouteType[]) => void;
+  onDeleteRoute: (routeId: number) => void;
+  onEditRoute: (route: EditRouteType) => void;
 }
 
-// Componente responsável por exibir um modal com informações das rotas de um aeroporto selecionado
+// Componente responsável por exibir um modal com as rotas filtradas por aeroporto
 export default function RouteInfo({
   airports,
   isOpen,
+  isOpenEditModal,
+  setIsOpenEditModal,
   onClose,
+  onCloseEditModal,
   isLoading,
+  isLoadingEditModal,
   setIsLoading,
   airportIdSelected,
   setAirportIdSelected,
   filteredRoutes,
   setFilteredRoutes,
   onDeleteRoute,
+  onEditRoute,
 }: RouteInfoModalProps) {
-  // Classe de estilo para os inputs do modal
+  // Classe de estilo para os inputs do formulário
   const inputs =
     "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white";
 
-  // Classe de estilo para os itens da tabela
+  // Classe de estilo aplicada às células da tabela
   const classItens = "border border-gray-800 p-2 text-center";
 
-  // Hook de efeito responsável por buscar as rotas sempre que o aeroporto selecionado muda
+  // Estado para armazenar as cabines selecionadas para visualização
+  const [cabinsSelected, setCabinsSelected] = useState<CabinsType[]>([]);
+
+  // Estado para controlar a exibição do modal de cabines
+  const [isOpenCabins, setIsOpenCabins] = useState(false);
+
+  // Estado que define qual rota está sendo editada
+  const [routeToEdit, setRouteToEdit] = useState<RouteType | undefined>();
+
+  // Hook que busca rotas sempre que um novo aeroporto for selecionado
   useEffect(() => {
     if (airportIdSelected !== 0) {
       getRoutes({
@@ -54,17 +77,38 @@ export default function RouteInfo({
         setIsLoading: setIsLoading,
       });
     }
-  }, [airportIdSelected, setFilteredRoutes, setIsLoading]);
+  }, [airportIdSelected]);
 
-  // Se o modal não estiver aberto, não renderiza nada
+  // Hook para escutar o evento global de atualização de rotas
+  useEffect(() => {
+    const handleUpdateRoutes = () => {
+      getRoutes({
+        airportIdSelected: airportIdSelected,
+        setFilteredRoutes: setFilteredRoutes,
+        setIsLoading: setIsLoading,
+      });
+    };
+
+    eventEmitter.on("updateRoutes", handleUpdateRoutes);
+
+    // Remove listener ao desmontar o componente ou reexecutar o effect
+    return () => {
+      eventEmitter.off("updateRoutes", handleUpdateRoutes);
+    };
+  }, []);
+
+  // Verifica se o modal deve ser exibido
   if (!isOpen) return null;
 
   return (
-    // Container principal do modal
+    // Camada de sobreposição do modal, preenchendo toda a tela
     <div className="fixed inset-0 text-white flex items-center justify-center z-50 w-full h-full bg-gray-900">
-      {/* Conteúdo do modal */}
+      {/* Conteúdo interno do modal */}
       <div className={`bg-gray-800 p-6 rounded shadow-lg h-fit w-10/12`}>
-        {/* Dropdown para selecionar o aeroporto e filtrar as rotas */}
+        {/* Título do modal */}
+        <h1 className="text-center font-bold text-3xl mb-5 relative">Routes</h1>
+
+        {/* Dropdown para selecionar o aeroporto e filtrar as rotas relacionadas */}
         <select
           name="filterRouteByAirport"
           id="filterRouteByAirport"
@@ -77,7 +121,7 @@ export default function RouteInfo({
           <option value={0} disabled>
             Select an airport
           </option>
-          {/* Lista de aeroportos disponíveis */}
+          {/* Opções baseadas na lista de aeroportos recebida via props */}
           {airports.map((airport) => (
             <option key={airport.id} value={airport.id}>
               {airport.city} - {airport.airportCode}
@@ -85,13 +129,13 @@ export default function RouteInfo({
           ))}
         </select>
 
-        {/* Exibição condicional com base na seleção do aeroporto */}
+        {/* Exibição condicional dos dados da rota com base no estado */}
         {airportIdSelected !== 0 ? (
           isLoading ? (
-            // Ícone de carregamento
+            // Ícone de carregamento enquanto os dados são carregados
             <FaSpinner className="animate-spin w-full my-5" size={40} />
           ) : filteredRoutes.length > 0 ? (
-            // Tabela com as rotas encontradas
+            // Tabela com as rotas existentes
             <div className="overflow-x-auto overflow-y-auto w-full mt-3 max-h-[60vh]">
               <table className="w-full min-w-6xl max-h-5/6 text-lg">
                 <thead>
@@ -106,10 +150,10 @@ export default function RouteInfo({
                   </tr>
                 </thead>
                 <tbody>
-                  {/* Itera sobre cada rota filtrada e exibe seus dados */}
+                  {/* Iteração sobre cada rota retornada */}
                   {filteredRoutes.map((route) => (
                     <tr key={route.id} className="text-center bg-gray-600">
-                      {/* Coluna com o programa de milhagem */}
+                      {/* Programa de milhagem com ícone e label */}
                       <td className={classItens}>
                         <div className="flex items-center justify-center">
                           <Image
@@ -124,35 +168,29 @@ export default function RouteInfo({
                         </div>
                       </td>
 
-                      {/* Coluna indicando se a rota permite conexões */}
+                      {/* Indicação se a rota permite conexões */}
                       <td className={classItens}>
                         <div className="flex items-center justify-center">
                           {route.enableLayovers ? (
-                            <MdOutlineExpandCircleDown
-                              size={25}
-                              color="green"
-                            />
+                            <MdOutlineExpandCircleDown size={25} color="green" />
                           ) : (
                             <GoXCircle size={25} color="red" />
                           )}
                         </div>
                       </td>
 
-                      {/* Coluna indicando se a rota está ativa */}
+                      {/* Indicação de status ativo da rota */}
                       <td className={classItens}>
                         <div className="flex items-center justify-center">
                           {route.active ? (
-                            <MdOutlineExpandCircleDown
-                              size={25}
-                              color="green"
-                            />
+                            <MdOutlineExpandCircleDown size={25} color="green" />
                           ) : (
                             <GoXCircle size={25} color="red" />
                           )}
                         </div>
                       </td>
 
-                      {/* Coluna listando os aeroportos envolvidos na rota */}
+                      {/* Lista dos aeroportos envolvidos na rota */}
                       <td className={classItens}>
                         <div className="flex flex-col gap-2">
                           {route.airports.map((airport) => (
@@ -166,24 +204,36 @@ export default function RouteInfo({
                         </div>
                       </td>
 
-                      {/* Coluna com botão para visualizar as cabines da rota */}
+                      {/* Botão para visualizar as cabines associadas à rota */}
                       <td className={classItens}>
                         <div className="flex w-full items-center justify-center">
-                          <button className="bg-green-500 py-2 px-5 rounded cursor-pointer hover:bg-green-600 flex flex-row gap-2 items-center">
-                            <FaEye size={25} color="white" />{" "}
+                          <button
+                            className="bg-green-500 py-2 px-5 rounded cursor-pointer hover:bg-green-600 flex flex-row gap-2 items-center"
+                            onClick={() => {
+                              setCabinsSelected(route.cabins);
+                              setIsOpenCabins(true);
+                            }}
+                          >
+                            <FaEye size={25} color="white" />
                             <label>({route.cabins.length})</label>
                           </button>
                         </div>
                       </td>
 
-                      {/* Botão de edição da rota (ainda não implementado) */}
+                      {/* Botão de edição da rota, abrindo o modal com os dados atuais */}
                       <td className={classItens}>
-                        <button className="bg-yellow-500 py-2 px-5 rounded cursor-pointer hover:bg-yellow-600">
+                        <button
+                          className="bg-yellow-500 py-2 px-5 rounded cursor-pointer hover:bg-yellow-600"
+                          onClick={() => {
+                            setRouteToEdit(route);
+                            setIsOpenEditModal();
+                          }}
+                        >
                           Edit
                         </button>
                       </td>
 
-                      {/* Botão para deletar a rota, executando a função de callback */}
+                      {/* Botão para remover a rota */}
                       <td className={classItens}>
                         <button
                           className="bg-red-500 py-2 px-3 rounded cursor-pointer hover:bg-red-600"
@@ -200,14 +250,14 @@ export default function RouteInfo({
               </table>
             </div>
           ) : (
-            // Exibição quando não há rotas registradas para o aeroporto
+            // Mensagem caso não haja rotas cadastradas
             <div className="mt-2 py-5 text-center text-gray-400 text-2xl">
               This airport has no routes registered.
             </div>
           )
         ) : null}
 
-        {/* Botão para fechar o modal e resetar a seleção de aeroporto */}
+        {/* Botão para fechar o modal e limpar seleção de aeroporto */}
         <button
           onClick={() => {
             onClose();
@@ -217,6 +267,30 @@ export default function RouteInfo({
         >
           Close
         </button>
+
+        {/* Modal que exibe as cabines da rota selecionada */}
+        <SeeCabins
+          cabinsToShow={cabinsSelected}
+          isOpen={isOpenCabins}
+          onClose={() => {
+            setCabinsSelected([]);
+            setIsOpenCabins(false);
+          }}
+        />
+
+        {/* Modal de edição da rota (condicional) */}
+        {routeToEdit ? (
+          <EditRoute
+            isOpen={isOpenEditModal}
+            isLoading={isLoadingEditModal}
+            onClose={() => {
+              onCloseEditModal();
+              setRouteToEdit(undefined);
+            }}
+            onSave={(data) => onEditRoute(data)}
+            initialData={routeToEdit}
+          />
+        ) : null}
       </div>
     </div>
   );

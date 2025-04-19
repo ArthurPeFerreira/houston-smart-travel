@@ -10,9 +10,9 @@ import { RouteType } from "./types";
 // Define a chave utilizada para armazenar e recuperar os dados de rotas no Redis
 const cacheKey: string = `hst:routes`;
 
-// =====================================================================
+// ======================================================================
 // Função responsável por atualizar o cache com todas as rotas disponíveis
-// =====================================================================
+// ======================================================================
 export async function updateRouteCache(): Promise<RouteType[] | undefined> {
   try {
     // Busca todas as rotas no banco de dados

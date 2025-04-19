@@ -1,10 +1,10 @@
 // Importa o cliente do Prisma para interagir com o banco de dados
 import { prismaClient } from "../prisma/prisma";
 
-// Importa a função para atualizar o cache das rotas após modificações
+// Importa a função responsável por atualizar o cache após modificações em rotas
 import { updateRouteCache } from "./cacheRoute";
 
-// Importa os tipos utilizados para entrada (EditRouteType) e retorno (RouteType)
+// Importa os tipos utilizados na função: dados de entrada e saída
 import { EditRouteType, RouteType } from "./types";
 
 // ==========================================================================
@@ -14,24 +14,29 @@ export async function editRoute(
   routeInfo: EditRouteType
 ): Promise<RouteType | undefined> {
   try {
-    // Itera sobre a lista de cabines fornecidas para atualizar cada uma no banco
-    for (const cabin of routeInfo.cabins) {
-      await prismaClient.cabinsRoute.update({
-        where: {
-          // Utiliza a constraint composta `routeId` + `key` para identificar a cabine
-          UniqueCabinPerRoute: { routeId: routeInfo.id, key: cabin.key },
-        },
-        // Aplica as alterações nos campos da cabine
-        data: {
-          maximumPoints: cabin.maximumPoints,
-          passagePrice: cabin.passagePrice,
-          cancellationPrice: cabin.cancellationPrice,
-          bagsAmount: cabin.bagsAmount,
-        },
-      });
-    }
+    // Remove todas as cabines associadas à rota para recriar os dados atualizados
+    await prismaClient.cabinsRoute.deleteMany({
+      where: { routeId: routeInfo.id },
+    });
 
-    // Atualiza os dados principais da rota (status e programa de milhagem)
+    // Mapeia os dados das novas cabines para serem inseridos
+    const cabinsData = routeInfo.cabins.map((cabin) => {
+      return {
+        routeId: routeInfo.id,
+        key: cabin.key,
+        maximumPoints: cabin.maximumPoints,
+        passagePrice: cabin.passagePrice,
+        cancellationPrice: cabin.cancellationPrice,
+        bagsAmount: cabin.bagsAmount,
+      };
+    });
+
+    // Insere todas as cabines de uma vez com os novos dados
+    await prismaClient.cabinsRoute.createMany({
+      data: cabinsData,
+    });
+
+    // Atualiza os campos principais da rota no banco (programa, status e conexões)
     const route = await prismaClient.route.update({
       where: {
         id: routeInfo.id,
@@ -41,11 +46,11 @@ export async function editRoute(
         mileageProgram: routeInfo.mileageProgram,
         enableLayovers: routeInfo.enableLayovers,
       },
-      // Inclui os relacionamentos com aeroportos e cabines para retorno completo
+      // Inclui os relacionamentos com aeroportos e cabines no retorno
       include: {
         airports: {
           select: { airport: true },
-          orderBy: { id: "asc" },
+          orderBy: { id: "asc" }, // Garante ordem consistente dos aeroportos
         },
         cabins: {
           select: {
@@ -56,22 +61,22 @@ export async function editRoute(
             cancellationPrice: true,
             bagsAmount: true,
           },
-          orderBy: { id: "asc" },
+          orderBy: { id: "asc" }, // Ordenação das cabines por ID
         },
       },
     });
 
-    // Atualiza o cache das rotas após a edição
+    // Atualiza o cache das rotas com os dados atualizados
     await updateRouteCache();
 
-    // Formata os dados retornados para o formato do tipo `RouteType`
+    // Constrói o objeto no formato esperado por RouteType
     const formattedRoute: RouteType = {
       id: route.id,
       mileageProgram: route.mileageProgram,
       enableLayovers: route.enableLayovers,
       active: route.active,
       cabins: route.cabins,
-      // Constrói o array de aeroportos com os dados essenciais
+      // Mapeia os aeroportos relacionando ao formato da API
       airports: route.airports.map((airport) => {
         return {
           id: airport.airport.id,
@@ -81,14 +86,14 @@ export async function editRoute(
       }),
     };
 
-    // Retorna os dados atualizados da rota formatados
+    // Retorna a rota editada formatada corretamente
     return formattedRoute;
   } catch {
-    // Em caso de falha no processo, exibe uma mensagem de erro no console
+    // Em caso de erro, loga a falha no console
     console.error("Failed to Edit Route!");
     return undefined;
   } finally {
-    // Garante o encerramento da conexão com o Prisma após a operação
+    // Encerra a conexão com o Prisma para liberar recursos
     await prismaClient.$disconnect();
   }
 }

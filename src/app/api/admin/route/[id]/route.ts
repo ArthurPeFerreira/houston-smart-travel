@@ -118,7 +118,7 @@ export async function PUT(
 
     // Verifica se todos os campos obrigatórios foram fornecidos
     if (
-      !routeInfo.id ||
+      !routeIdNumber ||
       !routeInfo.mileageProgram ||
       routeInfo.enableLayovers === undefined ||
       routeInfo.active === undefined ||
