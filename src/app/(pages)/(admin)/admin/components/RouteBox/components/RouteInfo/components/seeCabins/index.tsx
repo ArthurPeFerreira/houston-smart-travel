@@ -13,7 +13,7 @@ export default function SeeCabins({
   isOpen,
   onClose,
 }: SeeCabinsModalProps) {
-  // Se o modal não estiver aberto, retorna null para não renderizar nada
+  // Se o modal não estiver aberto, retorna para não renderizar nada
   if (!isOpen) return null;
 
   return (
