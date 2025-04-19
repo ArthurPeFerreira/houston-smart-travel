@@ -32,12 +32,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.5.0
- * Query Engine version: 173f8d54f8d52e692c7e27e72a88314ec7aeff60
+ * Prisma Client JS version: 6.6.0
+ * Query Engine version: f676762280b54cd07c770017ed3711ddde35f37a
  */
 Prisma.prismaVersion = {
-  client: "6.5.0",
-  engine: "173f8d54f8d52e692c7e27e72a88314ec7aeff60"
+  client: "6.6.0",
+  engine: "f676762280b54cd07c770017ed3711ddde35f37a"
 }
 
 Prisma.PrismaClientKnownRequestError = PrismaClientKnownRequestError;
@@ -201,8 +201,8 @@ const config = {
     "schemaEnvPath": "../../.env"
   },
   "relativePath": "..",
-  "clientVersion": "6.5.0",
-  "engineVersion": "173f8d54f8d52e692c7e27e72a88314ec7aeff60",
+  "clientVersion": "6.6.0",
+  "engineVersion": "f676762280b54cd07c770017ed3711ddde35f37a",
   "datasourceNames": [
     "db"
   ],
@@ -211,7 +211,7 @@ const config = {
     "db": {
       "url": {
         "fromEnvVar": "DATABASE_URL",
-        "value": null
+        "value": "postgresql://hst_db:DGzeu1Ce7l43oWGGEeRx@hst-db.ctq0w4i4kk5c.us-east-1.rds.amazonaws.com:5432/hst_db?schema=hst_schema"
       }
     }
   },
