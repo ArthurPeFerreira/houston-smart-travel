@@ -3,7 +3,7 @@
 "use client";
 
 // Hooks do React para controle de estado e efeito
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // Importação do componente Select do react-select para dropdowns customizados
 import Select from "react-select";
@@ -49,19 +49,14 @@ interface CabinData {
   cancellationPrice: Decimal; // Taxa de cancelamento em dólares
 }
 
-// Tipagem das props recebidas pelo componente RouteBox
-interface RouteBoxProps {
-  airportsInitialData: AirportType[] | undefined; // Lista inicial de aeroportos, opcional
-}
-
 // Componente principal responsável pela criação de rotas entre dois aeroportos
-export default function RouteBox({ airportsInitialData }: RouteBoxProps) {
+export default function RouteBox() {
   // Classe de estilo aplicada a todos os inputs
   const inputs =
     "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white";
 
   // Inicialização da lista de aeroportos (vinda de props)
-  const airports = airportsInitialData ? airportsInitialData : [];
+  const [airports, setAirports] = useState<AirportType[]>([]);
 
   // Lista de aeroportos filtrados para seleção como destino
   const [airport2Select, setAirport2Select] = useState<AirportType[]>([]);
@@ -105,6 +100,24 @@ export default function RouteBox({ airportsInitialData }: RouteBoxProps) {
 
   // Lista de rotas filtradas com base no aeroporto selecionado
   const [filteredRoutes, setFilteredRoutes] = useState<RouteType[]>([]);
+
+  // useEffect inicial: popula dados iniciais e escuta eventos globais
+  useEffect(() => {
+    // Função executada ao disparar evento global "updateAirports"
+    async function handleEvent() {
+      const responseAirports = await api.get("api/admin/airport");
+      setAirports(responseAirports.data);
+    }
+    
+    // Carrega dados iniciais de aeroportos e locais
+    handleEvent();
+
+    // Registra o evento e faz cleanup ao desmontar o componente
+    eventEmitter.on("updateAirports", handleEvent);
+    return () => {
+      eventEmitter.off("updateAirports", handleEvent);
+    };
+  }, []);
 
   // Envia a requisição para criar uma nova rota com os dados preenchidos no formulário
   async function handleCreateRoute(e: React.FormEvent) {

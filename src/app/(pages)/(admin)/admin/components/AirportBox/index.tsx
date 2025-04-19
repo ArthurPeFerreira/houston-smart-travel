@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // Indica que este é um componente do lado do cliente no Next.js (App Router)
 "use client";
 
@@ -16,25 +17,22 @@ import { FaSpinner } from "react-icons/fa";
 import AirportsInfo from "./components/AirportsInfo";
 import eventEmitter from "@/lib/event/eventEmmiter";
 
-interface AirportBoxProps {
-  airportsInitialData: AirportType[] | undefined;
-}
-
 // Componente principal que gerencia aeroportos
-export default function AirportBox({airportsInitialData}: AirportBoxProps) {
+export default function AirportBox() {
   // Classe para estilização de inputs
   const inputs =
     "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white";
+
 
   // Estados do componente
   const [city, setCity] = useState<string>(""); // Armazena a cidade do aeroporto
   const [airportCode, setAirportCode] = useState<string>(""); // Armazena o código do aeroporto
   const [loading, setLoading] = useState<boolean>(false); // Estado de carregamento para criação
   const [loadingAirportsInfoModal, setLoadingAirportsInfoModal] =
-    useState<boolean>(false); // Estado de carregamento do modal de informações
+    useState<boolean>(true); // Estado de carregamento do modal de informações
   const [showAirportsInfoModal, setShowAirportsInfoModal] =
     useState<boolean>(false); // Controla a visibilidade do modal de informações
-  const [airports, setAirports] = useState<AirportType[] | undefined>(); // Armazena a lista de aeroportos
+  const [airports, setAirports] = useState<AirportType[]>([]); // Armazena a lista de aeroportos
   const [loadingAirportsEditModal, setLoadingAirportsEditModal] =
     useState<boolean>(false); // Estado de carregamento do modal de edição
   const [showAirportsEditModal, setShowAirportsEditModal] =
@@ -59,11 +57,9 @@ export default function AirportBox({airportsInitialData}: AirportBoxProps) {
   // useEffect para carregar os aeroportos ao montar o componente
   useEffect(() => {
     async function fetchInitialData() {
-      setLoadingAirportsInfoModal(true);
       try {
-        if (airportsInitialData) {
-          setAirports(airportsInitialData);
-        }
+        const response = await api.get("api/admin/airport");
+        setAirports(response.data);
       } catch {
         console.error("Failed to Find Initial Data!");
       } finally {
@@ -71,7 +67,7 @@ export default function AirportBox({airportsInitialData}: AirportBoxProps) {
       }
     }
     fetchInitialData();
-  }, [airportsInitialData]);
+  }, []);
 
   // Função para criar um novo aeroporto
   async function handleCreateAirport() {
@@ -86,8 +82,10 @@ export default function AirportBox({airportsInitialData}: AirportBoxProps) {
       setAirports(response.data);
 
       toast.success("Airport created successfully!", toastConfigs);
-    } catch {
-      toast.error("Failed to create airport!", toastConfigs);
+    } catch (error: any) {
+      const errorMessage =
+        error?.response?.data?.error || "Failed to create airport.";
+      toast.error(errorMessage, toastConfigs);
     } finally {
       setCity("");
       setAirportCode("");
@@ -109,8 +107,10 @@ export default function AirportBox({airportsInitialData}: AirportBoxProps) {
       setAirports(response.data);
 
       toast.success("Airport edited successfully!", toastConfigs);
-    } catch {
-      toast.error("Failed to edit airport!", toastConfigs);
+    } catch (error: any) {
+      const errorMessage =
+        error?.response?.data?.error || "Failed to edit airport.";
+      toast.error(errorMessage, toastConfigs);
     } finally {
       setLoadingAirportsEditModal(false);
       setShowAirportsEditModal(false);
@@ -129,8 +129,10 @@ export default function AirportBox({airportsInitialData}: AirportBoxProps) {
 
         toast.success("Airport deleted successfully!", toastConfigs);
       }
-    } catch {
-      toast.error("Failed to delete airport!", toastConfigs);
+    } catch (error: any) {
+      const errorMessage =
+        error?.response?.data?.error || "Failed to delete airport.";
+      toast.error(errorMessage, toastConfigs);
     } finally {
       eventEmitter.emit("updateAirports");
     }
