@@ -15,7 +15,7 @@ import SeeCabins from "./components/SeeCabins";
 import EditRoute from "./components/EditRoute";
 import eventEmitter from "@/lib/event/eventEmmiter";
 
-// Tipagem das props esperadas pelo modal de informações de rotas
+// Tipagem da props esperadas pelo modal de informações de rotas
 interface RouteInfoModalProps {
   airports: AirportType[];
   isOpen: boolean;
