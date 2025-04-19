@@ -48,7 +48,7 @@ export default function AirportBox({airportsInitialData}: AirportBoxProps) {
   // Função para fechar o modal de informações
   function onCloseAirportsInfoModal() {
     setShowAirportsInfoModal(false);
-    document.body.classList.add("overflow-hidden");
+    document.body.classList.remove("overflow-hidden");
   }
 
   // Função para fechar o modal de edição
