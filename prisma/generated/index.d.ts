@@ -286,8 +286,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.5.0
-   * Query Engine version: 173f8d54f8d52e692c7e27e72a88314ec7aeff60
+   * Prisma Client JS version: 6.6.0
+   * Query Engine version: f676762280b54cd07c770017ed3711ddde35f37a
    */
   export type PrismaVersion = {
     client: string
@@ -2086,7 +2086,7 @@ export namespace Prisma {
 
   /**
    * Fields of the Users model
-   */ 
+   */
   interface UsersFieldRefs {
     readonly id: FieldRef<"Users", 'Int'>
     readonly user: FieldRef<"Users", 'String'>
@@ -3109,7 +3109,7 @@ export namespace Prisma {
 
   /**
    * Fields of the Airports model
-   */ 
+   */
   interface AirportsFieldRefs {
     readonly id: FieldRef<"Airports", 'Int'>
     readonly city: FieldRef<"Airports", 'String'>
@@ -4266,7 +4266,7 @@ export namespace Prisma {
 
   /**
    * Fields of the Locals model
-   */ 
+   */
   interface LocalsFieldRefs {
     readonly id: FieldRef<"Locals", 'Int'>
     readonly airportId: FieldRef<"Locals", 'Int'>
@@ -5348,7 +5348,7 @@ export namespace Prisma {
 
   /**
    * Fields of the Route model
-   */ 
+   */
   interface RouteFieldRefs {
     readonly id: FieldRef<"Route", 'Int'>
     readonly mileageProgram: FieldRef<"Route", 'String'>
@@ -6523,7 +6523,7 @@ export namespace Prisma {
 
   /**
    * Fields of the CabinsRoute model
-   */ 
+   */
   interface CabinsRouteFieldRefs {
     readonly id: FieldRef<"CabinsRoute", 'Int'>
     readonly routeId: FieldRef<"CabinsRoute", 'Int'>
@@ -7609,7 +7609,7 @@ export namespace Prisma {
 
   /**
    * Fields of the AirportsRoute model
-   */ 
+   */
   interface AirportsRouteFieldRefs {
     readonly id: FieldRef<"AirportsRoute", 'Int'>
     readonly airportId: FieldRef<"AirportsRoute", 'Int'>
@@ -8135,7 +8135,7 @@ export namespace Prisma {
 
 
   /**
-   * Field references 
+   * Field references
    */
 
 
