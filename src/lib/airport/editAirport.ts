@@ -1,5 +1,6 @@
 import { updateLocalCache } from "../local/cacheLocal";
 import { prismaClient } from "../prisma/prisma"; // Importa o cliente do Prisma para interagir com o banco de dados
+import { updateRouteCache } from "../route/cacheRoute";
 import { updateAirportCache } from "./cacheAirport"; // Importa a função para atualizar o cache de aeroportos
 import { AirportType } from "./types"; // Importa o tipo AirportType para garantir a tipagem correta
 
@@ -22,6 +23,9 @@ export async function editAirport(airportInfo: AirportType): Promise<AirportType
 
         // Atualiza o cache dos Locais
         await updateLocalCache();
+
+        // Atualiza o Cache das Rotas para refletir a remoção
+        await updateRouteCache();
 
         // Retorna o Aeroporto atualizado com as novas informações
         return airportEdited;
