@@ -11,9 +11,9 @@ import { GoXCircle } from "react-icons/go";
 import { MdOutlineExpandCircleDown } from "react-icons/md";
 import getRoutes from "../../functions/getRoutes";
 import Image from "next/image";
-import SeeCabins from "./components/SeeCabins";
-import EditRoute from "./components/EditRoute";
 import eventEmitter from "@/lib/event/eventEmmiter";
+import EditRoute from "./components/EditRoute";
+import SeeCabins from "./components/SeeCabins";
 
 // Tipagem da props esperadas pelo modal de informações de rotas
 interface RouteInfoModalProps {
