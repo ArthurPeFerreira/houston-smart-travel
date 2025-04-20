@@ -22,15 +22,31 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 // import { useState } from "react";
 import { LocalType } from "@/lib/local/types";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { api } from "@/lib/api/api";
 
-interface LocalsProps {
-  locals: LocalType[] | undefined;
-}
-
-export default function Locals({ locals }: LocalsProps) {
+export default function Locals() {
   // Estados para controlar se está no início ou no final do carrossel
   // const [isBeginning, setIsBeginning] = useState(true);
   // const [isEnd, setIsEnd] = useState(false);
+
+  const [locals, setLocals] = useState<LocalType[]>();
+
+  useEffect(() => {
+    // Função assíncrona para buscar os locais
+    async function fetchLocals() {
+      try {
+        // Faz uma requisição GET para a API para buscar os locais
+        const response = await api.get("api/local");
+        // Atualiza o estado com os dados recebidos
+        setLocals(response.data);
+      } catch (error) {
+        console.log("Error fetching locals:", error);
+      }
+    }
+
+    fetchLocals();
+  }, []);
 
   const router = useRouter();
 
