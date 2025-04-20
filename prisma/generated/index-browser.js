@@ -167,6 +167,16 @@ exports.Prisma.AirportsRouteScalarFieldEnum = {
   routeId: 'routeId'
 };
 
+exports.Prisma.RoutesDataScalarFieldEnum = {
+  id: 'id',
+  routeId: 'routeId',
+  originAirport: 'originAirport',
+  destinationAirport: 'destinationAirport',
+  cabinKey: 'cabinKey',
+  date: 'date',
+  direct: 'direct'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -189,7 +199,8 @@ exports.Prisma.ModelName = {
   Locals: 'Locals',
   Route: 'Route',
   CabinsRoute: 'CabinsRoute',
-  AirportsRoute: 'AirportsRoute'
+  AirportsRoute: 'AirportsRoute',
+  RoutesData: 'RoutesData'
 };
 
 /**

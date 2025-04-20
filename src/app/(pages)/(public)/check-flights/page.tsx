@@ -8,9 +8,18 @@ export const metadata: Metadata = {
   title: "Check Flights",
 };
 
-export default function CheckFlights() {
+interface SearchFlightsProps {
+  searchParams: {
+    airportId?: string;
+  };
+}
+
+export default async function CheckFlights({ searchParams }: SearchFlightsProps) {
+  const { airportId } = await searchParams;
+  const destinationAirportId = airportId ? parseInt(airportId) : 0;
+
   return (
-    <main className="relative flex-1 w-full min-h-[70vh] md:min-h-fit flex items-center justify-center bg-no-repeat bg-cover bg-center p-5">
+    <main className="relative flex-1 w-full min-h-[60vh] md:min-h-fit flex items-center justify-center bg-no-repeat bg-cover bg-center p-5">
       <Image
         src={background}
         quality={100}
@@ -19,24 +28,9 @@ export default function CheckFlights() {
         className="absolute inset-0"
       />
       <div className="absolute inset-0">
-        <CheckFlightsBox />
+        <CheckFlightsBox initialDestinationAirportId={destinationAirportId}/>
       </div>
     </main>
   );
 }
-
-// export default function CheckFlights() {
-//   return (
-//     <main className="relative w-full  flex items-center justify-center bg-no-repeat bg-cover bg-center p-5">
-//       <Image
-//         src={background}
-//         quality={100}
-//         fill
-//         alt="Beach Background"
-//         className="absolute inset-0 -z-10 object-cover"
-//       />
-//       <CheckFlightsBox />
-//     </main>
-//   );
-// }
 
