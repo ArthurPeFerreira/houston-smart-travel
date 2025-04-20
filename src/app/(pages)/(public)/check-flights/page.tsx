@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-// import { FaSpinner } from "react-icons/fa";
 import CheckFlightsBox from "./components/CheckFlightsBox";
 import Image from "next/image";
 import background from "@/../public/static/Montanha Fundo Check Flights.jpg";
@@ -8,14 +7,12 @@ export const metadata: Metadata = {
   title: "Check Flights",
 };
 
-interface SearchFlightsProps {
-  searchParams: {
-    airportId?: string;
-  };
-}
-
-export default async function CheckFlights({ searchParams }: SearchFlightsProps) {
-  const { airportId } = await searchParams;
+export default async function CheckFlights({
+  searchParams,
+}: {
+  searchParams?: Promise<{ airportId?: string }>;
+}) {
+  const airportId = (await searchParams)?.airportId;
   const destinationAirportId = airportId ? parseInt(airportId) : 0;
 
   return (
@@ -28,9 +25,8 @@ export default async function CheckFlights({ searchParams }: SearchFlightsProps)
         className="absolute inset-0"
       />
       <div className="absolute inset-0">
-        <CheckFlightsBox initialDestinationAirportId={destinationAirportId}/>
+        <CheckFlightsBox initialDestinationAirportId={destinationAirportId} />
       </div>
     </main>
   );
 }
-

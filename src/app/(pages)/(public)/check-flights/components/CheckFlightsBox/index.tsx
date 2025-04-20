@@ -4,7 +4,7 @@ import { AirportType } from "@/lib/airport/types";
 import { api } from "@/lib/api/api";
 import { cabins } from "@/lib/route/cabins";
 import Link from "next/link";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FaSpinner } from "react-icons/fa";
 
 interface CheckFlightsBoxProps {
