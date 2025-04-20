@@ -11,31 +11,16 @@ export default function CTASection() {
       <div className="max-w-7xl flex flex-col items-center gap-8 md:flex-row">
         {/* Texto */}
         <div className="w-full md:w-1/2">
-          <h1 className="text-2xl md:text-5xl font-bold text-gray-900 mb-4">
-            Find Your Next Adventure
+          <h1 className="text-4xl xl:text-5xl font-bold text-gray-900 mb-4">
+            Join Our WhatsApp Lists
           </h1>
           <p className="text-gray-700 text-base md:text-lg mb-0 [text-align:justify]">
-            Whether you&apos;re exploring historic cities, unwinding on paradise
-            beaches, or seeking adventure in breathtaking landscapes, we have
-            the perfect flight for you.
+            Get weekly flight availability and exclusive deals sent directly to
+            your WhatsApp for routes departing from Houston. Choose your
+            preferred list from the link below and stay updated!
           </p>
 
-          <p className="text-gray-700 text-base md:text-lg mb-5 [text-align:justify]">
-            At Houston SmarTravel, we specialize in flight tickets issued with
-            miles. By focusing on direct flights, we ensure comfort and
-            convenience, all at affordable prices on specific travel dates.
-          </p>
-
-          <h1 className="text-lg md:text-xl font-bold text-gray-900 mb-4">
-            Interested in our weekly flight availability?
-          </h1>
-
-          <p className="text-gray-700 text-base md:text-lg mb-5 [text-align:justify]">
-            Click the link below to join our WhatsApp distribution list and
-            receive exclusive offers and updates on selected routes departing
-            from Houston:
-          </p>
-          <div className="w-full flex justify-center">
+          <div className="w-full flex justify-center my-5">
             <Link
               target="_blank"
               href={"https://go.wa.link/houstonsmartravel"}
@@ -45,7 +30,27 @@ export default function CTASection() {
               Join the WhatsApp List
             </Link>
           </div>
+          <h1 className="text-4xl xl:text-5xl font-bold text-gray-900 mb-4">
+            Find Your Next Adventure
+          </h1>
+
+          <p className="text-gray-700 text-base md:text-lg mb-5 [text-align:justify]">
+            From historic cities to paradise beaches, we have the perfect flight
+            for you. At Houston SmarTravel, we focus on direct flights issued
+            with miles, offering comfort, convenience, and great prices on select
+            travel dates.
+          </p>
+          <div className="w-full flex justify-center mt-5">
+            <Link
+              href={"/check-flights"}
+              className="bg-black text-white rounded-full px-6 py-3 font-medium hover:bg-gray-800 transition-colors flex flex-row items-center gap-2"
+            >
+              Check Flights
+            </Link>
+          </div>
         </div>
+
+        
 
         {/* Imagem */}
         <div className="w-full md:w-1/2 flex justify-center">

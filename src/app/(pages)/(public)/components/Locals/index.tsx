@@ -84,7 +84,7 @@ export default function Locals() {
           // Configura o comportamento responsivo-
           breakpoints={{
             0: { slidesPerView: 1 },
-            440: { slidesPerView: 2 },
+            380: { slidesPerView: 2 },
             800: { slidesPerView: 3 },
             1050: { slidesPerView: 4 },
           }}
@@ -124,10 +124,11 @@ export default function Locals() {
                       {local.passagePrice
                         ? Number(local.passagePrice).toFixed(2)
                         : "0.00"}{" "}
-                      <span className="text-sm font-semibold text-gray-600">
-                        (Round Trip)
-                      </span>
+                      
                     </span>
+                    <span className="text-sm font-semibold text-gray-600">
+                        Round Trip
+                      </span>
                   </div>
 
                   <button

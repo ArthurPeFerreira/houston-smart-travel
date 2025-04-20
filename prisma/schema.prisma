@@ -89,6 +89,7 @@ model Route {
 
   airports AirportsRoute[] @relation("Route") // Relação 1:N com AirportsRoute (aeroportos na rota)
   cabins   CabinsRoute[]   @relation("Cabins") // Relação 1:N com configurações de cabines
+  routesData   RoutesData[]   @relation("RouteData") // Relação 1:N com os dados da rota
 
   @@index([id], name: "IndexRoutesById") // Índice por ID
 }
@@ -126,4 +127,28 @@ model AirportsRoute {
   route   Route    @relation("Route", fields: [routeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@index([routeId, airportId], name: "IndexAirportsRoute") // Índice composto para acelerar filtros por rota/aeroporto
+}
+
+
+// ======================================================
+// Modelo da Tabela RoutesData
+// Tabela de associação entre rotas e dados específicos da cabine
+// ======================================================
+model RoutesData {
+  id                  Int      @id @default(autoincrement()) // Identificador único (chave primária) com incremento automático
+  routeId             Int      // Chave estrangeira referenciando a rota
+  originAirport       String // Aeroporto de origem
+  destinationAirport  String // Aeroporto de destino
+  cabinKey            String   // Identificador único da cabine dentro da rota
+  date                DateTime // Data específica associada à cabine na rota
+  direct              Boolean  // Indica se a rota é direta (sem escalas)
+
+  // Relacionamento com a tabela Route
+  // "RouteData" é o nome do relacionamento
+  // Define comportamento de deleção e atualização em cascata
+  route     Route    @relation("RouteData", fields: [routeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  // Índice composto sobre routeId e cabinKey
+  // Otimiza consultas filtradas por rota e cabine
+  @@index([routeId, cabinKey], name: "IndexRoutesData")
 }
