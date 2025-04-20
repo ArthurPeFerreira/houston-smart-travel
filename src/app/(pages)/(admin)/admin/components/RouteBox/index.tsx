@@ -108,7 +108,7 @@ export default function RouteBox() {
       const responseAirports = await api.get("api/admin/airport");
       setAirports(responseAirports.data);
     }
-    
+
     // Carrega dados iniciais de aeroportos e locais
     handleEvent();
 
@@ -118,6 +118,17 @@ export default function RouteBox() {
       eventEmitter.off("updateAirports", handleEvent);
     };
   }, []);
+
+  // Hook que busca rotas sempre que um novo aeroporto for selecionado
+  useEffect(() => {
+    if (airportIdSelected !== 0) {
+      getRoutes({
+        airportIdSelected: airportIdSelected,
+        setFilteredRoutes: setFilteredRoutes,
+        setIsLoading: setLoadingRoutesInfoModal,
+      });
+    }
+  }, [airportIdSelected]);
 
   // Envia a requisição para criar uma nova rota com os dados preenchidos no formulário
   async function handleCreateRoute(e: React.FormEvent) {
@@ -187,9 +198,13 @@ export default function RouteBox() {
         error?.response?.data?.error || "Failed to edit route.";
       toast.error(errorMessage, toastConfigs);
     } finally {
-      eventEmitter.emit("updateRoutes");
       setLoadingEditRouteModal(false);
       setShowEditRouteModal(false);
+      getRoutes({
+        airportIdSelected: airportIdSelected,
+        setFilteredRoutes: setFilteredRoutes,
+        setIsLoading: setLoadingRoutesInfoModal,
+      });
     }
   }
 
@@ -593,11 +608,9 @@ export default function RouteBox() {
           onCloseEditModal={() => setShowEditRouteModal(false)}
           isLoading={loadingRoutesInfoModal}
           isLoadingEditModal={loadingEditRouteModal}
-          setIsLoading={(value: boolean) => setLoadingRoutesInfoModal(value)}
           airportIdSelected={airportIdSelected}
           setAirportIdSelected={setAirportIdSelected}
           filteredRoutes={filteredRoutes}
-          setFilteredRoutes={setFilteredRoutes}
           onDeleteRoute={handleDeleteRoute}
           onEditRoute={(data) => handleEditRoute(data)}
         />

@@ -5,13 +5,11 @@
 import { AirportType } from "@/lib/airport/types";
 import { mileagePrograms } from "@/lib/route/mileagePrograms";
 import { CabinsType, EditRouteType, RouteType } from "@/lib/route/types";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FaEye, FaSpinner } from "react-icons/fa";
 import { GoXCircle } from "react-icons/go";
 import { MdOutlineExpandCircleDown } from "react-icons/md";
-import getRoutes from "../../functions/getRoutes";
 import Image from "next/image";
-import eventEmitter from "@/lib/event/eventEmmiter";
 import SeeCabins from "./components/SeeCabins";
 import EditRoute from "./components/EditRoute";
 
@@ -25,11 +23,9 @@ interface RouteInfoModalProps {
   onCloseEditModal: () => void;
   isLoading: boolean;
   isLoadingEditModal: boolean;
-  setIsLoading: (value: boolean) => void;
   airportIdSelected: number;
   setAirportIdSelected: (value: number) => void;
   filteredRoutes: RouteType[];
-  setFilteredRoutes: (value: RouteType[]) => void;
   onDeleteRoute: (routeId: number) => void;
   onEditRoute: (route: EditRouteType) => void;
 }
@@ -44,11 +40,9 @@ export default function RouteInfo({
   onCloseEditModal,
   isLoading,
   isLoadingEditModal,
-  setIsLoading,
   airportIdSelected,
   setAirportIdSelected,
   filteredRoutes,
-  setFilteredRoutes,
   onDeleteRoute,
   onEditRoute,
 }: RouteInfoModalProps) {
@@ -67,36 +61,7 @@ export default function RouteInfo({
 
   // Estado que define qual rota está sendo editada
   const [routeToEdit, setRouteToEdit] = useState<RouteType | undefined>();
-
-  // Hook que busca rotas sempre que um novo aeroporto for selecionado
-  useEffect(() => {
-    if (airportIdSelected !== 0) {
-      getRoutes({
-        airportIdSelected: airportIdSelected,
-        setFilteredRoutes: setFilteredRoutes,
-        setIsLoading: setIsLoading,
-      });
-    }
-  }, [airportIdSelected]);
-
-  // Hook para escutar o evento global de atualização de rotas
-  useEffect(() => {
-    const handleUpdateRoutes = () => {
-      getRoutes({
-        airportIdSelected: airportIdSelected,
-        setFilteredRoutes: setFilteredRoutes,
-        setIsLoading: setIsLoading,
-      });
-    };
-
-    eventEmitter.on("updateRoutes", handleUpdateRoutes);
-
-    // Remove listener ao desmontar o componente ou reexecutar o effect
-    return () => {
-      eventEmitter.off("updateRoutes", handleUpdateRoutes);
-    };
-  }, []);
-
+ 
   // Verifica se o modal deve ser exibido
   if (!isOpen) return null;
 
