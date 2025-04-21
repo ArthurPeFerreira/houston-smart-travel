@@ -9,12 +9,17 @@
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 800px) {
+  :root {
+    --month-per-row: 2;
+  }
+}
+
+@media (max-width: 400px) {
   :root {
     --month-per-row: 1;
   }
 }
-
 
 .fc-multimonth {
   display: flex;
