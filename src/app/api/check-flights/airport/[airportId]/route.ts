@@ -1,67 +1,72 @@
+// Importa função que recupera aeroportos utilizando cache
 import { getAirportByCache } from "@/lib/airport/cacheAirport";
+
+// Importa função que recupera rotas utilizando cache
 import { getRouteByCache } from "@/lib/route/cacheRoute";
+
+// Importa objetos do Next.js para manipulação de requisições e respostas HTTP
 import { NextRequest, NextResponse } from "next/server";
 
-// Função handler para requisições HTTP do tipo GET
-// Objetivo: retornar uma lista de aeroportos que **não estão conectados** ao aeroporto informado via ID
+// Função que lida com requisições GET
+// Objetivo: retornar aeroportos que **não estão conectados** ao aeroporto especificado via ID na URL
 export async function GET(
-  req: NextRequest, // Objeto representando a requisição HTTP
-  { params }: { params: Promise<{ airportId: string }> } // Parâmetros da URL contendo o ID do aeroporto como string
+  req: NextRequest, // Representa a requisição HTTP recebida
+  { params }: { params: Promise<{ airportId: string }> } // Parâmetros da URL contendo o ID do aeroporto
 ) {
   try {
-    // Aguarda e extrai o airportId dos parâmetros da rota
+    // Extrai o airportId dos parâmetros após resolução da Promise
     const { airportId } = await params;
 
-    // Converte o ID do aeroporto de string para número
+    // Converte o ID recebido como string para número
     const airportIdNumber = Number(airportId);
 
-    // Verifica se o ID convertido é válido (maior que zero)
+    // Validação: verifica se o ID é numérico e maior que zero
     if (!airportIdNumber || airportIdNumber < 1) {
       return NextResponse.json(
-        { message: "Failed to Find Airports!" }, // Mensagem de erro de validação
-        { status: 400 } // HTTP 400 - Bad Request
+        { error: "Failed to Find Airports!" },
+        { status: 400 }
       );
     }
 
-    // Busca todas as rotas no cache (parâmetro 0 utilizado para recuperar todas)
+    // Recupera todas as rotas disponíveis do cache
     const routes = await getRouteByCache(0);
 
-    // Busca todos os aeroportos no cache (parâmetro 0 utilizado para recuperar todos)
+    // Recupera todos os aeroportos disponíveis do cache
     const airports = await getAirportByCache(0);
 
-    // Se rotas ou aeroportos não forem encontrados, retorna erro 400
+    // Validação: verifica se as rotas ou aeroportos foram recuperados com sucesso
     if (!routes || !airports) {
       return NextResponse.json(
-        { message: "Failed to Find Airports!" }, // Mensagem de erro
-        { status: 400 } // HTTP 400 - Bad Request
+        { error: "Failed to Find Airports!" },
+        { status: 400 }
       );
     }
 
-    // Filtra as rotas que contenham o aeroporto buscado
+    // Filtra rotas que contenham o aeroporto especificado pelo ID
     const filteredRoutes = routes.filter((route) => {
-      // Se o primeiro aeroporto da rota tiver ID maior que o buscado, ignora a rota
+      // Ignora rotas cujo primeiro aeroporto tem ID maior que o buscado (regra de negócio específica)
       if (route.airports[0].id > airportIdNumber) {
         return false;
       }
 
-      // Retorna true se algum aeroporto da rota tiver ID igual ao buscado
+      // Mantém a rota se algum dos aeroportos nela tiver o mesmo ID do buscado
       return route.airports.some((airport) => airport.id === airportIdNumber);
     });
 
-    // Conjunto para armazenar os IDs dos aeroportos conectados ao informado
+    // Cria um conjunto para armazenar os IDs dos aeroportos conectados ao aeroporto informado
     const connectedAirportIds = new Set<number>();
 
-    // Percorre as rotas filtradas e adiciona todos os aeroportos dessas rotas no conjunto
+    // Adiciona ao conjunto todos os aeroportos das rotas filtradas
     for (const route of filteredRoutes) {
       route.airports.forEach((airport) => {
         connectedAirportIds.add(airport.id);
       });
     }
 
-    // Remove o próprio aeroporto buscado da lista de conexões
+    // Remove do conjunto o próprio aeroporto informado (não deve ser incluído na resposta)
     connectedAirportIds.delete(airportIdNumber);
 
-    // Filtra os aeroportos que NÃO estão conectados ao aeroporto informado
+    // Filtra os aeroportos que não estão conectados ao aeroporto informado
     const notConnectedAirports = airports.filter(
       (airport) => (connectedAirportIds.has(airport.id) && airport.id !== airportIdNumber)
     );
@@ -69,10 +74,10 @@ export async function GET(
     // Retorna a lista de aeroportos não conectados em formato JSON
     return NextResponse.json(notConnectedAirports);
   } catch {
-    // Em caso de erro inesperado, retorna HTTP 500 - Internal Server Error
+    // Captura qualquer erro inesperado e retorna status 500 com mensagem de erro
     return NextResponse.json(
-      { error: "Failed to Find Routes!" }, // Mensagem de erro genérica
-      { status: 500 } // HTTP 500 - Erro Interno
+      { error: "Failed to Find Routes!" },
+      { status: 500 }
     );
   }
 }

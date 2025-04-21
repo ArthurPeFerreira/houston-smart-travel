@@ -12,7 +12,7 @@ export async function GET() {
     // Se não houver Rotas, retorna um erro 400
     if (!routes) {
       return NextResponse.json(
-        { message: "Failed to Find Routes!" }, // Mensagem de erro
+        { error: "Failed to Find Routes!" }, // Mensagem de erro
         { status: 400 } // Status HTTP 400 (Bad Request)
       );
     }

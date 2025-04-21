@@ -17,7 +17,7 @@ export async function GET(
     // Verifica se o ID é válido (deve ser um número maior que 0)
     if (!userIdNumber || userIdNumber < 1) {
       return NextResponse.json(
-        { message: "Failed to Find User!" }, // Mensagem de erro
+        { error: "Failed to Find User!" }, // Mensagem de erro
         { status: 400 } // Status HTTP 400 (Bad Request)
       );
     }
@@ -28,7 +28,7 @@ export async function GET(
     // Se o usuário não for encontrado, retorna um erro 400
     if (!user) {
       return NextResponse.json(
-        { message: "Failed to Find User!" }, // Mensagem de erro
+        { error: "Failed to Find User!" }, // Mensagem de erro
         { status: 400 } // Status HTTP 400 (Bad Request)
       );
     }
@@ -57,7 +57,7 @@ export async function DELETE(
     // Verifica se o ID é válido (deve ser um número maior que 0)
     if (!userIdNumber || userIdNumber < 1) {
       return NextResponse.json(
-        { message: "Failed to Find User!" }, // Mensagem de erro
+        { error: "Failed to Find User!" }, // Mensagem de erro
         { status: 400 } // Status HTTP 400 (Bad Request)
       );
     }
@@ -68,7 +68,7 @@ export async function DELETE(
     // Se o usuário não for encontrado, retorna um erro 400
     if (!user) {
       return NextResponse.json(
-        { message: "Failed to Find User!" }, // Mensagem de erro
+        { error: "Failed to Find User!" }, // Mensagem de erro
         { status: 400 } // Status HTTP 400 (Bad Request)
       );
     }
@@ -79,7 +79,7 @@ export async function DELETE(
     // Se a deleção falhar, retorna um erro 400
     if (!deletedUser) {
       return NextResponse.json(
-        { message: "Failed to Delete User!" }, // Mensagem de erro
+        { error: "Failed to Delete User!" }, // Mensagem de erro
         { status: 400 } // Status HTTP 400 (Bad Request)
       );
     }
@@ -108,7 +108,7 @@ export async function PUT(
     // Verifica se o ID é válido (deve ser um número maior que 0)
     if (!userIdNumber || userIdNumber < 1) {
       return NextResponse.json(
-        { message: "Failed to Find User!" }, // Mensagem de erro
+        { error: "Failed to Find User!" }, // Mensagem de erro
         { status: 400 } // Status HTTP 400 (Bad Request)
       );
     }
@@ -134,7 +134,7 @@ export async function PUT(
     // Se o usuário não for encontrado, retorna um erro 400
     if (!user) {
       return NextResponse.json(
-        { message: "Failed to Find User!" }, // Mensagem de erro
+        { error: "Failed to Find User!" }, // Mensagem de erro
         { status: 400 } // Status HTTP 400 (Bad Request)
       );
     }

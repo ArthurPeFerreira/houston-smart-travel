@@ -12,7 +12,7 @@ export async function GET() {
     // Se não houver usuários, retorna um erro 400
     if (!users) {
         return NextResponse.json(
-          { message: "Failed to Find Users!" }, // Mensagem de erro
+          { error: "Failed to Find Users!" }, // Mensagem de erro
           { status: 400 } // Status HTTP 400 (Bad Request)
         );
       }

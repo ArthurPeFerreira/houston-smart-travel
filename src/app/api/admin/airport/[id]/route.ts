@@ -17,7 +17,7 @@ export async function GET(
     // Verifica se o ID é válido (deve ser um número maior que 0)
     if (!airportIdNumber || airportIdNumber < 1) {
       return NextResponse.json(
-        { message: "Failed to Find Airport!" }, // Mensagem de erro
+        { error: "Failed to Find Airport!" }, // Mensagem de erro
         { status: 400 } // Status HTTP 400 (Bad Request)
       );
     }
@@ -28,7 +28,7 @@ export async function GET(
     // Se o Aeroporto não for encontrado, retorna um erro 400
     if (!airport) {
       return NextResponse.json(
-        { message: "Failed to Find Airport!" }, // Mensagem de erro
+        { error: "Failed to Find Airport!" }, // Mensagem de erro
         { status: 400 } // Status HTTP 400 (Bad Request)
       );
     }
@@ -57,7 +57,7 @@ export async function DELETE(
     // Verifica se o ID é válido (deve ser um número maior que 0)
     if (!airportIdNumber || airportIdNumber < 1) {
       return NextResponse.json(
-        { message: "Failed to Find Airport!" }, // Mensagem de erro
+        { error: "Failed to Find Airport!" }, // Mensagem de erro
         { status: 400 } // Status HTTP 400 (Bad Request)
       );
     }
@@ -68,7 +68,7 @@ export async function DELETE(
     // Se o Aeroporto não for encontrado, retorna um erro 400
     if (!airport) {
       return NextResponse.json(
-        { message: "Failed to Find Airport!" }, // Mensagem de erro
+        { error: "Failed to Find Airport!" }, // Mensagem de erro
         { status: 400 } // Status HTTP 400 (Bad Request)
       );
     }
@@ -79,7 +79,7 @@ export async function DELETE(
     // Se a deleção falhar, retorna um erro 400
     if (!deletedAirport) {
       return NextResponse.json(
-        { message: "Failed to Delete Airport!" }, // Mensagem de erro
+        { error: "Failed to Delete Airport!" }, // Mensagem de erro
         { status: 400 } // Status HTTP 400 (Bad Request)
       );
     }
@@ -108,7 +108,7 @@ export async function PUT(
     // Verifica se o ID é válido (deve ser um número maior que 0)
     if (!airportIdNumber || airportIdNumber < 1) {
       return NextResponse.json(
-        { message: "Failed to Find Airport!" }, // Mensagem de erro
+        { error: "Failed to Find Airport!" }, // Mensagem de erro
         { status: 400 } // Status HTTP 400 (Bad Request)
       );
     }
@@ -133,7 +133,7 @@ export async function PUT(
     // Se o Aeroporto não for encontrado, retorna um erro 400
     if (!airport) {
       return NextResponse.json(
-        { message: "Failed to Find Airport!" }, // Mensagem de erro
+        { error: "Failed to Find Airport!" }, // Mensagem de erro
         { status: 400 } // Status HTTP 400 (Bad Request)
       );
     }

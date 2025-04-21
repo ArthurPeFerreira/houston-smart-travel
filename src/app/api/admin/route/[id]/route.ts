@@ -17,7 +17,7 @@ export async function GET(
     // Verifica se o ID é válido (deve ser um número maior que 0)
     if (!routeIdNumber || routeIdNumber < 1) {
       return NextResponse.json(
-        { message: "Failed to Find Route!" }, // Mensagem de erro
+        { error: "Failed to Find Route!" }, // Mensagem de erro
         { status: 400 } // Status HTTP 400 (Bad Request)
       );
     }
@@ -28,7 +28,7 @@ export async function GET(
     // Se o Rota não for encontrado, retorna um erro 400
     if (!route) {
       return NextResponse.json(
-        { message: "Failed to Find Route!" }, // Mensagem de erro
+        { error: "Failed to Find Route!" }, // Mensagem de erro
         { status: 400 } // Status HTTP 400 (Bad Request)
       );
     }
@@ -57,7 +57,7 @@ export async function DELETE(
     // Verifica se o ID é válido (deve ser um número maior que 0)
     if (!routeIdNumber || routeIdNumber < 1) {
       return NextResponse.json(
-        { message: "Failed to Find Route!" }, // Mensagem de erro
+        { error: "Failed to Find Route!" }, // Mensagem de erro
         { status: 400 } // Status HTTP 400 (Bad Request)
       );
     }
@@ -68,7 +68,7 @@ export async function DELETE(
     // Se o Rota não for encontrado, retorna um erro 400
     if (!route) {
       return NextResponse.json(
-        { message: "Failed to Find Route!" }, // Mensagem de erro
+        { error: "Failed to Find Route!" }, // Mensagem de erro
         { status: 400 } // Status HTTP 400 (Bad Request)
       );
     }
@@ -79,7 +79,7 @@ export async function DELETE(
     // Se a deleção falhar, retorna um erro 400
     if (!deletedRoute) {
       return NextResponse.json(
-        { message: "Failed to Delete Route!" }, // Mensagem de erro
+        { error: "Failed to Delete Route!" }, // Mensagem de erro
         { status: 400 } // Status HTTP 400 (Bad Request)
       );
     }
@@ -108,7 +108,7 @@ export async function PUT(
     // Verifica se o ID é válido (deve ser um número maior que 0)
     if (!routeIdNumber || routeIdNumber < 1) {
       return NextResponse.json(
-        { message: "Failed to Find route!" }, // Mensagem de erro
+        { error: "Failed to Find route!" }, // Mensagem de erro
         { status: 400 } // Status HTTP 400 (Bad Request)
       );
     }
@@ -137,7 +137,7 @@ export async function PUT(
     // Se o Rota não for encontrado, retorna um erro 400
     if (!route) {
       return NextResponse.json(
-        { message: "Failed to Find Route!" }, // Mensagem de erro
+        { error: "Failed to Find Route!" }, // Mensagem de erro
         { status: 400 } // Status HTTP 400 (Bad Request)
       );
     }

@@ -1,7 +1,20 @@
-:root{
-  --month-per-row: 2;
+:root {
+  --month-per-row: 4;
   --spaces-per-month: calc(var(--month-per-row) - 1);
 }
+
+@media (max-width: 1200px) {
+  :root {
+    --month-per-row: 3;
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --month-per-row: 1;
+  }
+}
+
 
 .fc-multimonth {
   display: flex;
@@ -41,6 +54,11 @@
   display: none !important;
 }
 
+.fc-day {
+  aspect-ratio: 1 / 1;
+  border-radius: 0.4rem;
+}
+
 .fc-daygrid-day-number {
   font-weight: 700;
 }
@@ -51,6 +69,6 @@
 }
 
 .fc-multimonth-title{
-  background-color: #4472c4;
+  background-color: #141414;
   color: #FFFFFF;
 }

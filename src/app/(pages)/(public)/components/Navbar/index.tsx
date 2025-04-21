@@ -7,6 +7,7 @@ import Link from "next/link";
 import { FaBars, FaInstagram, FaWhatsapp } from "react-icons/fa";
 import Sidebar from "./components/Sidebar";
 import { useState } from "react";
+import { instagram, whatsapp } from "@/lib/systemInfo/contacts";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -45,14 +46,14 @@ export default function Navbar() {
         </div> */}
         <div className="flex flex-row gap-2 md:gap-5 text-[35px]">
           <Link
-            href="https://api.whatsapp.com/send?phone=5511999999999&text=Ol%C3%A1%2C%20podemos%20conversar%3F"
+            href={`${whatsapp}&text=Ol%C3%A1%2C%20podemos%20conversar%3F`}
             target="_blank"
             rel="noopener noreferrer"
           >
             <FaWhatsapp />
           </Link>
           <Link
-            href="https://www.instagram.com/"
+            href={instagram}
             target="_blank"
             rel="noopener noreferrer"
           >

@@ -1,6 +1,7 @@
 // Indica que este é um componente do lado do servidor no Next.js (App Router)
 "use client";
 
+import { email, whatsapp } from "@/lib/systemInfo/contacts";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -9,7 +10,7 @@ export default function Footer() {
 
   const handleCopyEmail = () => {
     if (typeof navigator !== "undefined" && navigator.clipboard) {
-      navigator.clipboard.writeText("email@email.com").then(() => {
+      navigator.clipboard.writeText(email).then(() => {
         setCopiedEmail(true);
         setTimeout(() => setCopiedEmail(false), 1000);
       });
@@ -31,7 +32,7 @@ export default function Footer() {
 
             <div className="flex-wrap gap-x-1">
               <Link
-                href="https://api.whatsapp.com/send?phone=5511999999999&text=Ol%C3%A1%2C%20podemos%20conversar%3F"
+                href={`${whatsapp}&text=Ol%C3%A1%2C%20podemos%20conversar%3F`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-400 cursor-pointer hover:underline"
@@ -47,7 +48,7 @@ export default function Footer() {
                 className="text-blue-400 cursor-pointer hover:underline text-nowrap"
               >
                 <a
-                  href="mailto:email@email.com"
+                  href={`mailto:${email}`}
                   className="text-blue-400 cursor-pointer hover:underline"
                 >
                   {copiedEmail ? "Copied!" : "Email"}
