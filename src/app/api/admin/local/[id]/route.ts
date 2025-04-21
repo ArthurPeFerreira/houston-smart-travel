@@ -37,7 +37,7 @@ export async function GET(
     // Valida se o ID é válido (número positivo)
     if (!localIdNumber || localIdNumber < 1) {
       return NextResponse.json(
-        { message: "Failed to Find Local!" },
+        { error: "Failed to Find Local!" },
         { status: 400 }
       );
     }
@@ -48,7 +48,7 @@ export async function GET(
     // Retorna erro caso o Local não seja encontrado
     if (!local) {
       return NextResponse.json(
-        { message: "Failed to Find Local!" },
+        { error: "Failed to Find Local!" },
         { status: 400 }
       );
     }
@@ -79,7 +79,7 @@ export async function DELETE(
     // Valida o ID
     if (!localIdNumber || localIdNumber < 1) {
       return NextResponse.json(
-        { message: "Failed to Find Local!" },
+        { error: "Failed to Find Local!" },
         { status: 400 }
       );
     }
@@ -90,7 +90,7 @@ export async function DELETE(
     // Se não existir, retorna erro
     if (!local) {
       return NextResponse.json(
-        { message: "Failed to Find Local!" },
+        { error: "Failed to Find Local!" },
         { status: 400 }
       );
     }
@@ -101,7 +101,7 @@ export async function DELETE(
     // Verifica se a operação de deleção teve sucesso
     if (!deletedLocal) {
       return NextResponse.json(
-        { message: "Failed to Delete Local!" },
+        { error: "Failed to Delete Local!" },
         { status: 400 }
       );
     }
@@ -132,7 +132,7 @@ export async function PUT(
     // Verifica se o ID é válido
     if (!localIdNumber || localIdNumber < 1) {
       return NextResponse.json(
-        { message: "Failed to Find Local!" },
+        { error: "Failed to Find Local!" },
         { status: 400 }
       );
     }
@@ -180,7 +180,7 @@ export async function PUT(
     const local = await getLocalByCache(localIdNumber);
     if (!local) {
       return NextResponse.json(
-        { message: "Failed to Find Local!" },
+        { error: "Failed to Find Local!" },
         { status: 400 }
       );
     }

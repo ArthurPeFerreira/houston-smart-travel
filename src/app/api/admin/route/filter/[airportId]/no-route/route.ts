@@ -18,7 +18,7 @@ export async function GET(
     // Verifica se o ID convertido é válido (maior que zero)
     if (!airportIdNumber || airportIdNumber < 1) {
       return NextResponse.json(
-        { message: "Failed to Find Airports!" }, // Mensagem de erro de validação
+        { error: "Failed to Find Airports!" }, // Mensagem de erro de validação
         { status: 400 } // HTTP 400 - Bad Request
       );
     }
@@ -32,7 +32,7 @@ export async function GET(
     // Se rotas ou aeroportos não forem encontrados, retorna erro 400
     if (!routes || !airports) {
       return NextResponse.json(
-        { message: "Failed to Find Airports!" }, // Mensagem de erro
+        { error: "Failed to Find Airports!" }, // Mensagem de erro
         { status: 400 } // HTTP 400 - Bad Request
       );
     }

@@ -31,7 +31,7 @@ export async function GET() {
         // Caso nenhum local seja encontrado, retorna erro 400 (bad request)
         if (!locals) {
             return NextResponse.json(
-                { message: "Failed to Find Locals!" },
+                { error: "Failed to Find Locals!" },
                 { status: 400 }
             );
         }

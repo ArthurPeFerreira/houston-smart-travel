@@ -12,7 +12,7 @@ export async function GET() {
     // Se não houver Aeroportos, retorna um erro 400
     if (!airports) {
         return NextResponse.json(
-          { message: "Failed to Find Airports!" }, // Mensagem de erro
+          { error: "Failed to Find Airports!" }, // Mensagem de erro
           { status: 400 } // Status HTTP 400 (Bad Request)
         );
       }

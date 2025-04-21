@@ -9,7 +9,6 @@ import { useEffect, useRef, useState } from "react";
 import { addYears, startOfToday } from "date-fns";
 
 import "../../styles/calendar.css";
-// import "./styles/darkCalendar.css";
 
 import "@fullcalendar/daygrid/index.js";
 import "@fullcalendar/multimonth/index.js";
@@ -21,6 +20,7 @@ interface CalendarProps {
   destinationAirport: number;
   cabin: string;
   seats: number;
+  route: number;
 }
 
 export default function Calendar({
@@ -28,6 +28,7 @@ export default function Calendar({
   destinationAirport,
   cabin,
   seats,
+  route
 }: CalendarProps) {
   const today = startOfToday();
   const nextYear = addYears(today, 1);
@@ -52,9 +53,8 @@ export default function Calendar({
     async function fetchData() {
       try {
         const response = await api.get(
-          `/api/check-flights/search-flights?origin=${originAirport}&destination=${destinationAirport}&cabin=${cabin}&seats=${seats}`
+          `/api/check-flights/search-flights?origin=${originAirport}&destination=${destinationAirport}&cabin=${cabin}&seats=${seats}&route=${route}`
         );
-        console.log("🚀 Eventos recebidos:", response.data);
 
         if (response.data.length > 0) {
           setEventsData(
@@ -84,7 +84,7 @@ export default function Calendar({
   }, []);
 
   return (
-    <main className="w-full flex items-center justify-center">
+    <main className="w-full flex items-center justify-center min-h-screen">
       <div className="px-2 max-w-7xl">
         <div className="w-full h-fit rounded-lg">
           {eventsData.length > 0 && (
@@ -96,7 +96,7 @@ export default function Calendar({
                 center: "",
                 right: "",
               }}
-              initialView="multiMonth" // ou "multiMonthYear"
+              initialView="multiMonth" 
               initialDate={today.toISOString().slice(0, 10)}
               views={{
                 multiMonth: {

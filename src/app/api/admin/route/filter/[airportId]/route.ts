@@ -16,7 +16,7 @@ export async function GET(
     // Verifica se o ID convertido é válido (deve ser um número maior que 0)
     if (!airportIdNumber || airportIdNumber < 1) {
       return NextResponse.json(
-        { message: "Failed to Find Route!" }, // Mensagem de erro se o ID for inválido
+        { error: "Failed to Find Route!" }, // Mensagem de erro se o ID for inválido
         { status: 400 } // Retorna status HTTP 400 (Bad Request)
       );
     }
@@ -27,7 +27,7 @@ export async function GET(
     // Verifica se as rotas foram encontradas com sucesso
     if (!routes) {
       return NextResponse.json(
-        { message: "Failed to Find Routes!" }, // Mensagem de erro caso não haja rotas
+        { error: "Failed to Find Routes!" }, // Mensagem de erro caso não haja rotas
         { status: 400 } // Retorna status HTTP 400 (Bad Request)
       );
     }

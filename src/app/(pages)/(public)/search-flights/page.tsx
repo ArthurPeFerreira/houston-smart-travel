@@ -9,12 +9,14 @@ export default async function SearchFlights({
   searchParams,
 }: {
   searchParams?: Promise<{
+    route?: string;
     origin?: string;
     destination?: string;
     cabin?: string;
     seats?: string;
   }>;
 }) {
+  const route = Number((await searchParams)?.route);
   const originAirport = Number((await searchParams)?.origin);
   const destinationAirport = Number((await searchParams)?.destination);
   const cabin = (await searchParams)?.cabin || "";
@@ -26,6 +28,7 @@ export default async function SearchFlights({
       destinationAirport={destinationAirport}
       cabin={cabin}
       seats={seats}
+      route={route}
     />
   );
 }

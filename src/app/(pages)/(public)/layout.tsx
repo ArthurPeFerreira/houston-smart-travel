@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import "../globals.css";
+import { ToastContainer } from "react-toastify";
 
 export const metadata: Metadata = {
   description: "",
@@ -19,6 +20,7 @@ export default function RootLayout({
         {/* Conteúdo da página */}
         {children}
         <Footer />
+        <ToastContainer />
       </body>
     </html>
   );

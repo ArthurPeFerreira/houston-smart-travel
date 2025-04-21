@@ -1,43 +1,52 @@
-import { getAirportByCache } from "@/lib/airport/cacheAirport"; // Importa a função para buscar Aeroportos no cache
-import { getRouteByCache } from "@/lib/route/cacheRoute";
-import { NextResponse } from "next/server"; // Importa NextRequest e NextResponse do Next.js para manipulação de requisições e respostas
+// Importa a função que busca todos os aeroportos no cache
+import { getAirportByCache } from "@/lib/airport/cacheAirport";
 
-// Função GET para buscar todos os Aeroportos
+// Importa a função que busca todas as rotas no cache
+import { getRouteByCache } from "@/lib/route/cacheRoute";
+
+// Importa utilitário para construção de respostas HTTP na API do Next.js
+import { NextResponse } from "next/server";
+
+// Função responsável por lidar com requisições HTTP GET
+// Objetivo: retornar apenas os aeroportos que estão presentes em alguma rota
 export async function GET() {
   try {
-    // Busca todas as rotas no cache (parâmetro 0 utilizado para recuperar todas)
+    // Recupera todas as rotas do cache utilizando o argumento 0
     const routes = await getRouteByCache(0);
 
-    // Busca todos os aeroportos no cache (parâmetro 0 utilizado para recuperar todos)
+    // Recupera todos os aeroportos do cache utilizando o argumento 0
     const airports = await getAirportByCache(0);
 
-    // Se rotas ou aeroportos não forem encontrados, retorna erro 400
+    // Verificação de integridade: caso não existam rotas ou aeroportos, retorna erro 400
     if (!routes || !airports) {
       return NextResponse.json(
-        { message: "Failed to Find Airports!" }, // Mensagem de erro
-        { status: 400 } // HTTP 400 - Bad Request
+        { error: "Failed to Find Airports!" },
+        { status: 400 }
       );
     }
 
-    // 🔍 Cria um Set com os IDs de todos os aeroportos usados em rotas
+    // Cria um conjunto para armazenar os IDs de aeroportos que aparecem em pelo menos uma rota
     const airportIdsWithRoutes = new Set<number>();
     routes.forEach((route) => {
-      airportIdsWithRoutes.add(route.airports[0].id); // Adiciona o ID do primeiro aeroporto da rota
-      airportIdsWithRoutes.add(route.airports[1].id); // Adiciona o ID do segundo aeroporto da rota
+      // Adiciona o ID do primeiro aeroporto da rota ao conjunto
+      airportIdsWithRoutes.add(route.airports[0].id);
+
+      // Adiciona o ID do segundo aeroporto da rota ao conjunto
+      airportIdsWithRoutes.add(route.airports[1].id);
     });
 
-    // ✂️ Filtra apenas aeroportos presentes em alguma rota
+    // Filtra os aeroportos que estão presentes no conjunto de aeroportos utilizados em rotas
     const filteredAirports = airports.filter((airport) =>
       airportIdsWithRoutes.has(airport.id)
     );
 
-    // Retorna a lista de Aeroportos encontrados
+    // Retorna os aeroportos filtrados em formato JSON com status 200 (OK)
     return NextResponse.json(filteredAirports);
   } catch {
-    // Em caso de erro, retorna um erro 500
+    // Captura erros inesperados e retorna erro 500 (Internal Server Error)
     return NextResponse.json(
-      { error: "Failed to Find Airports!" }, // Mensagem de erro
-      { status: 500 } // Status HTTP 500 (Internal Server Error)
+      { error: "Failed to Find Airports!" },
+      { status: 500 }
     );
   }
 }
