@@ -28,7 +28,7 @@ export default function Calendar({
   destinationAirport,
   cabin,
   seats,
-  route
+  route,
 }: CalendarProps) {
   const today = startOfToday();
   const nextYear = addYears(today, 1);
@@ -81,7 +81,7 @@ export default function Calendar({
       }
     }
     fetchData();
-  }, []);
+  }, [originAirport, destinationAirport, cabin, seats, route]);
 
   return (
     <main className="w-full flex items-center justify-center min-h-screen">
@@ -96,7 +96,7 @@ export default function Calendar({
                 center: "",
                 right: "",
               }}
-              initialView="multiMonth" 
+              initialView="multiMonth"
               initialDate={today.toISOString().slice(0, 10)}
               views={{
                 multiMonth: {

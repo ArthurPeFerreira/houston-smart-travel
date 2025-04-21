@@ -4,12 +4,6 @@ import { getAirportByCache } from "@/lib/airport/cacheAirport";
 // Importa o tipo de dados representando um aeroporto
 import { AirportType } from "@/lib/airport/types";
 
-// Importa o cliente Prisma para interações com o banco de dados (não utilizado neste trecho, mas provavelmente reservado para uso futuro)
-import { prismaClient } from "@/lib/prisma/prisma";
-
-// Importa definições relacionadas às cabines de voo (não utilizadas neste código específico)
-import { Cabin, cabins } from "@/lib/route/cabins";
-
 // Importa função para recuperar rotas do cache
 import { getRouteByCache } from "@/lib/route/cacheRoute";
 

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 "use client"; // Indica que o componente será executado no cliente (necessário para hooks como useState e useEffect)
 
 import { AirportType } from "@/lib/airport/types"; // Tipo que representa um aeroporto

@@ -146,7 +146,7 @@ export async function GET(req: NextRequest) {
     // de acordo com todos os parâmetros informados
     const data = await prismaClient.routesData.findMany({
       where: {
-        routeId: routeId, // ID da rota
+        routeId: route.id, // ID da rota
         cabinKey: String(cabin.key), // Chave da cabine (ex: 'economy', 'business')
         originAirport: originAirport.airportCode, // Código IATA do aeroporto de origem
         destinationAirport: destinationAirport.airportCode, // Código IATA do aeroporto de destino
