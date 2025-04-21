@@ -106,17 +106,17 @@ export default function CheckFlightsBox({
 
     // Validações do formulário
     if (originAirportId === 0) {
-      toast.error("Please select an origin airport.", toastConfigs);
+      toast.info("Please select an origin airport.", toastConfigs);
       return;
     }
 
     if (destinationAirportId === 0) {
-      toast.error("Please select an destination airport.", toastConfigs);
+      toast.info("Please select an destination airport.", toastConfigs);
       return;
     }
 
     if (cabin === "") {
-      toast.error("Please select a cabin.", toastConfigs);
+      toast.info("Please select a cabin.", toastConfigs);
       return;
     }
 
