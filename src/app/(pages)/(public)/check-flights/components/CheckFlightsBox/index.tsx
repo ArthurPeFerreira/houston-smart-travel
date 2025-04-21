@@ -3,7 +3,7 @@
 import { AirportType } from "@/lib/airport/types";
 import { api } from "@/lib/api/api";
 import { cabins } from "@/lib/route/cabins";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaSpinner } from "react-icons/fa";
 
@@ -17,6 +17,8 @@ export default function CheckFlightsBox({
   const selects = "w-full bg-gray-300 p-2 rounded";
   const inputs = "w-20 bg-gray-300 p-2 rounded";
 
+  const router = useRouter();
+
   const [originAirports, setOriginAirports] = useState<AirportType[]>([]);
   const [destinationAirports, setDestinationAirports] = useState<AirportType[]>(
     []
@@ -27,13 +29,13 @@ export default function CheckFlightsBox({
   const [destinationAirportId, setDestinationAirportId] = useState<number>(
     initialDestinationAirportId
   );
-  const [adults, setAdults] = useState<number>(1);
+  const [seats, setSeats] = useState<number>(1);
   const [cabin, setCabin] = useState<string>("");
 
   useEffect(() => {
     async function fetchInitialData() {
       try {
-        const response = await api.get("api/airport");
+        const response = await api.get("api/check-flights/airport");
         setOriginAirports(response.data);
       } catch {
         console.error("Failed to Find Initial Data!");
@@ -44,8 +46,12 @@ export default function CheckFlightsBox({
 
   useEffect(() => {
     async function fetchData() {
+      if (originAirportId === 0) return; // Se o ID do aeroporto de origem for 0, não faz nada
+
       try {
-        const response = await api.get(`api/airport/${originAirportId}`);
+        const response = await api.get(
+          `api/check-flights/airport/${originAirportId}`
+        );
         if (response.data.length > 0) {
           setDestinationAirports(response.data);
         } else {
@@ -58,9 +64,18 @@ export default function CheckFlightsBox({
     fetchData();
   }, [originAirportId]);
 
-  function handleSubmit() {
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
     setLoading(true);
-    setLoading(false);
+
+    const params = new URLSearchParams({
+      origin: originAirportId.toString(),
+      destination: destinationAirportId.toString(),
+      cabin,
+      seats: seats.toString(),
+    });
+
+    router.push(`/search-flights?${params.toString()}`);
   }
 
   return (
@@ -156,9 +171,9 @@ export default function CheckFlightsBox({
               <input
                 id="city"
                 type="number"
-                value={adults}
+                value={seats}
                 onChange={(e) => {
-                  setAdults(Number(e.target.value));
+                  setSeats(Number(e.target.value));
                 }}
                 className={inputs}
                 required
@@ -169,18 +184,16 @@ export default function CheckFlightsBox({
 
           {/* Botão de envio */}
           <div className="flex justify-center">
-            <Link href={"/search-flights"}>
-              <button
-                type="submit"
-                className="mt-4 w-fit bg-gray-300 flex items-center justify-center px-4 py-2 rounded cursor-pointer hover:bg-gray-400"
-              >
-                {loading ? (
-                  <FaSpinner className="animate-spin" size={24} />
-                ) : (
-                  "Check Availability"
-                )}
-              </button>
-            </Link>
+            <button
+              type="submit"
+              className="mt-4 w-fit bg-gray-300 flex items-center justify-center px-4 py-2 rounded cursor-pointer hover:bg-gray-400"
+            >
+              {loading ? (
+                <FaSpinner className="animate-spin" size={24} />
+              ) : (
+                "Check Availability"
+              )}
+            </button>
           </div>
         </form>
       </div>

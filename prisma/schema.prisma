@@ -32,14 +32,14 @@ datasource db {
 // Modelo da Tabela de Usuários (Users)
 // ======================================================
 model Users {
-  id         Int      @id @default(autoincrement()) // Chave primária auto-incremental
-  user       String   @unique // Nome de usuário único
+  id         Int       @id @default(autoincrement()) // Chave primária auto-incremental
+  user       String    @unique // Nome de usuário único
   password   String // Senha de autenticação
   name       String // Nome completo do usuário
-  active     Boolean  @default(true) // Indica se o usuário está ativo
-  dateJoined DateTime @default(now()) // Data de criação do usuário
+  active     Boolean   @default(true) // Indica se o usuário está ativo
+  dateJoined DateTime  @default(now()) // Data de criação do usuário
   lastLogin  DateTime? // Data e hora do último login (opcional)
-  updatedAt  DateTime @default(now()) // Última atualização do registro
+  updatedAt  DateTime  @default(now()) // Última atualização do registro
 
   @@index([id], name: "IndexUserById") // Índice para facilitar buscas por ID
 }
@@ -48,12 +48,12 @@ model Users {
 // Modelo da Tabela de Aeroportos (Airports)
 // ======================================================
 model Airports {
-  id          Int             @id @default(autoincrement()) // Chave primária auto-incremental
+  id          Int    @id @default(autoincrement()) // Chave primária auto-incremental
   city        String // Cidade onde o aeroporto está localizado
-  airportCode String          @unique // Código IATA exclusivo do aeroporto (ex: GRU, JFK)
+  airportCode String @unique // Código IATA exclusivo do aeroporto (ex: GRU, JFK)
 
-  local       Locals?         @relation("AirportToLocal") // Relação opcional 1:1 com Locals
-  routes      AirportsRoute[] @relation("Airport") // Relação 1:N com AirportsRoute (mapeia rotas disponíveis)
+  local  Locals?         @relation("AirportToLocal") // Relação opcional 1:1 com Locals
+  routes AirportsRoute[] @relation("Airport") // Relação 1:N com AirportsRoute (mapeia rotas disponíveis)
 
   @@index([id], name: "IndexAirportsById") // Índice por ID
 }
@@ -63,8 +63,8 @@ model Airports {
 // Utilizado na tela principal para exibir sugestões
 // ======================================================
 model Locals {
-  id           Int      @id @default(autoincrement()) // Chave primária auto-incremental
-  airportId    Int      @unique // FK exclusiva para o aeroporto associado
+  id           Int     @id @default(autoincrement()) // Chave primária auto-incremental
+  airportId    Int     @unique // FK exclusiva para o aeroporto associado
   city         String // Nome da cidade
   country      String // Nome do país
   passagePrice Decimal // Preço da passagem
@@ -82,14 +82,14 @@ model Locals {
 // Representa conexões entre aeroportos, com configurações e políticas
 // ======================================================
 model Route {
-  id             Int             @id @default(autoincrement()) // Chave primária auto-incremental
+  id             Int     @id @default(autoincrement()) // Chave primária auto-incremental
   mileageProgram String // Nome do programa de milhagem associado à rota
   enableLayovers Boolean // Define se são permitidas escalas ou conexões
-  active         Boolean         @default(true) // Status da rota (ativa/inativa)
+  active         Boolean @default(true) // Status da rota (ativa/inativa)
 
-  airports AirportsRoute[] @relation("Route") // Relação 1:N com AirportsRoute (aeroportos na rota)
-  cabins   CabinsRoute[]   @relation("Cabins") // Relação 1:N com configurações de cabines
-  routesData   RoutesData[]   @relation("RouteData") // Relação 1:N com os dados da rota
+  airports   AirportsRoute[] @relation("Route") // Relação 1:N com AirportsRoute (aeroportos na rota)
+  cabins     CabinsRoute[]   @relation("Cabins") // Relação 1:N com configurações de cabines
+  routesData RoutesData[]    @relation("RouteData") // Relação 1:N com os dados da rota
 
   @@index([id], name: "IndexRoutesById") // Índice por ID
 }
@@ -129,26 +129,26 @@ model AirportsRoute {
   @@index([routeId, airportId], name: "IndexAirportsRoute") // Índice composto para acelerar filtros por rota/aeroporto
 }
 
-
 // ======================================================
 // Modelo da Tabela RoutesData
 // Tabela de associação entre rotas e dados específicos da cabine
 // ======================================================
 model RoutesData {
-  id                  Int      @id @default(autoincrement()) // Identificador único (chave primária) com incremento automático
-  routeId             Int      // Chave estrangeira referenciando a rota
-  originAirport       String // Aeroporto de origem
-  destinationAirport  String // Aeroporto de destino
-  cabinKey            String   // Identificador único da cabine dentro da rota
-  date                DateTime // Data específica associada à cabine na rota
-  direct              Boolean  // Indica se a rota é direta (sem escalas)
+  id                 Int      @id @default(autoincrement()) // Identificador único (chave primária) com incremento automático
+  routeId            Int // Chave estrangeira referenciando a rota
+  originAirport      String // Aeroporto de origem
+  destinationAirport String // Aeroporto de destino
+  cabinKey           String // Identificador único da cabine dentro da rota
+  date               DateTime // Data específica associada à cabine na rota
+  direct             Boolean // Indica se a rota é direta (sem escalas)
+  seats              Int // Quantidade de assentos disponíveis
 
   // Relacionamento com a tabela Route
   // "RouteData" é o nome do relacionamento
   // Define comportamento de deleção e atualização em cascata
-  route     Route    @relation("RouteData", fields: [routeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  route Route @relation("RouteData", fields: [routeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   // Índice composto sobre routeId e cabinKey
   // Otimiza consultas filtradas por rota e cabine
-  @@index([routeId, cabinKey], name: "IndexRoutesData")
+  @@index([routeId, cabinKey, date], name: "IndexRoutesData")
 }

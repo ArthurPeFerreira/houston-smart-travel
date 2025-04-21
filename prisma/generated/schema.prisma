@@ -141,6 +141,7 @@ model RoutesData {
   cabinKey           String // Identificador único da cabine dentro da rota
   date               DateTime // Data específica associada à cabine na rota
   direct             Boolean // Indica se a rota é direta (sem escalas)
+  seats              Int // Quantidade de assentos disponíveis
 
   // Relacionamento com a tabela Route
   // "RouteData" é o nome do relacionamento
@@ -149,5 +150,5 @@ model RoutesData {
 
   // Índice composto sobre routeId e cabinKey
   // Otimiza consultas filtradas por rota e cabine
-  @@index([routeId, cabinKey], name: "IndexRoutesData")
+  @@index([routeId, cabinKey, date], name: "IndexRoutesData")
 }

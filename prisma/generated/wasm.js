@@ -174,7 +174,8 @@ exports.Prisma.RoutesDataScalarFieldEnum = {
   destinationAirport: 'destinationAirport',
   cabinKey: 'cabinKey',
   date: 'date',
-  direct: 'direct'
+  direct: 'direct',
+  seats: 'seats'
 };
 
 exports.Prisma.SortOrder = {
