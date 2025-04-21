@@ -8171,11 +8171,13 @@ export namespace Prisma {
   export type RoutesDataAvgAggregateOutputType = {
     id: number | null
     routeId: number | null
+    seats: number | null
   }
 
   export type RoutesDataSumAggregateOutputType = {
     id: number | null
     routeId: number | null
+    seats: number | null
   }
 
   export type RoutesDataMinAggregateOutputType = {
@@ -8186,6 +8188,7 @@ export namespace Prisma {
     cabinKey: string | null
     date: Date | null
     direct: boolean | null
+    seats: number | null
   }
 
   export type RoutesDataMaxAggregateOutputType = {
@@ -8196,6 +8199,7 @@ export namespace Prisma {
     cabinKey: string | null
     date: Date | null
     direct: boolean | null
+    seats: number | null
   }
 
   export type RoutesDataCountAggregateOutputType = {
@@ -8206,6 +8210,7 @@ export namespace Prisma {
     cabinKey: number
     date: number
     direct: number
+    seats: number
     _all: number
   }
 
@@ -8213,11 +8218,13 @@ export namespace Prisma {
   export type RoutesDataAvgAggregateInputType = {
     id?: true
     routeId?: true
+    seats?: true
   }
 
   export type RoutesDataSumAggregateInputType = {
     id?: true
     routeId?: true
+    seats?: true
   }
 
   export type RoutesDataMinAggregateInputType = {
@@ -8228,6 +8235,7 @@ export namespace Prisma {
     cabinKey?: true
     date?: true
     direct?: true
+    seats?: true
   }
 
   export type RoutesDataMaxAggregateInputType = {
@@ -8238,6 +8246,7 @@ export namespace Prisma {
     cabinKey?: true
     date?: true
     direct?: true
+    seats?: true
   }
 
   export type RoutesDataCountAggregateInputType = {
@@ -8248,6 +8257,7 @@ export namespace Prisma {
     cabinKey?: true
     date?: true
     direct?: true
+    seats?: true
     _all?: true
   }
 
@@ -8345,6 +8355,7 @@ export namespace Prisma {
     cabinKey: string
     date: Date
     direct: boolean
+    seats: number
     _count: RoutesDataCountAggregateOutputType | null
     _avg: RoutesDataAvgAggregateOutputType | null
     _sum: RoutesDataSumAggregateOutputType | null
@@ -8374,6 +8385,7 @@ export namespace Prisma {
     cabinKey?: boolean
     date?: boolean
     direct?: boolean
+    seats?: boolean
     route?: boolean | RouteDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["routesData"]>
 
@@ -8385,6 +8397,7 @@ export namespace Prisma {
     cabinKey?: boolean
     date?: boolean
     direct?: boolean
+    seats?: boolean
     route?: boolean | RouteDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["routesData"]>
 
@@ -8396,6 +8409,7 @@ export namespace Prisma {
     cabinKey?: boolean
     date?: boolean
     direct?: boolean
+    seats?: boolean
     route?: boolean | RouteDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["routesData"]>
 
@@ -8407,9 +8421,10 @@ export namespace Prisma {
     cabinKey?: boolean
     date?: boolean
     direct?: boolean
+    seats?: boolean
   }
 
-  export type RoutesDataOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "routeId" | "originAirport" | "destinationAirport" | "cabinKey" | "date" | "direct", ExtArgs["result"]["routesData"]>
+  export type RoutesDataOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "routeId" | "originAirport" | "destinationAirport" | "cabinKey" | "date" | "direct" | "seats", ExtArgs["result"]["routesData"]>
   export type RoutesDataInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     route?: boolean | RouteDefaultArgs<ExtArgs>
   }
@@ -8433,6 +8448,7 @@ export namespace Prisma {
       cabinKey: string
       date: Date
       direct: boolean
+      seats: number
     }, ExtArgs["result"]["routesData"]>
     composites: {}
   }
@@ -8864,6 +8880,7 @@ export namespace Prisma {
     readonly cabinKey: FieldRef<"RoutesData", 'String'>
     readonly date: FieldRef<"RoutesData", 'DateTime'>
     readonly direct: FieldRef<"RoutesData", 'Boolean'>
+    readonly seats: FieldRef<"RoutesData", 'Int'>
   }
     
 
@@ -9367,7 +9384,8 @@ export namespace Prisma {
     destinationAirport: 'destinationAirport',
     cabinKey: 'cabinKey',
     date: 'date',
-    direct: 'direct'
+    direct: 'direct',
+    seats: 'seats'
   };
 
   export type RoutesDataScalarFieldEnum = (typeof RoutesDataScalarFieldEnum)[keyof typeof RoutesDataScalarFieldEnum]
@@ -9855,6 +9873,7 @@ export namespace Prisma {
     cabinKey?: StringFilter<"RoutesData"> | string
     date?: DateTimeFilter<"RoutesData"> | Date | string
     direct?: BoolFilter<"RoutesData"> | boolean
+    seats?: IntFilter<"RoutesData"> | number
     route?: XOR<RouteScalarRelationFilter, RouteWhereInput>
   }
 
@@ -9866,6 +9885,7 @@ export namespace Prisma {
     cabinKey?: SortOrder
     date?: SortOrder
     direct?: SortOrder
+    seats?: SortOrder
     route?: RouteOrderByWithRelationInput
   }
 
@@ -9880,6 +9900,7 @@ export namespace Prisma {
     cabinKey?: StringFilter<"RoutesData"> | string
     date?: DateTimeFilter<"RoutesData"> | Date | string
     direct?: BoolFilter<"RoutesData"> | boolean
+    seats?: IntFilter<"RoutesData"> | number
     route?: XOR<RouteScalarRelationFilter, RouteWhereInput>
   }, "id">
 
@@ -9891,6 +9912,7 @@ export namespace Prisma {
     cabinKey?: SortOrder
     date?: SortOrder
     direct?: SortOrder
+    seats?: SortOrder
     _count?: RoutesDataCountOrderByAggregateInput
     _avg?: RoutesDataAvgOrderByAggregateInput
     _max?: RoutesDataMaxOrderByAggregateInput
@@ -9909,6 +9931,7 @@ export namespace Prisma {
     cabinKey?: StringWithAggregatesFilter<"RoutesData"> | string
     date?: DateTimeWithAggregatesFilter<"RoutesData"> | Date | string
     direct?: BoolWithAggregatesFilter<"RoutesData"> | boolean
+    seats?: IntWithAggregatesFilter<"RoutesData"> | number
   }
 
   export type UsersCreateInput = {
@@ -10266,6 +10289,7 @@ export namespace Prisma {
     cabinKey: string
     date: Date | string
     direct: boolean
+    seats: number
     route: RouteCreateNestedOneWithoutRoutesDataInput
   }
 
@@ -10277,6 +10301,7 @@ export namespace Prisma {
     cabinKey: string
     date: Date | string
     direct: boolean
+    seats: number
   }
 
   export type RoutesDataUpdateInput = {
@@ -10285,6 +10310,7 @@ export namespace Prisma {
     cabinKey?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     direct?: BoolFieldUpdateOperationsInput | boolean
+    seats?: IntFieldUpdateOperationsInput | number
     route?: RouteUpdateOneRequiredWithoutRoutesDataNestedInput
   }
 
@@ -10296,6 +10322,7 @@ export namespace Prisma {
     cabinKey?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     direct?: BoolFieldUpdateOperationsInput | boolean
+    seats?: IntFieldUpdateOperationsInput | number
   }
 
   export type RoutesDataCreateManyInput = {
@@ -10306,6 +10333,7 @@ export namespace Prisma {
     cabinKey: string
     date: Date | string
     direct: boolean
+    seats: number
   }
 
   export type RoutesDataUpdateManyMutationInput = {
@@ -10314,6 +10342,7 @@ export namespace Prisma {
     cabinKey?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     direct?: BoolFieldUpdateOperationsInput | boolean
+    seats?: IntFieldUpdateOperationsInput | number
   }
 
   export type RoutesDataUncheckedUpdateManyInput = {
@@ -10324,6 +10353,7 @@ export namespace Prisma {
     cabinKey?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     direct?: BoolFieldUpdateOperationsInput | boolean
+    seats?: IntFieldUpdateOperationsInput | number
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -10755,11 +10785,13 @@ export namespace Prisma {
     cabinKey?: SortOrder
     date?: SortOrder
     direct?: SortOrder
+    seats?: SortOrder
   }
 
   export type RoutesDataAvgOrderByAggregateInput = {
     id?: SortOrder
     routeId?: SortOrder
+    seats?: SortOrder
   }
 
   export type RoutesDataMaxOrderByAggregateInput = {
@@ -10770,6 +10802,7 @@ export namespace Prisma {
     cabinKey?: SortOrder
     date?: SortOrder
     direct?: SortOrder
+    seats?: SortOrder
   }
 
   export type RoutesDataMinOrderByAggregateInput = {
@@ -10780,11 +10813,13 @@ export namespace Prisma {
     cabinKey?: SortOrder
     date?: SortOrder
     direct?: SortOrder
+    seats?: SortOrder
   }
 
   export type RoutesDataSumOrderByAggregateInput = {
     id?: SortOrder
     routeId?: SortOrder
+    seats?: SortOrder
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -11447,6 +11482,7 @@ export namespace Prisma {
     cabinKey: string
     date: Date | string
     direct: boolean
+    seats: number
   }
 
   export type RoutesDataUncheckedCreateWithoutRouteInput = {
@@ -11456,6 +11492,7 @@ export namespace Prisma {
     cabinKey: string
     date: Date | string
     direct: boolean
+    seats: number
   }
 
   export type RoutesDataCreateOrConnectWithoutRouteInput = {
@@ -11540,6 +11577,7 @@ export namespace Prisma {
     cabinKey?: StringFilter<"RoutesData"> | string
     date?: DateTimeFilter<"RoutesData"> | Date | string
     direct?: BoolFilter<"RoutesData"> | boolean
+    seats?: IntFilter<"RoutesData"> | number
   }
 
   export type RouteCreateWithoutCabinsInput = {
@@ -11774,6 +11812,7 @@ export namespace Prisma {
     cabinKey: string
     date: Date | string
     direct: boolean
+    seats: number
   }
 
   export type AirportsRouteUpdateWithoutRouteInput = {
@@ -11822,6 +11861,7 @@ export namespace Prisma {
     cabinKey?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     direct?: BoolFieldUpdateOperationsInput | boolean
+    seats?: IntFieldUpdateOperationsInput | number
   }
 
   export type RoutesDataUncheckedUpdateWithoutRouteInput = {
@@ -11831,6 +11871,7 @@ export namespace Prisma {
     cabinKey?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     direct?: BoolFieldUpdateOperationsInput | boolean
+    seats?: IntFieldUpdateOperationsInput | number
   }
 
   export type RoutesDataUncheckedUpdateManyWithoutRouteInput = {
@@ -11840,6 +11881,7 @@ export namespace Prisma {
     cabinKey?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     direct?: BoolFieldUpdateOperationsInput | boolean
+    seats?: IntFieldUpdateOperationsInput | number
   }
 
 

@@ -33,3 +33,14 @@ export interface EditRouteType {
   enableLayovers: boolean;
   active: boolean;
 }
+
+export interface RoutesDataType {
+  id: number;
+  routeId: number;
+  originAirport: string;
+  destinationAirport: string;
+  cabinKey: string;
+  date: string; // ou Date se for tratado como objeto Date
+  direct: boolean;
+  seats: number;
+}
