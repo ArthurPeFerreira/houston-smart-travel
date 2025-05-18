@@ -32,10 +32,10 @@ export default function Footer() {
 
             <div className="flex-wrap gap-x-1">
               <Link
-                href={`${whatsapp}&text=Ol%C3%A1%2C%20podemos%20conversar%3F`}
+                href={`${whatsapp}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-400 cursor-pointer hover:underline"
+                className="text-white cursor-pointer underline"
               >
                 Phone
               </Link>
@@ -45,11 +45,11 @@ export default function Footer() {
             <div className="flex-wrap gap-x-1">
               <span
                 onClick={handleCopyEmail}
-                className="text-blue-400 cursor-pointer hover:underline text-nowrap"
+                className="text-white cursor-pointer underline text-nowrap"
               >
                 <a
                   href={`mailto:${email}`}
-                  className="text-blue-400 cursor-pointer hover:underline"
+                  className="text-white cursor-pointer underline"
                 >
                   {copiedEmail ? "Copied!" : "Email"}
                 </a>
@@ -71,7 +71,7 @@ export default function Footer() {
 
         {/* Copyright */}
         <div className="text-center text-sm text-gray-400 border-t border-gray-700 pt-4">
-          © 2025 Houston SmarTravel
+          © 2025 Houston SmarTravel, L.L.C. All rights reserved
         </div>
       </div>
     </footer>

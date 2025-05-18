@@ -22,6 +22,7 @@ export async function editLocal(
         country: localInfo.country, // Atualiza o país
         passagePrice: localInfo.passagePrice, // Atualiza o valor da passagem
         active: localInfo.active, // Atualiza o status de ativação do Local
+        image: localInfo.image, // Atualiza a URL da imagem associada ao Local
       },
       // Define os campos a serem retornados após a atualização
       select: {

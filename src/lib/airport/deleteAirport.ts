@@ -1,10 +1,10 @@
-import { promises as fs } from "fs"; // Importa fs.promises para operações assíncronas
-import path from "path"; // Importa path para manipulação de diretórios e caminhos
 import { prismaClient } from "../prisma/prisma"; // Importa o cliente do Prisma para interagir com o banco de dados
 import { updateAirportCache } from "./cacheAirport"; // Importa a função para atualizar o cache após a deleção
 import { AirportType } from "./types"; // Importa o tipo AirportType para tipagem
 import { updateLocalCache } from "../local/cacheLocal";
 import { updateRouteCache } from "../route/cacheRoute";
+import { s3Client } from "../aws/s3/s3Client";
+import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 
 // Função para deletar um Aeroporto do banco de dados com base no ID
 export async function deleteAirport(airportId: number): Promise<AirportType | undefined> {
@@ -28,11 +28,14 @@ export async function deleteAirport(airportId: number): Promise<AirportType | un
         await updateRouteCache();
 
         if(airport.local){
-            // Define o caminho do arquivo de imagem a ser deletado
-            const imagePath = path.join(process.cwd(), "public/locals/images", `${airport.id}.jpg`);
-            await fs.unlink(imagePath); 
+            await s3Client.send(
+                new DeleteObjectCommand({
+                  Bucket: `${process.env.BUCKET_NAME}`,    // nome do bucket
+                  Key: `${airport.id}.jpg`,               // caminho/arquivo a apagar
+                })
+              );
         } 
-
+    
         // Retorna o Aeroporto deletado para referência
         return airport;
     } catch {

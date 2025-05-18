@@ -46,7 +46,7 @@ export default function Navbar() {
         </div> */}
         <div className="flex flex-row gap-2 md:gap-5 text-[35px]">
           <Link
-            href={`${whatsapp}&text=Ol%C3%A1%2C%20podemos%20conversar%3F`}
+            href={`${whatsapp}`}
             target="_blank"
             rel="noopener noreferrer"
           >

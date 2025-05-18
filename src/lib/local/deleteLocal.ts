@@ -1,4 +1,6 @@
 // Importa o cliente do Prisma para interagir com o banco de dados
+import { DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { s3Client } from "../aws/s3/s3Client";
 import { prismaClient } from "../prisma/prisma";
 
 // Importa a função responsável por atualizar o cache local após alterações
@@ -6,12 +8,6 @@ import { updateLocalCache } from "./cacheLocal";
 
 // Importa o tipo LocalType para garantir tipagem consistente na resposta
 import { LocalType } from "./types";
-
-// Importa a API de Promises do módulo fs para manipulação assíncrona de arquivos
-import { promises as fs } from "fs";
-
-// Importa utilitários do módulo path para montagem de caminhos de arquivo
-import path from "path";
 
 // Função assíncrona responsável por deletar um Local do banco de dados com base no ID informado
 export async function deleteLocal(
@@ -35,16 +31,13 @@ export async function deleteLocal(
       },
     });
 
-    // Constrói o caminho absoluto para o arquivo de imagem correspondente ao Local
-    const imagePath = path.join(
-      process.cwd(), // Diretório raiz da aplicação
-      "public/locals/images", // Subpasta onde as imagens dos locais estão armazenadas
-      `${local.airport.id}.jpg` // Nome do arquivo baseado no ID do aeroporto
+    await s3Client.send(
+      new DeleteObjectCommand({
+        Bucket: `${process.env.BUCKET_NAME}`, // nome do bucket
+        Key: `${local.airport.id}.jpg`, // caminho/arquivo a apagar
+      })
     );
-
-    // Remove o arquivo de imagem do sistema de arquivos
-    await fs.unlink(imagePath);
-
+    
     // Atualiza o cache local para refletir a exclusão do Local
     await updateLocalCache();
 

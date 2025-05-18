@@ -15,7 +15,7 @@ import { api } from "@/lib/api/api";
 import { useEffect, useState } from "react";
 
 // Importação de tipos relacionados a usuários
-import { CreateUserType, EditUserType, UserType, Session } from "@/lib/user/types";
+import { CreateUserType, UserType, Session, SendEditUserType } from "@/lib/user/types";
 
 // Importação dos componentes modais para criação e edição de usuários
 import CreateUserModal from "./components/CreateUser";
@@ -100,7 +100,7 @@ export default function UserTable() {
   }
 
   // Função para editar um usuário existente
-  async function handleEditUser(userData: EditUserType, userId: number) {
+  async function handleEditUser(userData: SendEditUserType, userId: number) {
     setLoadingEditUserModal(true);
     try {
       // Requisição para atualizar os dados do usuário
