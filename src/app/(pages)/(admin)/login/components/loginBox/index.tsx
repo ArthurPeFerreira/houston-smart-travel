@@ -36,12 +36,12 @@ export default function LoginBox() {
     if (!user || !password) {
       setError("Please fill in all fields!");
       setLoading(false); // Desativa o estado de carregamento
-      
+
       // Remove a mensagem de erro após 5 segundos
       setTimeout(() => {
         setError("");
       }, 5000);
-      
+
       return;
     }
 
@@ -77,52 +77,59 @@ export default function LoginBox() {
       <h1 className="text-3xl font-semibold text-center mb-4">Login</h1>
 
       {/* Campo de entrada para o nome de usuário */}
-      <div className="mb-5">
-        <h2 className="mb-1">Username</h2>
-        <input
-          className={inputs}
-          type="text"
-          placeholder="Type your username"
-          value={user}
-          onChange={(e) => setUser(e.target.value)} // Atualiza o estado do nome de usuário
-        />
-      </div>
-
-      {/* Campo de entrada para a senha */}
-      <h2 className="mb-1">Password</h2>
-      <div className="w-full flex justify-between items-center mb-5">
-        <input
-          className={inputs}
-          type={showPassword ? "password" : "text"} // Alterna entre "text" e "password"
-          placeholder="Type your password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)} // Atualiza o estado da senha
-        />
-        {/* Botão para alternar visibilidade da senha */}
-        <button
-          onClick={() => setShowPassword(!showPassword)}
-          type="button"
-          className="text-gray-500 px-2 cursor-pointer"
-        >
-          {showPassword ? <FaEye size={20} /> : <FaEyeSlash size={20} />}
-        </button>
-      </div>
-
-      {/* Botão de login */}
-      <button
-        className="bg-blue-700 text-white p-2 rounded flex justify-center items-center hover:bg-blue-800 cursor-pointer transition-colors duration-200"
-        onClick={handleLogin} // Executa a função de login ao clicar
-        disabled={loading}
+      <form
+        className="flex flex-col"
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleLogin();
+        }}
       >
-        {loading ? (
-          // Exibe um ícone de carregamento se o estado "loading" for verdadeiro
-          <FaSpinner className="animate-spin p2" size={24} />
-        ) : (
-          // Exibe o texto "Login" se o estado "loading" for falso
-          "Login"
-        )}
-      </button>
+        <div className="mb-5">
+          <h2 className="mb-1">Username</h2>
+          <input
+            className={inputs}
+            type="text"
+            placeholder="Type your username"
+            value={user}
+            onChange={(e) => setUser(e.target.value)} // Atualiza o estado do nome de usuário
+          />
+        </div>
 
+        {/* Campo de entrada para a senha */}
+        <h2 className="mb-1">Password</h2>
+        <div className="w-full flex justify-between items-center mb-5">
+          <input
+            className={inputs}
+            type={showPassword ? "password" : "text"} // Alterna entre "text" e "password"
+            placeholder="Type your password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)} // Atualiza o estado da senha
+          />
+          {/* Botão para alternar visibilidade da senha */}
+          <button
+            onClick={() => setShowPassword(!showPassword)}
+            type="button"
+            className="text-gray-500 px-2 cursor-pointer"
+          >
+            {showPassword ? <FaEye size={20} /> : <FaEyeSlash size={20} />}
+          </button>
+        </div>
+
+        {/* Botão de login */}
+        <button
+          className="bg-blue-700 text-white p-2 rounded flex justify-center items-center hover:bg-blue-800 cursor-pointer transition-colors duration-200"
+          type="submit"
+          disabled={loading}
+        >
+          {loading ? (
+            // Exibe um ícone de carregamento se o estado "loading" for verdadeiro
+            <FaSpinner className="animate-spin p2" size={24} />
+          ) : (
+            // Exibe o texto "Login" se o estado "loading" for falso
+            "Login"
+          )}
+        </button>
+      </form>
       {/* Exibe a mensagem de erro, se houver */}
       {error && <h2 className="text-red-500 mt-4">{error}</h2>}
     </div>

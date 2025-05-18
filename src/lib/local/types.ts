@@ -33,6 +33,7 @@ export interface EditLocalType {
   country: string;
   passagePrice: Decimal;
   active: boolean;
+  image: string;  
 }
 
 export interface EditLocalTypeFile {

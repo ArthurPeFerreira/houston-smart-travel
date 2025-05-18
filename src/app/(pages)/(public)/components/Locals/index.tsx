@@ -27,8 +27,8 @@ import { api } from "@/lib/api/api";
 
 export default function Locals() {
   // Estados para controlar se está no início ou no final do carrossel
-  // const [isBeginning, setIsBeginning] = useState(true);
-  // const [isEnd, setIsEnd] = useState(false);
+  const [isBeginning, setIsBeginning] = useState(true);
+  const [isEnd, setIsEnd] = useState(false);
 
   const [locals, setLocals] = useState<LocalType[]>();
 
@@ -78,7 +78,7 @@ export default function Locals() {
           // Centraliza os slides
           centeredSlides={false}
           // Ficar em Loop
-          loop={true}
+          loop={false}
           // Ajusta o espaço entre slides
           spaceBetween={10}
           // Configura o comportamento responsivo-
@@ -89,10 +89,10 @@ export default function Locals() {
             1050: { slidesPerView: 4 },
           }}
           // Atualiza os estados ao mudar de slide
-          // onSlideChange={(swiper) => {
-          //   setIsBeginning(swiper.isBeginning);
-          //   setIsEnd(swiper.isEnd);
-          // }}
+          onSlideChange={(swiper) => {
+            setIsBeginning(swiper.isBeginning);
+            setIsEnd(swiper.isEnd);
+          }}
         >
           {locals.map((local) =>
             local.active ? (
@@ -152,12 +152,12 @@ export default function Locals() {
           <div className="w-fit flex items-center justify-center gap-4 mb-4">
             {/* Botão para voltar ao slide anterior */}
             <button
-              // className={`custom-prev p-2 ${
-              //   isBeginning
-              //     ? "opacity-50 disabled cursor-default"
-              //     : "cursor-pointer"
-              // }`}
-              className={`custom-prev p-2 cursor-pointer`}
+              className={`custom-prev p-2 ${
+                isBeginning
+                  ? "opacity-50 disabled cursor-default"
+                  : "cursor-pointer"
+              }`}
+              // className={`custom-prev p-2 cursor-pointer`}
             >
               <FaChevronLeft />
             </button>
@@ -167,10 +167,10 @@ export default function Locals() {
 
             {/* Botão para avançar para o próximo slide */}
             <button
-              // className={`custom-next p-2 ${
-              //   isEnd ? "opacity-50 disabled cursor-default" : "cursor-pointer"
-              // }`}
-              className={`custom-next p-2 cursor-pointer`}
+              className={`custom-next p-2 ${
+                isEnd ? "opacity-50 disabled cursor-default" : "cursor-pointer"
+              }`}
+              // className={`custom-next p-2 cursor-pointer`}
             >
               <FaChevronRight />
             </button>

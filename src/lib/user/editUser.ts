@@ -6,10 +6,12 @@ import { EditUserType, UserType } from "./types"; // Importa os tipos EditUserTy
 // Função assíncrona para editar as informações de um usuário no banco de dados
 export async function editUser(userInfo: EditUserType): Promise<UserType | undefined> {
     try {
+
+        
         // Atualiza as informações do usuário no banco de dados usando o Prisma
         let userEdited = await prismaClient.users.update({
             where: {
-                user: userInfo.user // Localiza o usuário pelo nome de usuário fornecido
+                id: userInfo.id // Localiza o usuário pelo nome de usuário fornecido
             },
             data: {
                 user: userInfo.user, // Atualiza o nome de usuário (pode ser mantido ou alterado)
@@ -41,9 +43,9 @@ export async function editUser(userInfo: EditUserType): Promise<UserType | undef
 
         // Retorna o usuário atualizado com as novas informações
         return userEdited;
-    } catch {
+    } catch (error) {
         // Em caso de erro, exibe uma mensagem no console
-        console.error("Failed to Edit User!");
+        console.error("Failed to Edit User!",error);
         return undefined; // Retorna undefined para indicar que a operação falhou
     } finally {
         // Desconecta o cliente do Prisma após a operação, garantindo que a conexão seja encerrada

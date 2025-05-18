@@ -22,7 +22,6 @@ import LocalEdit from "../LocalEdit";
 interface LocalsInfoModalProps {
   isOpen: boolean; // Controla a exibição do modal principal
   onClose: () => void; // Função para fechar o modal principal
-  isLoading: boolean; // Indica se os dados dos locais estão sendo carregados
   locals: LocalType[] | undefined; // Lista de locais a serem exibidos
   localToEdit: LocalType; // Local selecionado para edição
   setLocalToEdit: (Local: LocalType) => void; // Atualiza o local selecionado para edição
@@ -42,7 +41,6 @@ interface LocalsInfoModalProps {
 export default function LocalsInfo({
   isOpen,
   onClose,
-  isLoading,
   locals,
   localToEdit,
   setLocalToEdit,
@@ -62,6 +60,8 @@ export default function LocalsInfo({
 
   // Estado local que mantém os dados dos locais, permitindo alterações temporárias como reordenação
   const [localsData, setLocalsData] = useState<LocalType[]>([]);
+
+  const [loading, setLoading] = useState<boolean>(true);
 
   // Classe padrão para células da tabela
   const classItens = "border border-gray-800 p-2 text-center";
@@ -89,8 +89,11 @@ export default function LocalsInfo({
   }
 
   useEffect(() => {
-    if (locals) {
+    if (locals !== undefined) {           // chegou (pode ser [] ou com dados)
       setLocalsData(locals);
+      setLoading(false);                  // agora pode mostrar resultado
+    } else {
+      setLoading(true);                   // ainda esperando resposta
     }
   }, [locals]);
 
@@ -103,9 +106,9 @@ export default function LocalsInfo({
       {/* Área principal do modal */}
       <div className="bg-gray-800 p-6 rounded shadow-lg w-10/12 h-fit ">
         {/* Cabeçalho com título e botão para salvar nova ordem */}
-        <h1 className="text-center font-bold text-3xl mb-5 relative">
+        <h1 className="text-center font-bold text-3xl mb-2 sm:mb-5 relative">
           Locals
-          <div className="absolute top-0 left-0 text-sm md:text-lg font-normal">
+          <div className="mt-2 sm:mt-0 sm:absolute top-0 left-0 text-sm md:text-lg font-normal">
             <button
               onClick={() => {
                 onEditLocalsOrder(localsData);
@@ -124,7 +127,7 @@ export default function LocalsInfo({
         {/* Conteúdo com rolagem para exibir a lista */}
         <div className="max-h-96 h-fit min-w-full overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
           {/* Exibição de carregamento ou tabela de locais */}
-          {isLoading ? (
+          {loading ? (
             <div className="text-white w-full flex items-center justify-center px-4 py-2 rounded">
               <FaSpinner className="animate-spin" size={24} />
             </div>
@@ -199,6 +202,7 @@ export default function LocalsInfo({
                       <button
                         onClick={() => {
                           setShowSeeImageModal(true);
+                          console.log(local.image);
                           setImageToSee(local.image);
                         }}
                         className="bg-blue-500 py-2 px-5 rounded cursor-pointer hover:bg-blue-600"

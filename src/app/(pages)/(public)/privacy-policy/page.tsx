@@ -5,8 +5,8 @@ export const metadata: Metadata = {
 };
 
 export default function PrivacyPolicy() {
-  const h1ClassName = "text-[#141414] text-4xl text-center";
-  const h2ClassName = "text-[#141414] text-2xl [text-align:justify]";
+  const h1ClassName = "text-[#141414] text-5xl text-center";
+  const h2ClassName = "text-[#141414] text-3xl [text-align:justify]";
   const h3ClassName = "text-[#141414] text-lg [text-align:justify]";
   return (
     <main className="flex-1 h-full w-full">

@@ -29,7 +29,6 @@ import LocalsInfo from "./components/LocalInfo";
 import { EditLocalTypeFile, LocalType } from "@/lib/local/types";
 import Decimal from "decimal.js";
 
-// Define a estrutura das props recebidas pelo componente
 
 // Componente principal responsável por criar e gerenciar locais turísticos vinculados a aeroportos
 export default function LocalBox() {
@@ -52,8 +51,6 @@ export default function LocalBox() {
   const [loading, setLoading] = useState<boolean>(false);
 
   // Estados para controlar modais e carregamentos relacionados
-  const [loadingLocalsInfoModal, setLoadingLocalsInfoModal] =
-    useState<boolean>(true);
   const [loadingLocalsEditModal, setLoadingLocalsEditModal] =
     useState<boolean>(false);
   const [loadingEditLocalsOrder, setLoadingEditLocalsOrder] =
@@ -84,10 +81,12 @@ export default function LocalBox() {
       const responseLocals = await api.get("api/admin/local");
       setLocals(responseLocals.data);
     }
-    
+    try {
+      handleEvent();
+    } catch (e) {
+      console.log(e);
+    }
     // Carrega dados iniciais de aeroportos e locais
-    handleEvent();
-    setLoadingLocalsInfoModal(false);
 
     // Registra o evento e faz cleanup ao desmontar o componente
     eventEmitter.on("updateAirports", handleEvent);
@@ -218,6 +217,16 @@ export default function LocalBox() {
 
   // Fecha o modal de informações de locais
   function onCloseLocalsInfoModal() {
+    setLocalToEdit({
+      id: 0,
+      active: true,
+      airport: { id: 0, city: "", airportCode: "" },
+      city: "",
+      country: "",
+      passagePrice: Decimal(0.0),
+      image: "",
+    });
+
     setShowLocalsInfoModal(false);
     document.body.classList.remove("overflow-hidden");
   }
@@ -268,6 +277,16 @@ export default function LocalBox() {
       setLocals(responseLocals.data);
       setLoadingLocalsEditModal(false);
       setShowLocalsEditModal(false);
+
+      setLocalToEdit({
+        id: 0,
+        active: true,
+        airport: { id: 0, city: "", airportCode: "" },
+        city: "",
+        country: "",
+        passagePrice: Decimal(0.0),
+        image: "",
+      });
     }
   }
 
@@ -354,7 +373,13 @@ export default function LocalBox() {
             inputMode="decimal"
             step="0.01"
             value={Number(passagePrice)}
-            onChange={(e) => setPassagePrice(Decimal(e.target.value))}
+            onChange={(e) => {
+              try {
+                setPassagePrice(Decimal(e.target.value));
+              } catch {
+                console.log("Invalid passage price format");
+              }
+            }}
             className={inputs}
             required
             min={0}
@@ -415,7 +440,6 @@ export default function LocalBox() {
       <LocalsInfo
         isOpen={showLocalsInfoModal}
         onClose={onCloseLocalsInfoModal}
-        isLoading={loadingLocalsInfoModal}
         locals={locals}
         localToEdit={localToEdit}
         setLocalToEdit={setLocalToEdit}

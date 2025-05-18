@@ -20,7 +20,15 @@ export interface CreateUserType {
   name: string;
 }
 
+export interface SendEditUserType {
+  user: string; 
+  password: string | undefined; 
+  name: string;
+  active: boolean; 
+}
+
 export interface EditUserType {
+  id: number;
   user: string; 
   password: string | undefined; 
   name: string;

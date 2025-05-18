@@ -13,14 +13,10 @@ import { EditLocalType, EditLocalTypeFile } from "@/lib/local/types";
 // Importa tipos de requisição e resposta do Next.js
 import { NextRequest, NextResponse } from "next/server";
 
-// Importa a API de Promises do sistema de arquivos para salvar a imagem localmente
-import { promises as fs } from "fs";
-
-// Importa o módulo 'path' para construção de caminhos
-import path from "path";
-
 // Importa biblioteca para manipulação precisa de valores decimais
 import Decimal from "decimal.js";
+import { s3Client } from "@/lib/aws/s3/s3Client";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
 
 // =========================
 // Função GET — Busca um Local específico pelo ID
@@ -185,19 +181,18 @@ export async function PUT(
       );
     }
 
-    // Converte o arquivo de imagem em buffer
-    const arrayBuffer = await localInfo.image.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
+    // Envia a imagem
+    const body = Buffer.from(await localInfo.image.arrayBuffer());
 
-    // Define o caminho onde o arquivo de imagem será salvo
-    const dirPath = path.join(process.cwd(), "public/locals/images");
-    const filePath = path.join(dirPath, `${localInfo.airportId}.jpg`);
-
-    // Garante que o diretório exista (criação recursiva)
-    await fs.mkdir(dirPath, { recursive: true });
-
-    // Escreve o novo arquivo de imagem no caminho especificado
-    await fs.writeFile(filePath, buffer);
+    await s3Client.send(
+      new PutObjectCommand({
+        Bucket: `${process.env.BUCKET_NAME}`,
+        Key: `${localInfo.airportId}.jpg`,
+        Body: body,
+        ContentType: localInfo.image.type,
+        ContentLength: localInfo.image.size,
+      })
+    );
 
     // Cria o objeto com os dados finais para serem salvos no banco
     const localToEdit: EditLocalType = {
@@ -206,6 +201,7 @@ export async function PUT(
       passagePrice: localInfo.passagePrice,
       airportId: localInfo.airportId,
       active: localInfo.active,
+      image: `https://${process.env.BUCKET_NAME}.s3.${process.env.BUCKET_REGION}.amazonaws.com/${localInfo.airportId}.jpg`,
     };
 
     // Executa a atualização dos dados no banco

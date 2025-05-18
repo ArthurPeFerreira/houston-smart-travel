@@ -116,6 +116,8 @@ export async function PUT(
     // Extrai as informações do usuário do corpo da requisição
     const userInfo: EditUserType = await req.json();
 
+    userInfo.id = userIdNumber;
+
     // Verifica se todos os campos obrigatórios foram fornecidos
     if (
       !userInfo.name === undefined ||

@@ -1,5 +1,5 @@
 // Importação dos tipos para edição de usuário e usuário do sistema
-import { EditUserType, UserType } from "@/lib/user/types";
+import {  SendEditUserType, UserType } from "@/lib/user/types";
 
 // Importação dos hooks do React para gerenciamento de estado e efeitos colaterais
 import React, { useEffect, useState } from "react";
@@ -13,7 +13,7 @@ interface EditUserModalProps {
   isLoading: boolean; // Indica se a ação de edição está em andamento
   userInfo: UserType; // Dados do usuário a ser editado
   onClose: () => void; // Função para fechar o modal
-  onEditUser: (data: EditUserType, userId: number) => void; // Função para editar o usuário
+  onEditUser: (data: SendEditUserType, userId: number) => void; // Função para editar o usuário
 }
 
 // Componente de modal para edição de usuários
