@@ -30,7 +30,6 @@ interface LocalsInfoModalProps {
   isLoadingEditModal: boolean; // Indica se a edição do local está em carregamento
   isLoadingEditLocalsOrder: boolean; // Indica se a atualização da ordem dos locais está em carregamento
   onEditLocal: (
-    e: React.FormEvent<HTMLFormElement>,
     data: EditLocalTypeFile
   ) => void; // Função para submeter a edição do local
   onEditLocalsOrder: (data: LocalType[]) => void; // Função para salvar nova ordem dos locais
@@ -202,7 +201,6 @@ export default function LocalsInfo({
                       <button
                         onClick={() => {
                           setShowSeeImageModal(true);
-                          console.log(local.image);
                           setImageToSee(local.image);
                         }}
                         className="bg-blue-500 py-2 px-5 rounded cursor-pointer hover:bg-blue-600"

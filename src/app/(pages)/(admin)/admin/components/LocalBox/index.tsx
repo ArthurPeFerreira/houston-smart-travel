@@ -233,10 +233,8 @@ export default function LocalBox() {
 
   // Envia dados atualizados para edição de local existente
   async function handleEditLocal(
-    e: React.FormEvent<HTMLFormElement>,
     data: EditLocalTypeFile
   ) {
-    e.preventDefault();
     setLoadingLocalsEditModal(true);
 
     if (!data.image) {

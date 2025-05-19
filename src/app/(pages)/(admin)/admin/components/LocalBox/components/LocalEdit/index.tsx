@@ -1,18 +1,18 @@
 "use client";
 
+import { api } from "@/lib/api/api";
 import { EditLocalTypeFile, LocalType } from "@/lib/local/types";
+import { toastConfigs } from "@/lib/toastify/toastify";
 import Decimal from "decimal.js";
 import React, { useEffect, useState } from "react";
 import { FaSpinner } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 // Interface que define as props esperadas pelo componente LocalEdit
 interface LocalEditProps {
   isOpen: boolean; // Controla a exibição do modal
   onClose: () => void; // Função chamada para fechar o modal
-  handleEditLocal: (
-    e: React.FormEvent<HTMLFormElement>,
-    data: EditLocalTypeFile
-  ) => void; // Função que executa a lógica de edição do local
+  handleEditLocal: (data: EditLocalTypeFile) => void; // Função que executa a lógica de edição do local
   isLoading: boolean; // Indica se a operação de salvamento está em andamento
   local: LocalType; // Objeto com os dados do local a ser editado
 }
@@ -40,14 +40,31 @@ export default function LocalEdit({
   // useEffect para inicializar os campos do formulário com os dados recebidos via props
   useEffect(() => {
     async function setInitialData() {
-      setCity(local.city); // Preenche o nome da cidade
-      setCountry(local.country); // Preenche o nome da cidade
-      setPassagePrice(local.passagePrice); // Preenche o nome da cidade
-      setActive(local.active); // Preenche o status de atividade
-      setPreviewEdit(`${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/locals/${local.image}`);
+      try {
+        // preenche campos de texto
+        setCity(local.city);
+        setCountry(local.country);
+        setPassagePrice(local.passagePrice);
+        setActive(local.active);
+
+        // preview imediato da imagem atual
+        const cdnUrl = `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/locals/${local.image}`;
+        setPreviewEdit(cdnUrl);
+
+        // baixa como BLOB (axios já devolve o blob)
+        const { data: blob } = await api.get(cdnUrl, {
+          responseType: "blob",
+        });
+
+        // Converte em File e guarda no state
+        const file = new File([blob], local.image, { type: blob.type });
+        setSelectedEditFile(file);
+      } catch{
+        toast.error("Error loading image!", toastConfigs);
+      }
     }
 
-    setInitialData(); // Executa a função de inicialização quando o componente monta ou o local muda
+    setInitialData(); // roda sempre que 'local' mudar
   }, [local]);
 
   // Manipulador de mudança no input de arquivo (imagem)
@@ -81,10 +98,15 @@ export default function LocalEdit({
         {/* Formulário de edição */}
         <form
           onSubmit={(e) => {
-            if (!selectedEditFile) return;
+            e.preventDefault();
+
+            if (!selectedEditFile) {
+              toast.error("Please select an image!", toastConfigs);
+              return;
+            }
 
             // Chama a função de edição passando os dados atualizados
-            handleEditLocal(e, {
+            handleEditLocal({
               active: active,
               airportId: local.airport.id,
               city: city,
