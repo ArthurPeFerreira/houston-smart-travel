@@ -1,6 +1,5 @@
 "use client";
 
-import { api } from "@/lib/api/api";
 import { EditLocalTypeFile, LocalType } from "@/lib/local/types";
 import Decimal from "decimal.js";
 import React, { useEffect, useState } from "react";
@@ -45,21 +44,7 @@ export default function LocalEdit({
       setCountry(local.country); // Preenche o nome da cidade
       setPassagePrice(local.passagePrice); // Preenche o nome da cidade
       setActive(local.active); // Preenche o status de atividade
-
-      try {
-        // Faz o download da imagem atual do local como um blob
-        const response = await api.get(local.image, { responseType: "blob" });
-        const blob = response.data;
-
-        // Converte o blob em um objeto File
-        const file = new File([blob], "currentImage.jpg", { type: blob.type });
-        setSelectedEditFile(file);
-
-        // Cria uma URL para exibição da imagem como preview
-        setPreviewEdit(URL.createObjectURL(file));
-      } catch (error) {
-        console.error("Erro ao baixar a imagem:", error);
-      }
+      setPreviewEdit(`${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/locals/${local.image}`);
     }
 
     setInitialData(); // Executa a função de inicialização quando o componente monta ou o local muda

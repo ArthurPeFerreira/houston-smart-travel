@@ -2,7 +2,6 @@
 "use client";
 
 import Image from "next/image";
-import logo from "@/../public/static/Logo.svg";
 import Link from "next/link";
 import { FaBars, FaInstagram, FaWhatsapp } from "react-icons/fa";
 import Sidebar from "./components/Sidebar";
@@ -32,18 +31,7 @@ export default function Navbar() {
 
 
         </div>
-          <Image src={logo} alt="Logo" height={50} />
-        {/* <div className="flex flex-row justify-center md:gap-5 text-xl whitespace-nowrap">
-          <Link href="/" className="hidden md:flex">
-            Home
-          </Link>
-          <Link href="/check-flights" className="hidden md:flex">
-            Check Flights
-          </Link>
-          <Link href="/about-us" className="hidden md:flex">
-            About Us
-          </Link>
-        </div> */}
+          <Image src={`${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/logo.svg`} alt="Logo" height={50} width={202}/>
         <div className="flex flex-row gap-2 md:gap-5 text-[35px]">
           <Link
             href={`${whatsapp}`}

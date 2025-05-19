@@ -13,6 +13,11 @@ import RouteBox from "./components/RouteBox";
 // Definição dos metadados da página, configurando o título como "Admin Panel"
 export const metadata: Metadata = {
   title: "Admin Panel",
+  icons: {
+    icon: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/favicon.ico`,      
+    shortcut: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/favicon.ico`,  
+    apple: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/favicon.ico`,  
+  },
 };
 
 // Componente principal da página de administração
