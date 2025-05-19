@@ -122,7 +122,7 @@ export default function TermsOfServices() {
         <h2 className={h2ClassName}>9. Contact Us</h2>
         <h3 className={h3ClassName}>
           If you have any questions about these Terms, please contact us at{" "}
-          <span className="font-bold">contact@houstonsmartravel.com </span>.
+          <span className="font-bold">contact@houstonsmartravel.com.</span>
         </h3>
       </div>
     </main>
