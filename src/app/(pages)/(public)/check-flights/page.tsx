@@ -1,7 +1,6 @@
 import { Metadata } from "next";
 import CheckFlightsBox from "./components/CheckFlightsBox";
 import Image from "next/image";
-import background from "@/../public/static/Montanha Fundo Check Flights.jpg";
 
 export const metadata: Metadata = {
   title: "Check Flights",
@@ -18,7 +17,7 @@ export default async function CheckFlights({
   return (
     <main className="relative flex-1 w-full min-h-[60vh] md:min-h-fit flex items-center justify-center bg-no-repeat bg-cover bg-center p-5">
       <Image
-        src={background}
+        src={`${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/mountain.jpg`}
         quality={100}
         fill
         alt="Beach Background"

@@ -58,7 +58,7 @@ export default function Locals() {
     <section className="bg-[#E6DCD1] w-full text-[#141414]">
       <div className="py-8 px-4 max-w-7xl mx-auto">
         <h1 className="text-4xl text-center font-medium sm:text-5xl md:text-5xl w-full">
-          Deals departing from Houston
+          Deals departing from Houston:
         </h1>
         <Swiper
           // Define os módulos que serão utilizados no Swiper
@@ -102,7 +102,7 @@ export default function Locals() {
               >
                 <div className="relative w-full max-w-[330px] h-[250px]">
                   <Image
-                    src={local.image}
+                    src={`${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/locals/${local.image}`}
                     alt={local.city}
                     fill
                     quality={100}

@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import adventure from "@/../public/static/Imagem Aventura.jpg";
 import Link from "next/link";
 import { FaWhatsapp } from "react-icons/fa";
 
@@ -56,7 +55,7 @@ export default function CTASection() {
         <div className="w-full md:w-1/2 flex justify-center">
           <div className="w-[300px] h-[450px] md:w-[400px] md:h-[600px] relative">
             <Image
-              src={adventure}
+              src={`${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/adventure.jpg`}
               alt="Pessoa viajando"
               fill
               className="object-cover rounded-xl shadow-lg"

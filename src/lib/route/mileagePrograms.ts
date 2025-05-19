@@ -13,118 +13,118 @@ export const mileagePrograms: Record<string, MileageProgram> = {
     key: "eurobonus",
     label: "SAS EuroBonus",
     iataCode: "SK",
-    logoUrl: "/static/mileageProgramsLogos/SK.png",
+logoUrl: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/mileageProgramsLogos/SK.png`,
   },
   // Programa de milhagem da Virgin Atlantic
   virginatlantic: {
     key: "virginatlantic",
     label: "Virgin Atlantic Flying Club",
     iataCode: "VS",
-    logoUrl: "/static/mileageProgramsLogos/VS.png",
+    logoUrl: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/mileageProgramsLogos/VS.png`,
   },
   // Programa da Aeromexico
   aeromexico: {
     key: "aeromexico",
     label: "Aeromexico Club Premier",
     iataCode: "AM",
-    logoUrl: "/static/mileageProgramsLogos/AM.png",
+    logoUrl: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/mileageProgramsLogos/AM.png`,
   },
   // Programa da American Airlines
   american: {
     key: "american",
     label: "American Airlines",
     iataCode: "AA",
-    logoUrl: "/static/mileageProgramsLogos/AA.png",
+    logoUrl: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/mileageProgramsLogos/AA.png`,
   },
   // Programa da Delta Air Lines
   delta: {
     key: "delta",
     label: "Delta SkyMiles",
     iataCode: "DL",
-    logoUrl: "/static/mileageProgramsLogos/DL.png",
+    logoUrl: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/mileageProgramsLogos/DL.png`,
   },
   // Programa da Etihad Airways
   etihad: {
     key: "etihad",
     label: "Etihad Guest",
     iataCode: "EY",
-    logoUrl: "/static/mileageProgramsLogos/EY.png",
+    logoUrl: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/mileageProgramsLogos/EY.png`,
   },
   // Programa da United Airlines
   united: {
     key: "united",
     label: "United MileagePlus",
     iataCode: "UA",
-    logoUrl: "/static/mileageProgramsLogos/UA.png",
+    logoUrl: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/mileageProgramsLogos/UA.png`,
   },
   // Programa da Emirates
   emirates: {
     key: "emirates",
     label: "Emirates Skywards",
     iataCode: "EK",
-    logoUrl: "/static/mileageProgramsLogos/EK.png",
+    logoUrl: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/mileageProgramsLogos/EK.png`,
   },
   // Programa da Air Canada
   aeroplan: {
     key: "aeroplan",
     label: "Air Canada Aeroplan",
     iataCode: "AC",
-    logoUrl: "/static/mileageProgramsLogos/AC.png",
+    logoUrl: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/mileageProgramsLogos/AC.png`,
   },
   // Programa da Alaska Airlines
   alaska: {
     key: "alaska",
     label: "Alaska Mileage Plan",
     iataCode: "AS",
-    logoUrl: "/static/mileageProgramsLogos/AS.png",
+    logoUrl: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/mileageProgramsLogos/AS.png`,
   },
   // Programa da Virgin Australia
   velocity: {
     key: "velocity",
     label: "Virgin Australia Velocity",
     iataCode: "VA",
-    logoUrl: "/static/mileageProgramsLogos/VA.png",
+    logoUrl: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/mileageProgramsLogos/VA.png`,
   },
   // Programa da Qantas Airways
   qantas: {
     key: "qantas",
     label: "Qantas Frequent Flyer",
     iataCode: "QF",
-    logoUrl: "/static/mileageProgramsLogos/QF.png",
+    logoUrl: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/mileageProgramsLogos/QF.png`,
   },
   // Programa da Copa Airlines
   connectmiles: {
     key: "connectmiles",
     label: "Copa ConnectMiles",
     iataCode: "CM",
-    logoUrl: "/static/mileageProgramsLogos/CM.png",
+    logoUrl: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/mileageProgramsLogos/CM.png`,
   },
   // Programa da Azul Linhas Aéreas
   azul: {
     key: "azul",
     label: "Azul TudoAzul",
     iataCode: "AD",
-    logoUrl: "/static/mileageProgramsLogos/AD.png",
+    logoUrl: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/mileageProgramsLogos/AD.png`,
   },
   // Programa da GOL Linhas Aéreas
   smiles: {
     key: "smiles",
     label: "GOL Smiles",
     iataCode: "G3",
-    logoUrl: "/static/mileageProgramsLogos/G3.png",
+    logoUrl: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/mileageProgramsLogos/G3.png`,
   },
   // Programa da Air France e KLM
   flyingblue: {
     key: "flyingblue",
     label: "Air France/KLM Flying Blue",
     iataCode: "AF",
-    logoUrl: "/static/mileageProgramsLogos/AF.png",
+    logoUrl: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/mileageProgramsLogos/AF.png`,
   },
   // Programa da JetBlue Airways
   jetblue: {
     key: "jetblue",
     label: "JetBlue TrueBlue",
     iataCode: "B6",
-    logoUrl: "/static/mileageProgramsLogos/B6.png",
+    logoUrl: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/mileageProgramsLogos/B6.png`,
   },
 };

@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import background from "@/../public/static/Imagem Fundo.png";
 import Link from "next/link";
 
 export default function HeroSection() {
@@ -9,7 +8,7 @@ export default function HeroSection() {
     <section className="w-full flex flex-col justify-center ">
       <div className="relative min-h-[400px] h-auto">
         <Image
-          src={background}
+          src={`${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/beach.png`}
           quality={100}
           fill
           alt="Beach Background"

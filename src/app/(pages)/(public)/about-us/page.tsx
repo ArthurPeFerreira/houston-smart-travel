@@ -96,7 +96,7 @@ export default function AboutUs() {
         bg-no-repeat bg-cover bg-center p-5
       "
       style={{
-        backgroundImage: 'url("static/Mar Fundo About Us.png")',
+        backgroundImage: `url(${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/about-us-background.png)`,
       }}
     >
       <div className="max-w-7xl w-full flex flex-col xl:flex-row items-center h-full justify-center ">

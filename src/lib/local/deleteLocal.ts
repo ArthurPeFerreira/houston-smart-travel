@@ -34,7 +34,7 @@ export async function deleteLocal(
     await s3Client.send(
       new DeleteObjectCommand({
         Bucket: `${process.env.BUCKET_NAME}`, // nome do bucket
-        Key: `${local.airport.id}.jpg`, // caminho/arquivo a apagar
+        Key: `locals/${local.image}`, // caminho/arquivo a apagar
       })
     );
     

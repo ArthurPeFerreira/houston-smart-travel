@@ -18,6 +18,8 @@ import Decimal from "decimal.js";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "@/lib/aws/s3/s3Client";
 
+import { ulid } from "ulid";
+
 // Função HTTP GET — Responsável por retornar todos os locais existentes
 export async function GET() {
   try {
@@ -88,10 +90,12 @@ export async function POST(req: NextRequest) {
     // Envia a imagem
     const body = Buffer.from(await file.arrayBuffer());
 
+    const imageUlid = ulid(); 
+
     await s3Client.send(
       new PutObjectCommand({
         Bucket: `${process.env.BUCKET_NAME}`,
-        Key: `${airportIdNumber}.jpg`,
+        Key: `locals/${imageUlid}.${file.type.split("/")[1]}`,
         Body: body,
         ContentType: file.type,
         ContentLength: file.size,
@@ -104,7 +108,7 @@ export async function POST(req: NextRequest) {
       country: country.toString(),
       passagePrice: Decimal(passagePrice.toString()),
       airportId: airportIdNumber,
-      image: `https://${process.env.BUCKET_NAME}.s3.${process.env.BUCKET_REGION}.amazonaws.com/${airportIdNumber}.jpg`,
+      image: `${imageUlid}.${file.type.split("/")[1]}`,
     };
     // Executa a criação do local no banco
     const localCreated = await createLocal(localToCreate);

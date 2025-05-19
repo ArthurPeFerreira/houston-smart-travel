@@ -25,7 +25,7 @@ export default function SeeImage({ image, isOpen, onClose }: SeeImageProps) {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           alt="Local Image"
-          src={image}
+          src={`${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/locals/${image}`}
           className="w-full h-auto object-contain max-h-[70vh]"
         />
         {/* Botão de fechar o modal, estilizado com cores e transição */}

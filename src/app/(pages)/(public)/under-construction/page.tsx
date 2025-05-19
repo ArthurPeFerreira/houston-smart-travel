@@ -15,7 +15,7 @@ export default function UnderConstruction() {
         bg-no-repeat bg-cover bg-center p-5
       "
       style={{
-        backgroundImage: 'url("static/under-construction.png")',
+      backgroundImage: `url(${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/under-construction.png)`,
       }}
     >
       <div className="max-w-7xl w-full flex flex-col xl:flex-row items-center h-full justify-center ">

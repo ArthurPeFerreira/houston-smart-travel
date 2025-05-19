@@ -16,7 +16,8 @@ import { NextRequest, NextResponse } from "next/server";
 // Importa biblioteca para manipulação precisa de valores decimais
 import Decimal from "decimal.js";
 import { s3Client } from "@/lib/aws/s3/s3Client";
-import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
+import { ulid } from "ulid";
 
 // =========================
 // Função GET — Busca um Local específico pelo ID
@@ -184,10 +185,19 @@ export async function PUT(
     // Envia a imagem
     const body = Buffer.from(await localInfo.image.arrayBuffer());
 
+    const imageUlid = ulid();
+
+    await s3Client.send(
+      new DeleteObjectCommand({
+        Bucket: `${process.env.BUCKET_NAME}`, // nome do bucket
+        Key: `locals/${local[0].image}`, // caminho/arquivo a apagar
+      })
+    );
+
     await s3Client.send(
       new PutObjectCommand({
         Bucket: `${process.env.BUCKET_NAME}`,
-        Key: `${localInfo.airportId}.jpg`,
+        Key: `locals/${imageUlid}.${localInfo.image.type.split("/")[1]}`,
         Body: body,
         ContentType: localInfo.image.type,
         ContentLength: localInfo.image.size,
@@ -201,7 +211,7 @@ export async function PUT(
       passagePrice: localInfo.passagePrice,
       airportId: localInfo.airportId,
       active: localInfo.active,
-      image: `https://${process.env.BUCKET_NAME}.s3.${process.env.BUCKET_REGION}.amazonaws.com/${localInfo.airportId}.jpg`,
+      image: `${imageUlid}.${localInfo.image.type.split("/")[1]}`,
     };
 
     // Executa a atualização dos dados no banco

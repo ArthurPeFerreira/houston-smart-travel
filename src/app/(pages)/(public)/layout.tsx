@@ -6,6 +6,11 @@ import { ToastContainer } from "react-toastify";
 
 export const metadata: Metadata = {
   description: "",
+  icons: {
+    icon: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/favicon.ico`,      
+    shortcut: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/favicon.ico`,  
+    apple: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/favicon.ico`,  
+  },
 };
 
 export default function RootLayout({
