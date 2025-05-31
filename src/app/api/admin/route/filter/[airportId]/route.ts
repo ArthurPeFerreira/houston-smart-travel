@@ -9,7 +9,7 @@ export async function GET(
   try {
     // Aguarda a resolução da Promise dos parâmetros e extrai o airportId
     const { airportId } = await params;
-
+    
     // Converte o ID do aeroporto de string para número
     const airportIdNumber = Number(airportId);
 
@@ -46,7 +46,8 @@ export async function GET(
 
     // Retorna a lista de rotas filtradas em formato JSON com status padrão 200
     return NextResponse.json(filteredRoutes);
-  } catch {
+  } catch (error) {
+
     // Captura qualquer erro não tratado e retorna status HTTP 500
     return NextResponse.json(
       { error: "Failed to Find Routes!" }, // Mensagem de erro genérica

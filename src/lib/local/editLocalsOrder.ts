@@ -5,7 +5,7 @@ import { prismaClient } from "../prisma/prisma";
 import { updateLocalCache } from "./cacheLocal";
 
 // Importa os tipos utilizados para garantir tipagem correta dos dados de entrada e saída
-import { CreateLocalType, LocalType } from "./types";
+import { EditLocalType, LocalType } from "./types";
 
 // Função assíncrona responsável por reordenar os Locais no banco de dados
 export async function editLocalsOrder(
@@ -13,13 +13,14 @@ export async function editLocalsOrder(
 ): Promise<LocalType[] | undefined> {
   try {
     // Transforma a lista recebida (LocalType[]) no formato exigido pelo método createMany (CreateLocalType[])
-    const newLocalOrder: CreateLocalType[] = localInfo.map((local) => {
+    const newLocalOrder: EditLocalType[] = localInfo.map((local) => {
       return {
         city: local.city, // Atribui a cidade do local
         country: local.country, // Atribui o país do local
         passagePrice: local.passagePrice, // Atribui o preço da passagem
         image: local.image, // Atribui a URL da imagem
         airportId: local.airport.id, // Usa o ID do aeroporto relacionado como chave estrangeira
+        active: local.active 
       };
     });
 
