@@ -31,7 +31,7 @@ export default function Navbar() {
 
 
         </div>
-          <Image src={`${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/logo.svg`} alt="Logo" height={50} width={202}/>
+          <Image src={`${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/logo.svg`} alt="Logo" quality={100} height={50} width={202}/>
         <div className="flex flex-row gap-2 md:gap-5 text-[35px]">
           <Link
             href={`${whatsapp}`}
