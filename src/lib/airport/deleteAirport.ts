@@ -1,16 +1,29 @@
-import { prismaClient } from "../prisma/prisma"; // Importa o cliente do Prisma para interagir com o banco de dados
-import { updateAirportCache } from "./cacheAirport"; // Importa a função para atualizar o cache após a deleção
-import { AirportType } from "./types"; // Importa o tipo AirportType para tipagem
-import { updateLocalCache } from "../local/cacheLocal";
-import { updateRouteCache } from "../route/cacheRoute";
-import { s3Client } from "../aws/s3/s3Client";
-import { DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { prismaClient } from "../prisma/prisma"; // Cliente do Prisma para operações no banco de dados
+import { updateAirportCache } from "./cacheAirport"; // Função para atualizar o cache de aeroportos
+import { AirportType } from "./types"; // Tipo TypeScript representando um aeroporto
+import { updateLocalCache } from "../local/cacheLocal"; // Função para atualizar o cache de locais
+import { updateRouteCache } from "../route/cacheRoute"; // Função para atualizar o cache de rotas
+import { s3Client } from "../aws/s3/s3Client"; // Cliente AWS S3 para manipulação de arquivos na nuvem
+import { DeleteObjectCommand } from "@aws-sdk/client-s3"; // Comando para deletar objeto no S3
 
 // Função para deletar um Aeroporto do banco de dados com base no ID
 export async function deleteAirport(
   airportId: number
 ): Promise<AirportType | undefined> {
   try {
+    // Busca as rotas associadas ao aeroporto
+    const routesToDelete = await prismaClient.airportsRoute.findMany({
+      where: { airportId: airportId },
+    });
+
+    // Se existirem rotas relacionadas, deleta todas de uma vez pelo ID
+    if (routesToDelete.length > 0) {
+      const routeIds = routesToDelete.map((route) => route.routeId);
+      await prismaClient.route.deleteMany({
+        where: { id: { in: routeIds } },
+      });
+    }
+
     // Deleta o Aeroporto do banco de dados usando o Prisma
     const airport = await prismaClient.airports.delete({
       where: {
@@ -38,7 +51,7 @@ export async function deleteAirport(
 
     // Atualiza o Cache das Rotas para refletir a remoção
     await updateRouteCache();
-    
+
     // Retorna o Aeroporto deletado para referência
     return airport;
   } catch {

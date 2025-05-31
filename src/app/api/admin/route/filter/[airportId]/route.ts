@@ -9,7 +9,7 @@ export async function GET(
   try {
     // Aguarda a resolução da Promise dos parâmetros e extrai o airportId
     const { airportId } = await params;
-
+    
     // Converte o ID do aeroporto de string para número
     const airportIdNumber = Number(airportId);
 
