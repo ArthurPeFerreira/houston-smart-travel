@@ -46,8 +46,7 @@ export async function GET(
 
     // Retorna a lista de rotas filtradas em formato JSON com status padrão 200
     return NextResponse.json(filteredRoutes);
-  } catch (error) {
-
+  } catch {
     // Captura qualquer erro não tratado e retorna status HTTP 500
     return NextResponse.json(
       { error: "Failed to Find Routes!" }, // Mensagem de erro genérica
