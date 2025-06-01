@@ -28,14 +28,18 @@ export default function CheckFlightsBox({
 
   // Estados para armazenar aeroportos e configuração da rota
   const [originAirports, setOriginAirports] = useState<AirportType[]>([]);
-  const [destinationAirports, setDestinationAirports] = useState<AirportType[]>([]);
+  const [destinationAirports, setDestinationAirports] = useState<AirportType[]>(
+    []
+  );
   const [cabinsRoute, setCabinsRoute] = useState<Cabin[]>([]);
   const [routeId, setRouteId] = useState<number>(0);
 
   // Estados de controle do formulário
   const [loading, setLoading] = useState<boolean>(false);
   const [originAirportId, setOriginAirportId] = useState<number>(0);
-  const [destinationAirportId, setDestinationAirportId] = useState<number>(initialDestinationAirportId);
+  const [destinationAirportId, setDestinationAirportId] = useState<number>(
+    initialDestinationAirportId
+  );
   const [seats, setSeats] = useState<number>(1);
   const [cabin, setCabin] = useState<string>("");
 
@@ -46,7 +50,8 @@ export default function CheckFlightsBox({
         const response = await api.get("api/check-flights/airport");
         setOriginAirports(response.data);
       } catch (error: any) {
-        const errorMessage = error?.response?.data?.error || "Failed to get origin airport.";
+        const errorMessage =
+          error?.response?.data?.error || "Failed to get origin airport.";
         toast.error(errorMessage, toastConfigs);
       }
     }
@@ -59,14 +64,17 @@ export default function CheckFlightsBox({
       if (originAirportId === 0) return;
 
       try {
-        const response = await api.get(`api/check-flights/airport/${originAirportId}`);
+        const response = await api.get(
+          `api/check-flights/airport/${originAirportId}`
+        );
         if (response.data.length > 0) {
           setDestinationAirports(response.data);
         } else {
           setDestinationAirports([]);
         }
       } catch (error: any) {
-        const errorMessage = error?.response?.data?.error || "Failed to get destination airport.";
+        const errorMessage =
+          error?.response?.data?.error || "Failed to get destination airport.";
         toast.error(errorMessage, toastConfigs);
       }
     }
@@ -92,7 +100,8 @@ export default function CheckFlightsBox({
           );
         }
       } catch (error: any) {
-        const errorMessage = error?.response?.data?.error || "Failed to get cabins.";
+        const errorMessage =
+          error?.response?.data?.error || "Failed to get cabins.";
         toast.error(errorMessage, toastConfigs);
       }
     }
@@ -139,15 +148,15 @@ export default function CheckFlightsBox({
 
   // Renderização do componente
   return (
-    <div
-      className="w-full min-h-full flex items-center justify-center bg-no-repeat bg-cover bg-center p-5"
-      style={{
-        backgroundImage: 'url("static/Montanha Fundo Check Flights.jpg")',
-      }}
-    >
+    <div className=" w-full min-h-full flex items-center justify-center p-5">
       <div className="p-5 bg-[#141414] max-w-[600px] w-full rounded-4xl shadow-2xl">
-        <h1 className="text-center text-5xl text-white">Check Flights Availability</h1>
-        <form className="w-full mt-4 flex flex-col gap-3" onSubmit={handleSubmit}>
+        <h1 className="text-center text-5xl text-white">
+          Check Flights Availability
+        </h1>
+        <form
+          className="w-full mt-4 flex flex-col gap-3"
+          onSubmit={handleSubmit}
+        >
           {/* Seletor de aeroporto de origem */}
           <div>
             <label className="block mb-1 text-white">Select Origin:</label>
@@ -178,7 +187,9 @@ export default function CheckFlightsBox({
               className={`${selects} invalid:text-gray-500 cursor-default disabled:text-gray-500 disabled:cursor-not-allowed`}
               onChange={(e) => setDestinationAirportId(Number(e.target.value))}
               value={destinationAirportId}
-              disabled={originAirportId === 0 && destinationAirports.length === 0}
+              disabled={
+                originAirportId === 0 && destinationAirports.length === 0
+              }
             >
               <option value={0} key={0} disabled className="text-gray-400">
                 Select Airport
@@ -201,7 +212,9 @@ export default function CheckFlightsBox({
               onChange={(e) => setCabin(e.target.value)}
               value={cabin}
               disabled={
-                originAirportId === 0 || destinationAirportId === 0 || cabinsRoute.length === 0
+                originAirportId === 0 ||
+                destinationAirportId === 0 ||
+                cabinsRoute.length === 0
               }
             >
               <option value={""} key={0} disabled className="text-gray-400">

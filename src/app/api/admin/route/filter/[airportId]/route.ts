@@ -44,6 +44,7 @@ export async function GET(
       return route.airports.some((airport) => airport.id === airportIdNumber);
     });
 
+
     // Retorna a lista de rotas filtradas em formato JSON com status padrão 200
     return NextResponse.json(filteredRoutes);
   } catch {

@@ -20,7 +20,7 @@ export default async function CheckFlights({
         src={`${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/mountain.jpg`}
         quality={100}
         fill
-        alt="Beach Background"
+        alt="Montain Background"
         className="absolute inset-0"
       />
       <div className="absolute inset-0">

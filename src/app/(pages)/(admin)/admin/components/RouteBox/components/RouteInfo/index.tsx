@@ -55,13 +55,15 @@ export default function RouteInfo({
 
   // Estado para armazenar as cabines selecionadas para visualização
   const [cabinsSelected, setCabinsSelected] = useState<CabinsType[]>([]);
+  const [airport1Selected, setAirport1Selected] = useState<AirportType>();
+  const [airport2Selected, setAirport2Selected] = useState<AirportType>();
 
   // Estado para controlar a exibição do modal de cabines
   const [isOpenCabins, setIsOpenCabins] = useState(false);
 
   // Estado que define qual rota está sendo editada
   const [routeToEdit, setRouteToEdit] = useState<RouteType | undefined>();
- 
+
   // Verifica se o modal deve ser exibido
   if (!isOpen) return null;
 
@@ -137,7 +139,10 @@ export default function RouteInfo({
                       <td className={classItens}>
                         <div className="flex items-center justify-center">
                           {route.enableLayovers ? (
-                            <MdOutlineExpandCircleDown size={25} color="green" />
+                            <MdOutlineExpandCircleDown
+                              size={25}
+                              color="green"
+                            />
                           ) : (
                             <GoXCircle size={25} color="red" />
                           )}
@@ -148,7 +153,10 @@ export default function RouteInfo({
                       <td className={classItens}>
                         <div className="flex items-center justify-center">
                           {route.active ? (
-                            <MdOutlineExpandCircleDown size={25} color="green" />
+                            <MdOutlineExpandCircleDown
+                              size={25}
+                              color="green"
+                            />
                           ) : (
                             <GoXCircle size={25} color="red" />
                           )}
@@ -175,6 +183,8 @@ export default function RouteInfo({
                           <button
                             className="bg-green-500 py-2 px-5 rounded cursor-pointer hover:bg-green-600 flex flex-row gap-2 items-center"
                             onClick={() => {
+                              setAirport1Selected(route.airports[0]);
+                              setAirport2Selected(route.airports[1]);
                               setCabinsSelected(route.cabins);
                               setIsOpenCabins(true);
                             }}
@@ -234,14 +244,18 @@ export default function RouteInfo({
         </button>
 
         {/* Modal que exibe as cabines da rota selecionada */}
-        <SeeCabins
-          cabinsToShow={cabinsSelected}
-          isOpen={isOpenCabins}
-          onClose={() => {
-            setCabinsSelected([]);
-            setIsOpenCabins(false);
-          }}
-        />
+        {airport1Selected && airport2Selected && (
+          <SeeCabins
+            airport1={airport1Selected}
+            airport2={airport2Selected}
+            cabinsToShow={cabinsSelected}
+            isOpen={isOpenCabins}
+            onClose={() => {
+              setCabinsSelected([]);
+              setIsOpenCabins(false);
+            }}
+          />
+        )}
 
         {/* Modal de edição da rota (condicional) */}
         {routeToEdit ? (

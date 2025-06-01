@@ -99,13 +99,14 @@ model Route {
 // Define configurações específicas de cabine por rota
 // ======================================================
 model CabinsRoute {
-  id                Int     @id @default(autoincrement()) // Chave primária auto-incremental
-  routeId           Int // FK para rota
-  key               String // Identificador único da cabine dentro da rota
-  maximumPoints     Int // Pontuação máxima permitida
-  bagsAmount        Int // Quantidade máxima de bagagens
-  passagePrice      Decimal // Preço da passagem nesta cabine
-  cancellationPrice Decimal // Preço de cancelamento
+  id                          Int     @id @default(autoincrement()) // Chave primária auto-incremental
+  routeId                     Int // FK para rota
+  key                         String // Identificador único da cabine dentro da rota
+  maximumPoints               Int // Pontuação máxima permitida
+  bagsAmount                  Int // Quantidade máxima de bagagens
+  passagePriceFromAirport1To2 Decimal
+  passagePriceFromAirport2To1 Decimal
+  passagePriceRoundTrip       Decimal
 
   route Route @relation("Cabins", fields: [routeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   // Relação com rota principal, com comportamento em cascata

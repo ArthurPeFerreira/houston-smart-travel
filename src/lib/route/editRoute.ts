@@ -25,8 +25,9 @@ export async function editRoute(
         routeId: routeInfo.id,
         key: cabin.key,
         maximumPoints: cabin.maximumPoints,
-        passagePrice: cabin.passagePrice,
-        cancellationPrice: cabin.cancellationPrice,
+        passagePriceFromAirport1To2: cabin.passagePriceFromAirport1To2,
+        passagePriceFromAirport2To1: cabin.passagePriceFromAirport2To1,
+        passagePriceRoundTrip: cabin.passagePriceRoundTrip,
         bagsAmount: cabin.bagsAmount,
       };
     });
@@ -57,8 +58,9 @@ export async function editRoute(
             id: true,
             key: true,
             maximumPoints: true,
-            passagePrice: true,
-            cancellationPrice: true,
+            passagePriceFromAirport1To2: true,
+            passagePriceFromAirport2To1: true,
+            passagePriceRoundTrip: true,
             bagsAmount: true,
           },
           orderBy: { id: "asc" }, // Ordenação das cabines por ID

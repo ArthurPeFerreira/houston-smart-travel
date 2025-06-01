@@ -3,21 +3,36 @@
   --spaces-per-month: calc(var(--month-per-row) - 1);
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1300px) {
   :root {
     --month-per-row: 3;
   }
-}
 
-@media (max-width: 800px) {
-  :root {
-    --month-per-row: 2;
+  .fc-multimonth-month {
+    height: max-content;
+    height: 50%;
   }
 }
 
-@media (max-width: 400px) {
+@media (max-width: 900px) {
+  :root {
+    --month-per-row: 2;
+  }
+
+  .fc-multimonth-month {
+    height: max-content;
+    height: 60%;
+  }
+}
+
+@media (max-width: 600px) {
   :root {
     --month-per-row: 1;
+  }
+
+  .fc-multimonth-month {
+    height: max-content;
+    height: 70%;
   }
 }
 
@@ -32,17 +47,29 @@
 
 /* Define a largura para que caibam 3 itens por linha */
 .fc-multimonth-month {
-  flex: 0 0 calc((100% - (var(--spaces-per-month) * 1rem)) / var(--month-per-row));
+  flex: 0 0
+    calc((100% - (var(--spaces-per-month) * 1rem)) / var(--month-per-row));
   border: 1px solid #e5e7eb;
   border-radius: 0.5rem;
+  height: max-content;
+  height: 40%;
 }
 
+.selected-flight-departure {
+  background-color: #ffcb6b !important;
+}
+
+.selected-flight-return {
+  background-color: #f78c6b !important;
+}
+
+
 .has-flight-direct {
-  background-color: #05df72; /* exemplo de cor verde claro */
+  background-color: #95dfbc;
 }
 
 .has-flight-layovers {
-  background-color: #51a2ff; /* exemplo de cor verde claro */
+  background-color: #51a2ff;
 }
 
 .has-flight-direct:hover {
@@ -73,7 +100,15 @@
   border: none !important;
 }
 
-.fc-multimonth-title{
+.fc-multimonth-title {
   background-color: #141414;
-  color: #FFFFFF;
+  color: #ffffff;
+}
+
+.fc .fc-multimonth-title {
+  padding: 10px;
+}
+
+.fc-daygrid-day-frame {
+  position: absolute;
 }

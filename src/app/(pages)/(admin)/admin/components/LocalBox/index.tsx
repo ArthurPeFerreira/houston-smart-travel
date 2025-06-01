@@ -364,13 +364,13 @@ export default function LocalBox() {
             required
           />
 
-          <label className="block mb-1 text-white mt-4">Passage Price</label>
+          <label className="block mb-1 text-white mt-4">Passage Price (USD)</label>
           <input
             id="passage price"
             type="number"
             inputMode="decimal"
             step="0.01"
-            value={Number(passagePrice)}
+            value={Number(passagePrice.toFixed(2))}
             onChange={(e) => {
               try {
                 setPassagePrice(Decimal(e.target.value));

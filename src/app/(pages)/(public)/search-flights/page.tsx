@@ -14,6 +14,7 @@ export default async function SearchFlights({
     destination?: string;
     cabin?: string;
     seats?: string;
+    roundedTrip?: string;
   }>;
 }) {
   const route = Number((await searchParams)?.route);
@@ -24,8 +25,8 @@ export default async function SearchFlights({
 
   return (
     <Calendar
-      originAirport={originAirport}
-      destinationAirport={destinationAirport}
+      originAirportId={originAirport}
+      destinationAirportId={destinationAirport}
       cabin={cabin}
       seats={seats}
       route={route}

@@ -22,28 +22,29 @@ import Decimal from "decimal.js";
 
 // Ícones utilizados nas ações
 import { FaPlus, FaSpinner, FaTrash } from "react-icons/fa";
+import { MdFlight } from "react-icons/md";
 
 // Tipagem interna das cabines utilizadas no formulário de edição
 interface CabinData {
-  key: CabinKey; // Identificador único da cabine
-  label: string; // Nome da cabine
-  code: "Y" | "J" | "F" | "W"; // Código da classe
-  maximumPoints: number; // Pontuação máxima
-  bagsAmount: number; // Quantidade de bagagens
-  passagePrice: Decimal; // Preço da passagem
-  cancellationPrice: Decimal; // Taxa de cancelamento
+  key: CabinKey;
+  label: string;
+  code: "Y" | "J" | "F" | "W";
+  maximumPoints: number;
+  bagsAmount: number;
+  passagePriceFromAirport1To2: Decimal;
+  passagePriceFromAirport2To1: Decimal;
+  passagePriceRoundTrip: Decimal;
 }
 
 // Tipagem das props esperadas pelo modal de edição de rota
 interface EditRouteModalProps {
-  isOpen: boolean; // Define se o modal está visível
-  isLoading: boolean; // Indica se está processando a ação de salvar
-  onClose: () => void; // Função para fechar o modal
-  onSave: (data: EditRouteType) => void; // Função callback para salvar as alterações
-  initialData: RouteType; // Dados da rota a serem editados
+  isOpen: boolean;
+  isLoading: boolean;
+  onClose: () => void;
+  onSave: (data: EditRouteType) => void;
+  initialData: RouteType;
 }
 
-// Componente de edição de rota, com formulário interativo e controle de estados
 export default function EditRoute({
   isOpen,
   isLoading,
@@ -51,24 +52,24 @@ export default function EditRoute({
   onSave,
   initialData,
 }: EditRouteModalProps) {
-  // Classe de estilo reutilizada para inputs
   const inputs =
     "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white";
 
-  // Estados do formulário de edição
   const [mileageProgram, setMileageProgram] =
-    useState<MileageProgramOption | null>(null); // Programa de milhagem selecionado
-  const [enableLayovers, setEnableLayovers] = useState<boolean>(false); // Permitir conexões
-  const [active, setActive] = useState<boolean>(false); // Status ativo da rota
-  const [cabinList, setCabinList] = useState<CabinData[]>([]); // Cabines atuais da rota
-  const [cabinToShow, setCabinToShow] = useState<Cabin[]>([]); // Cabines ainda não adicionadas
-  const [cabinKey, setCabinKey] = useState<string>(""); // Chave da cabine selecionada no dropdown
+    useState<MileageProgramOption | null>(null);
+  const [enableLayovers, setEnableLayovers] = useState<boolean>(false);
+  const [active, setActive] = useState<boolean>(false);
+  const [cabinList, setCabinList] = useState<CabinData[]>([]);
+  const [cabinToShow, setCabinToShow] = useState<Cabin[]>([]);
+  const [cabinKey, setCabinKey] = useState<string>("");
+  const [lastModifiedField, setLastModifiedField] = useState<{
+    cabinKey: CabinKey;
+    field: string;
+  } | null>(null);
 
-  // Efeito para inicializar os campos do formulário com os dados da rota
   useEffect(() => {
     if (!initialData) return;
 
-    // Define o programa de milhagem no formato esperado pelo Select
     const program = mileagePrograms[initialData.mileageProgram];
     setMileageProgram({
       value: program.key,
@@ -79,7 +80,6 @@ export default function EditRoute({
     setEnableLayovers(initialData.enableLayovers);
     setActive(initialData.active);
 
-    // Mapeia as cabines existentes da rota
     setCabinList(
       initialData.cabins.map((cabin) => ({
         key: cabin.key as CabinKey,
@@ -87,12 +87,12 @@ export default function EditRoute({
         code: cabins[cabin.key as CabinKey].code,
         maximumPoints: cabin.maximumPoints,
         bagsAmount: cabin.bagsAmount,
-        passagePrice: cabin.passagePrice,
-        cancellationPrice: cabin.cancellationPrice,
+        passagePriceFromAirport1To2: cabin.passagePriceFromAirport1To2,
+        passagePriceFromAirport2To1: cabin.passagePriceFromAirport2To1,
+        passagePriceRoundTrip: cabin.passagePriceRoundTrip,
       }))
     );
 
-    // Filtra e define as cabines que ainda não foram adicionadas
     setCabinToShow(
       Object.values(cabins).filter(
         (cabin) => !initialData.cabins.some((added) => added.key === cabin.key)
@@ -100,7 +100,34 @@ export default function EditRoute({
     );
   }, [initialData]);
 
-  // Adiciona nova cabine à lista e remove da lista de disponíveis
+  useEffect(() => {
+    if (
+      !lastModifiedField ||
+      !["passagePriceFromAirport1To2", "passagePriceFromAirport2To1"].includes(
+        lastModifiedField.field
+      )
+    ) {
+      return;
+    }
+
+    const updatedCabinList = cabinList.map((cabin) => {
+      if (cabin.key !== lastModifiedField.cabinKey) return cabin;
+
+      const from1to2 = Number(cabin.passagePriceFromAirport1To2);
+      const from2to1 = Number(cabin.passagePriceFromAirport2To1);
+
+      return {
+        ...cabin,
+        passagePriceRoundTrip: new Decimal(from1to2 + from2to1).toDecimalPlaces(
+          2
+        ),
+      };
+    });
+
+    setCabinList(updatedCabinList);
+    setLastModifiedField(null);
+  }, [cabinList, lastModifiedField]);
+
   function addNewCabin(cabinKey: CabinKey) {
     const cabin = cabins[cabinKey];
 
@@ -115,8 +142,9 @@ export default function EditRoute({
           code: cabin.code,
           maximumPoints: 0,
           bagsAmount: 0,
-          passagePrice: Decimal(0),
-          cancellationPrice: Decimal(0),
+          passagePriceFromAirport1To2: Decimal(0),
+          passagePriceFromAirport2To1: Decimal(0),
+          passagePriceRoundTrip: Decimal(0),
         },
       ];
       return newList.sort(
@@ -127,7 +155,6 @@ export default function EditRoute({
     setCabinKey("");
   }
 
-  // Remove cabine da lista atual e adiciona de volta à lista de seleção
   function removeCabin(cabinKey: CabinKey) {
     const cabin = cabins[cabinKey];
 
@@ -146,7 +173,6 @@ export default function EditRoute({
     });
   }
 
-  // Atualiza dinamicamente os campos numéricos de uma cabine específica
   function updateCabinField(
     cabinKey: CabinKey,
     field: keyof Omit<CabinData, "key" | "label" | "code">,
@@ -157,9 +183,10 @@ export default function EditRoute({
         cabin.key === cabinKey ? { ...cabin, [field]: value } : cabin
       )
     );
+
+    setLastModifiedField({ cabinKey, field });
   }
 
-  // Evita renderização se o modal estiver fechado
   if (!isOpen) return null;
   return (
     // Container principal do modal com fundo escuro cobrindo toda a tela
@@ -178,8 +205,9 @@ export default function EditRoute({
               key: cabin.key,
               maximumPoints: cabin.maximumPoints,
               bagsAmount: cabin.bagsAmount,
-              passagePrice: cabin.passagePrice,
-              cancellationPrice: cabin.cancellationPrice,
+              passagePriceFromAirport1To2: cabin.passagePriceFromAirport1To2,
+              passagePriceFromAirport2To1: cabin.passagePriceFromAirport2To1,
+              passagePriceRoundTrip: cabin.passagePriceRoundTrip,
             }));
 
             const data: EditRouteType = {
@@ -315,21 +343,28 @@ export default function EditRoute({
                         />
                       </div>
 
-                      {/* Campo de preço da passagem */}
+                      {/* Aeroporto 1 -> Aeroporto 2 Preço de Venda */}
                       <div>
                         <label className="block mb-1 text-white">
-                          Sale Price (USD)
+                          <div className="flex flex-row gap-1 items-center">
+                            {initialData.airports[0].airportCode}
+                            <MdFlight className="rotate-90" size={20} />
+                            {initialData.airports[1].airportCode}
+                            <div>Sale Price (USD)</div>
+                          </div>
                         </label>
                         <input
-                          id="Sale Price"
+                          id={`${initialData.airports[0].id}->${initialData.airports[1].id} Price`}
                           type="number"
                           inputMode="decimal"
                           step="0.01"
-                          value={Number(cabin.passagePrice)}
+                          value={Number(
+                            cabin.passagePriceFromAirport1To2
+                          )}
                           onChange={(e) =>
                             updateCabinField(
                               cabin.key,
-                              "passagePrice",
+                              "passagePriceFromAirport1To2",
                               Number(e.target.value)
                             )
                           }
@@ -339,21 +374,52 @@ export default function EditRoute({
                         />
                       </div>
 
-                      {/* Campo de taxa de cancelamento */}
+                      {/* Aeroporto 2 -> Aeroporto 1 Preço de Venda */}
                       <div>
                         <label className="block mb-1 text-white">
-                          Cancelation Fee (USD)
+                          <div className="flex flex-row gap-1 items-center">
+                            {initialData.airports[1].airportCode}
+                            <MdFlight className="rotate-90" size={20} />
+                            {initialData.airports[0].airportCode}
+                            <div>Sale Price (USD)</div>
+                          </div>
                         </label>
                         <input
-                          id="Cancelation Fee"
+                          id={`${initialData.airports[1].id}->${initialData.airports[0].id} Price`}
                           type="number"
                           inputMode="decimal"
                           step="0.01"
-                          value={Number(cabin.cancellationPrice)}
+                          value={Number(
+                            cabin.passagePriceFromAirport2To1
+                          )}
                           onChange={(e) =>
                             updateCabinField(
                               cabin.key,
-                              "cancellationPrice",
+                              "passagePriceFromAirport2To1",
+                              Number(e.target.value)
+                            )
+                          }
+                          className={inputs}
+                          required
+                          min={0}
+                        />
+                      </div>
+
+                      {/* Viajem Completa Preço de Venda */}
+                      <div>
+                        <label className="block mb-1 text-white">
+                          Rounded Trip Sale Price (USD)
+                        </label>
+                        <input
+                          id="Sale Price"
+                          type="number"
+                          inputMode="decimal"
+                          step="0.01"
+                          value={Number(cabin.passagePriceRoundTrip)}
+                          onChange={(e) =>
+                            updateCabinField(
+                              cabin.key,
+                              "passagePriceRoundTrip",
                               Number(e.target.value)
                             )
                           }
