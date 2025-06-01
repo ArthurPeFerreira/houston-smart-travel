@@ -144,21 +144,32 @@ export async function GET(req: NextRequest) {
 
     // Realiza consulta no banco de dados para buscar disponibilidade de assentos
     // de acordo com todos os parâmetros informados
-    const data = await prismaClient.routesData.findMany({
+    const allRoutes = await prismaClient.routesData.findMany({
       where: {
-        routeId: route.id, // ID da rota
-        cabinKey: String(cabin.key), // Chave da cabine (ex: 'economy', 'business')
-        originAirport: originAirport.airportCode, // Código IATA do aeroporto de origem
-        destinationAirport: destinationAirport.airportCode, // Código IATA do aeroporto de destino
-        seats: { gte: seats }, // Quantidade mínima de assentos disponível
+        routeId: route.id,
+        cabinKey: String(cabin.key),
+        originAirport: originAirport.airportCode,
+        destinationAirport: destinationAirport.airportCode,
+        seats: { gte: seats },
       },
       orderBy: {
-        date: "asc", // Ordena resultados por data de partida (ascendente)
+        date: "asc",
       },
     });
 
+    // Agrupar por data e pegar a com mais assentos
+    const filteredByMostSeats = Object.values(
+      allRoutes.reduce((acc, route) => {
+        const dateKey = route.date.toISOString().slice(0, 10); // Agrupando por data
+        if (!acc[dateKey] || route.seats > acc[dateKey].seats) {
+          acc[dateKey] = route;
+        }
+        return acc;
+      }, {} as Record<string, (typeof allRoutes)[0]>)
+    );
+
     // Retorna os dados encontrados como resposta JSON
-    return NextResponse.json(data);
+    return NextResponse.json(filteredByMostSeats);
   } catch {
     // Captura exceções e retorna erro 500 com mensagem genérica
     return NextResponse.json(
