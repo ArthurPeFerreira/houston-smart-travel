@@ -15,8 +15,9 @@ export interface CabinsType {
   key: string;
   maximumPoints: number;
   bagsAmount: number;
-  passagePrice: Decimal;
-  cancellationPrice: Decimal;
+  passagePriceFromAirport1To2: Decimal;
+  passagePriceFromAirport2To1: Decimal;
+  passagePriceRoundTrip: Decimal;
 }
 
 export interface CreateRouteType {
@@ -40,7 +41,7 @@ export interface RoutesDataType {
   originAirport: string;
   destinationAirport: string;
   cabinKey: string;
-  date: string; // ou Date se for tratado como objeto Date
+  date: string;
   direct: boolean;
   seats: number;
 }

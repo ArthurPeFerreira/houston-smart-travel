@@ -42,8 +42,9 @@ export async function createRoute(
         key: cabin.key,
         maximumPoints: cabin.maximumPoints,
         bagsAmount: cabin.bagsAmount,
-        passagePrice: cabin.passagePrice,
-        cancellationPrice: cabin.cancellationPrice,
+        passagePriceFromAirport1To2: cabin.passagePriceFromAirport1To2,
+        passagePriceFromAirport2To1: cabin.passagePriceFromAirport2To1,
+        passagePriceRoundTrip: cabin.passagePriceRoundTrip,
       };
     });
 

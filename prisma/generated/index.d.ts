@@ -301,8 +301,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.6.0
-   * Query Engine version: f676762280b54cd07c770017ed3711ddde35f37a
+   * Prisma Client JS version: 6.8.2
+   * Query Engine version: 2060c79ba17c6bb9f5823312b6f6b7f4a845738e
    */
   export type PrismaVersion = {
     client: string
@@ -5953,8 +5953,9 @@ export namespace Prisma {
     routeId: number | null
     maximumPoints: number | null
     bagsAmount: number | null
-    passagePrice: Decimal | null
-    cancellationPrice: Decimal | null
+    passagePriceFromAirport1To2: Decimal | null
+    passagePriceFromAirport2To1: Decimal | null
+    passagePriceRoundTrip: Decimal | null
   }
 
   export type CabinsRouteSumAggregateOutputType = {
@@ -5962,8 +5963,9 @@ export namespace Prisma {
     routeId: number | null
     maximumPoints: number | null
     bagsAmount: number | null
-    passagePrice: Decimal | null
-    cancellationPrice: Decimal | null
+    passagePriceFromAirport1To2: Decimal | null
+    passagePriceFromAirport2To1: Decimal | null
+    passagePriceRoundTrip: Decimal | null
   }
 
   export type CabinsRouteMinAggregateOutputType = {
@@ -5972,8 +5974,9 @@ export namespace Prisma {
     key: string | null
     maximumPoints: number | null
     bagsAmount: number | null
-    passagePrice: Decimal | null
-    cancellationPrice: Decimal | null
+    passagePriceFromAirport1To2: Decimal | null
+    passagePriceFromAirport2To1: Decimal | null
+    passagePriceRoundTrip: Decimal | null
   }
 
   export type CabinsRouteMaxAggregateOutputType = {
@@ -5982,8 +5985,9 @@ export namespace Prisma {
     key: string | null
     maximumPoints: number | null
     bagsAmount: number | null
-    passagePrice: Decimal | null
-    cancellationPrice: Decimal | null
+    passagePriceFromAirport1To2: Decimal | null
+    passagePriceFromAirport2To1: Decimal | null
+    passagePriceRoundTrip: Decimal | null
   }
 
   export type CabinsRouteCountAggregateOutputType = {
@@ -5992,8 +5996,9 @@ export namespace Prisma {
     key: number
     maximumPoints: number
     bagsAmount: number
-    passagePrice: number
-    cancellationPrice: number
+    passagePriceFromAirport1To2: number
+    passagePriceFromAirport2To1: number
+    passagePriceRoundTrip: number
     _all: number
   }
 
@@ -6003,8 +6008,9 @@ export namespace Prisma {
     routeId?: true
     maximumPoints?: true
     bagsAmount?: true
-    passagePrice?: true
-    cancellationPrice?: true
+    passagePriceFromAirport1To2?: true
+    passagePriceFromAirport2To1?: true
+    passagePriceRoundTrip?: true
   }
 
   export type CabinsRouteSumAggregateInputType = {
@@ -6012,8 +6018,9 @@ export namespace Prisma {
     routeId?: true
     maximumPoints?: true
     bagsAmount?: true
-    passagePrice?: true
-    cancellationPrice?: true
+    passagePriceFromAirport1To2?: true
+    passagePriceFromAirport2To1?: true
+    passagePriceRoundTrip?: true
   }
 
   export type CabinsRouteMinAggregateInputType = {
@@ -6022,8 +6029,9 @@ export namespace Prisma {
     key?: true
     maximumPoints?: true
     bagsAmount?: true
-    passagePrice?: true
-    cancellationPrice?: true
+    passagePriceFromAirport1To2?: true
+    passagePriceFromAirport2To1?: true
+    passagePriceRoundTrip?: true
   }
 
   export type CabinsRouteMaxAggregateInputType = {
@@ -6032,8 +6040,9 @@ export namespace Prisma {
     key?: true
     maximumPoints?: true
     bagsAmount?: true
-    passagePrice?: true
-    cancellationPrice?: true
+    passagePriceFromAirport1To2?: true
+    passagePriceFromAirport2To1?: true
+    passagePriceRoundTrip?: true
   }
 
   export type CabinsRouteCountAggregateInputType = {
@@ -6042,8 +6051,9 @@ export namespace Prisma {
     key?: true
     maximumPoints?: true
     bagsAmount?: true
-    passagePrice?: true
-    cancellationPrice?: true
+    passagePriceFromAirport1To2?: true
+    passagePriceFromAirport2To1?: true
+    passagePriceRoundTrip?: true
     _all?: true
   }
 
@@ -6139,8 +6149,9 @@ export namespace Prisma {
     key: string
     maximumPoints: number
     bagsAmount: number
-    passagePrice: Decimal
-    cancellationPrice: Decimal
+    passagePriceFromAirport1To2: Decimal
+    passagePriceFromAirport2To1: Decimal
+    passagePriceRoundTrip: Decimal
     _count: CabinsRouteCountAggregateOutputType | null
     _avg: CabinsRouteAvgAggregateOutputType | null
     _sum: CabinsRouteSumAggregateOutputType | null
@@ -6168,8 +6179,9 @@ export namespace Prisma {
     key?: boolean
     maximumPoints?: boolean
     bagsAmount?: boolean
-    passagePrice?: boolean
-    cancellationPrice?: boolean
+    passagePriceFromAirport1To2?: boolean
+    passagePriceFromAirport2To1?: boolean
+    passagePriceRoundTrip?: boolean
     route?: boolean | RouteDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cabinsRoute"]>
 
@@ -6179,8 +6191,9 @@ export namespace Prisma {
     key?: boolean
     maximumPoints?: boolean
     bagsAmount?: boolean
-    passagePrice?: boolean
-    cancellationPrice?: boolean
+    passagePriceFromAirport1To2?: boolean
+    passagePriceFromAirport2To1?: boolean
+    passagePriceRoundTrip?: boolean
     route?: boolean | RouteDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cabinsRoute"]>
 
@@ -6190,8 +6203,9 @@ export namespace Prisma {
     key?: boolean
     maximumPoints?: boolean
     bagsAmount?: boolean
-    passagePrice?: boolean
-    cancellationPrice?: boolean
+    passagePriceFromAirport1To2?: boolean
+    passagePriceFromAirport2To1?: boolean
+    passagePriceRoundTrip?: boolean
     route?: boolean | RouteDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cabinsRoute"]>
 
@@ -6201,11 +6215,12 @@ export namespace Prisma {
     key?: boolean
     maximumPoints?: boolean
     bagsAmount?: boolean
-    passagePrice?: boolean
-    cancellationPrice?: boolean
+    passagePriceFromAirport1To2?: boolean
+    passagePriceFromAirport2To1?: boolean
+    passagePriceRoundTrip?: boolean
   }
 
-  export type CabinsRouteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "routeId" | "key" | "maximumPoints" | "bagsAmount" | "passagePrice" | "cancellationPrice", ExtArgs["result"]["cabinsRoute"]>
+  export type CabinsRouteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "routeId" | "key" | "maximumPoints" | "bagsAmount" | "passagePriceFromAirport1To2" | "passagePriceFromAirport2To1" | "passagePriceRoundTrip", ExtArgs["result"]["cabinsRoute"]>
   export type CabinsRouteInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     route?: boolean | RouteDefaultArgs<ExtArgs>
   }
@@ -6227,8 +6242,9 @@ export namespace Prisma {
       key: string
       maximumPoints: number
       bagsAmount: number
-      passagePrice: Prisma.Decimal
-      cancellationPrice: Prisma.Decimal
+      passagePriceFromAirport1To2: Prisma.Decimal
+      passagePriceFromAirport2To1: Prisma.Decimal
+      passagePriceRoundTrip: Prisma.Decimal
     }, ExtArgs["result"]["cabinsRoute"]>
     composites: {}
   }
@@ -6658,8 +6674,9 @@ export namespace Prisma {
     readonly key: FieldRef<"CabinsRoute", 'String'>
     readonly maximumPoints: FieldRef<"CabinsRoute", 'Int'>
     readonly bagsAmount: FieldRef<"CabinsRoute", 'Int'>
-    readonly passagePrice: FieldRef<"CabinsRoute", 'Decimal'>
-    readonly cancellationPrice: FieldRef<"CabinsRoute", 'Decimal'>
+    readonly passagePriceFromAirport1To2: FieldRef<"CabinsRoute", 'Decimal'>
+    readonly passagePriceFromAirport2To1: FieldRef<"CabinsRoute", 'Decimal'>
+    readonly passagePriceRoundTrip: FieldRef<"CabinsRoute", 'Decimal'>
   }
     
 
@@ -9361,8 +9378,9 @@ export namespace Prisma {
     key: 'key',
     maximumPoints: 'maximumPoints',
     bagsAmount: 'bagsAmount',
-    passagePrice: 'passagePrice',
-    cancellationPrice: 'cancellationPrice'
+    passagePriceFromAirport1To2: 'passagePriceFromAirport1To2',
+    passagePriceFromAirport2To1: 'passagePriceFromAirport2To1',
+    passagePriceRoundTrip: 'passagePriceRoundTrip'
   };
 
   export type CabinsRouteScalarFieldEnum = (typeof CabinsRouteScalarFieldEnum)[keyof typeof CabinsRouteScalarFieldEnum]
@@ -9753,8 +9771,9 @@ export namespace Prisma {
     key?: StringFilter<"CabinsRoute"> | string
     maximumPoints?: IntFilter<"CabinsRoute"> | number
     bagsAmount?: IntFilter<"CabinsRoute"> | number
-    passagePrice?: DecimalFilter<"CabinsRoute"> | Decimal | DecimalJsLike | number | string
-    cancellationPrice?: DecimalFilter<"CabinsRoute"> | Decimal | DecimalJsLike | number | string
+    passagePriceFromAirport1To2?: DecimalFilter<"CabinsRoute"> | Decimal | DecimalJsLike | number | string
+    passagePriceFromAirport2To1?: DecimalFilter<"CabinsRoute"> | Decimal | DecimalJsLike | number | string
+    passagePriceRoundTrip?: DecimalFilter<"CabinsRoute"> | Decimal | DecimalJsLike | number | string
     route?: XOR<RouteScalarRelationFilter, RouteWhereInput>
   }
 
@@ -9764,8 +9783,9 @@ export namespace Prisma {
     key?: SortOrder
     maximumPoints?: SortOrder
     bagsAmount?: SortOrder
-    passagePrice?: SortOrder
-    cancellationPrice?: SortOrder
+    passagePriceFromAirport1To2?: SortOrder
+    passagePriceFromAirport2To1?: SortOrder
+    passagePriceRoundTrip?: SortOrder
     route?: RouteOrderByWithRelationInput
   }
 
@@ -9779,8 +9799,9 @@ export namespace Prisma {
     key?: StringFilter<"CabinsRoute"> | string
     maximumPoints?: IntFilter<"CabinsRoute"> | number
     bagsAmount?: IntFilter<"CabinsRoute"> | number
-    passagePrice?: DecimalFilter<"CabinsRoute"> | Decimal | DecimalJsLike | number | string
-    cancellationPrice?: DecimalFilter<"CabinsRoute"> | Decimal | DecimalJsLike | number | string
+    passagePriceFromAirport1To2?: DecimalFilter<"CabinsRoute"> | Decimal | DecimalJsLike | number | string
+    passagePriceFromAirport2To1?: DecimalFilter<"CabinsRoute"> | Decimal | DecimalJsLike | number | string
+    passagePriceRoundTrip?: DecimalFilter<"CabinsRoute"> | Decimal | DecimalJsLike | number | string
     route?: XOR<RouteScalarRelationFilter, RouteWhereInput>
   }, "id" | "UniqueCabinPerRoute">
 
@@ -9790,8 +9811,9 @@ export namespace Prisma {
     key?: SortOrder
     maximumPoints?: SortOrder
     bagsAmount?: SortOrder
-    passagePrice?: SortOrder
-    cancellationPrice?: SortOrder
+    passagePriceFromAirport1To2?: SortOrder
+    passagePriceFromAirport2To1?: SortOrder
+    passagePriceRoundTrip?: SortOrder
     _count?: CabinsRouteCountOrderByAggregateInput
     _avg?: CabinsRouteAvgOrderByAggregateInput
     _max?: CabinsRouteMaxOrderByAggregateInput
@@ -9808,8 +9830,9 @@ export namespace Prisma {
     key?: StringWithAggregatesFilter<"CabinsRoute"> | string
     maximumPoints?: IntWithAggregatesFilter<"CabinsRoute"> | number
     bagsAmount?: IntWithAggregatesFilter<"CabinsRoute"> | number
-    passagePrice?: DecimalWithAggregatesFilter<"CabinsRoute"> | Decimal | DecimalJsLike | number | string
-    cancellationPrice?: DecimalWithAggregatesFilter<"CabinsRoute"> | Decimal | DecimalJsLike | number | string
+    passagePriceFromAirport1To2?: DecimalWithAggregatesFilter<"CabinsRoute"> | Decimal | DecimalJsLike | number | string
+    passagePriceFromAirport2To1?: DecimalWithAggregatesFilter<"CabinsRoute"> | Decimal | DecimalJsLike | number | string
+    passagePriceRoundTrip?: DecimalWithAggregatesFilter<"CabinsRoute"> | Decimal | DecimalJsLike | number | string
   }
 
   export type AirportsRouteWhereInput = {
@@ -10183,8 +10206,9 @@ export namespace Prisma {
     key: string
     maximumPoints: number
     bagsAmount: number
-    passagePrice: Decimal | DecimalJsLike | number | string
-    cancellationPrice: Decimal | DecimalJsLike | number | string
+    passagePriceFromAirport1To2: Decimal | DecimalJsLike | number | string
+    passagePriceFromAirport2To1: Decimal | DecimalJsLike | number | string
+    passagePriceRoundTrip: Decimal | DecimalJsLike | number | string
     route: RouteCreateNestedOneWithoutCabinsInput
   }
 
@@ -10194,16 +10218,18 @@ export namespace Prisma {
     key: string
     maximumPoints: number
     bagsAmount: number
-    passagePrice: Decimal | DecimalJsLike | number | string
-    cancellationPrice: Decimal | DecimalJsLike | number | string
+    passagePriceFromAirport1To2: Decimal | DecimalJsLike | number | string
+    passagePriceFromAirport2To1: Decimal | DecimalJsLike | number | string
+    passagePriceRoundTrip: Decimal | DecimalJsLike | number | string
   }
 
   export type CabinsRouteUpdateInput = {
     key?: StringFieldUpdateOperationsInput | string
     maximumPoints?: IntFieldUpdateOperationsInput | number
     bagsAmount?: IntFieldUpdateOperationsInput | number
-    passagePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    cancellationPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    passagePriceFromAirport1To2?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    passagePriceFromAirport2To1?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    passagePriceRoundTrip?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     route?: RouteUpdateOneRequiredWithoutCabinsNestedInput
   }
 
@@ -10213,8 +10239,9 @@ export namespace Prisma {
     key?: StringFieldUpdateOperationsInput | string
     maximumPoints?: IntFieldUpdateOperationsInput | number
     bagsAmount?: IntFieldUpdateOperationsInput | number
-    passagePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    cancellationPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    passagePriceFromAirport1To2?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    passagePriceFromAirport2To1?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    passagePriceRoundTrip?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
   }
 
   export type CabinsRouteCreateManyInput = {
@@ -10223,16 +10250,18 @@ export namespace Prisma {
     key: string
     maximumPoints: number
     bagsAmount: number
-    passagePrice: Decimal | DecimalJsLike | number | string
-    cancellationPrice: Decimal | DecimalJsLike | number | string
+    passagePriceFromAirport1To2: Decimal | DecimalJsLike | number | string
+    passagePriceFromAirport2To1: Decimal | DecimalJsLike | number | string
+    passagePriceRoundTrip: Decimal | DecimalJsLike | number | string
   }
 
   export type CabinsRouteUpdateManyMutationInput = {
     key?: StringFieldUpdateOperationsInput | string
     maximumPoints?: IntFieldUpdateOperationsInput | number
     bagsAmount?: IntFieldUpdateOperationsInput | number
-    passagePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    cancellationPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    passagePriceFromAirport1To2?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    passagePriceFromAirport2To1?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    passagePriceRoundTrip?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
   }
 
   export type CabinsRouteUncheckedUpdateManyInput = {
@@ -10241,8 +10270,9 @@ export namespace Prisma {
     key?: StringFieldUpdateOperationsInput | string
     maximumPoints?: IntFieldUpdateOperationsInput | number
     bagsAmount?: IntFieldUpdateOperationsInput | number
-    passagePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    cancellationPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    passagePriceFromAirport1To2?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    passagePriceFromAirport2To1?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    passagePriceRoundTrip?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
   }
 
   export type AirportsRouteCreateInput = {
@@ -10705,8 +10735,9 @@ export namespace Prisma {
     key?: SortOrder
     maximumPoints?: SortOrder
     bagsAmount?: SortOrder
-    passagePrice?: SortOrder
-    cancellationPrice?: SortOrder
+    passagePriceFromAirport1To2?: SortOrder
+    passagePriceFromAirport2To1?: SortOrder
+    passagePriceRoundTrip?: SortOrder
   }
 
   export type CabinsRouteAvgOrderByAggregateInput = {
@@ -10714,8 +10745,9 @@ export namespace Prisma {
     routeId?: SortOrder
     maximumPoints?: SortOrder
     bagsAmount?: SortOrder
-    passagePrice?: SortOrder
-    cancellationPrice?: SortOrder
+    passagePriceFromAirport1To2?: SortOrder
+    passagePriceFromAirport2To1?: SortOrder
+    passagePriceRoundTrip?: SortOrder
   }
 
   export type CabinsRouteMaxOrderByAggregateInput = {
@@ -10724,8 +10756,9 @@ export namespace Prisma {
     key?: SortOrder
     maximumPoints?: SortOrder
     bagsAmount?: SortOrder
-    passagePrice?: SortOrder
-    cancellationPrice?: SortOrder
+    passagePriceFromAirport1To2?: SortOrder
+    passagePriceFromAirport2To1?: SortOrder
+    passagePriceRoundTrip?: SortOrder
   }
 
   export type CabinsRouteMinOrderByAggregateInput = {
@@ -10734,8 +10767,9 @@ export namespace Prisma {
     key?: SortOrder
     maximumPoints?: SortOrder
     bagsAmount?: SortOrder
-    passagePrice?: SortOrder
-    cancellationPrice?: SortOrder
+    passagePriceFromAirport1To2?: SortOrder
+    passagePriceFromAirport2To1?: SortOrder
+    passagePriceRoundTrip?: SortOrder
   }
 
   export type CabinsRouteSumOrderByAggregateInput = {
@@ -10743,8 +10777,9 @@ export namespace Prisma {
     routeId?: SortOrder
     maximumPoints?: SortOrder
     bagsAmount?: SortOrder
-    passagePrice?: SortOrder
-    cancellationPrice?: SortOrder
+    passagePriceFromAirport1To2?: SortOrder
+    passagePriceFromAirport2To1?: SortOrder
+    passagePriceRoundTrip?: SortOrder
   }
 
   export type AirportsRouteCountOrderByAggregateInput = {
@@ -11453,8 +11488,9 @@ export namespace Prisma {
     key: string
     maximumPoints: number
     bagsAmount: number
-    passagePrice: Decimal | DecimalJsLike | number | string
-    cancellationPrice: Decimal | DecimalJsLike | number | string
+    passagePriceFromAirport1To2: Decimal | DecimalJsLike | number | string
+    passagePriceFromAirport2To1: Decimal | DecimalJsLike | number | string
+    passagePriceRoundTrip: Decimal | DecimalJsLike | number | string
   }
 
   export type CabinsRouteUncheckedCreateWithoutRouteInput = {
@@ -11462,8 +11498,9 @@ export namespace Prisma {
     key: string
     maximumPoints: number
     bagsAmount: number
-    passagePrice: Decimal | DecimalJsLike | number | string
-    cancellationPrice: Decimal | DecimalJsLike | number | string
+    passagePriceFromAirport1To2: Decimal | DecimalJsLike | number | string
+    passagePriceFromAirport2To1: Decimal | DecimalJsLike | number | string
+    passagePriceRoundTrip: Decimal | DecimalJsLike | number | string
   }
 
   export type CabinsRouteCreateOrConnectWithoutRouteInput = {
@@ -11546,8 +11583,9 @@ export namespace Prisma {
     key?: StringFilter<"CabinsRoute"> | string
     maximumPoints?: IntFilter<"CabinsRoute"> | number
     bagsAmount?: IntFilter<"CabinsRoute"> | number
-    passagePrice?: DecimalFilter<"CabinsRoute"> | Decimal | DecimalJsLike | number | string
-    cancellationPrice?: DecimalFilter<"CabinsRoute"> | Decimal | DecimalJsLike | number | string
+    passagePriceFromAirport1To2?: DecimalFilter<"CabinsRoute"> | Decimal | DecimalJsLike | number | string
+    passagePriceFromAirport2To1?: DecimalFilter<"CabinsRoute"> | Decimal | DecimalJsLike | number | string
+    passagePriceRoundTrip?: DecimalFilter<"CabinsRoute"> | Decimal | DecimalJsLike | number | string
   }
 
   export type RoutesDataUpsertWithWhereUniqueWithoutRouteInput = {
@@ -11801,8 +11839,9 @@ export namespace Prisma {
     key: string
     maximumPoints: number
     bagsAmount: number
-    passagePrice: Decimal | DecimalJsLike | number | string
-    cancellationPrice: Decimal | DecimalJsLike | number | string
+    passagePriceFromAirport1To2: Decimal | DecimalJsLike | number | string
+    passagePriceFromAirport2To1: Decimal | DecimalJsLike | number | string
+    passagePriceRoundTrip: Decimal | DecimalJsLike | number | string
   }
 
   export type RoutesDataCreateManyRouteInput = {
@@ -11833,8 +11872,9 @@ export namespace Prisma {
     key?: StringFieldUpdateOperationsInput | string
     maximumPoints?: IntFieldUpdateOperationsInput | number
     bagsAmount?: IntFieldUpdateOperationsInput | number
-    passagePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    cancellationPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    passagePriceFromAirport1To2?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    passagePriceFromAirport2To1?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    passagePriceRoundTrip?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
   }
 
   export type CabinsRouteUncheckedUpdateWithoutRouteInput = {
@@ -11842,8 +11882,9 @@ export namespace Prisma {
     key?: StringFieldUpdateOperationsInput | string
     maximumPoints?: IntFieldUpdateOperationsInput | number
     bagsAmount?: IntFieldUpdateOperationsInput | number
-    passagePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    cancellationPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    passagePriceFromAirport1To2?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    passagePriceFromAirport2To1?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    passagePriceRoundTrip?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
   }
 
   export type CabinsRouteUncheckedUpdateManyWithoutRouteInput = {
@@ -11851,8 +11892,9 @@ export namespace Prisma {
     key?: StringFieldUpdateOperationsInput | string
     maximumPoints?: IntFieldUpdateOperationsInput | number
     bagsAmount?: IntFieldUpdateOperationsInput | number
-    passagePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    cancellationPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    passagePriceFromAirport1To2?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    passagePriceFromAirport2To1?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    passagePriceRoundTrip?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
   }
 
   export type RoutesDataUpdateWithoutRouteInput = {

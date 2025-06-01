@@ -1,14 +1,20 @@
+import { AirportType } from "@/lib/airport/types";
 import { CabinKey, cabins } from "@/lib/route/cabins"; // Importa o tipo CabinKey e o objeto cabins com os dados das cabines
 import { CabinsType } from "@/lib/route/types"; // Importa a tipagem que representa os dados de uma cabine
+import { MdFlight } from "react-icons/md";
 
 // Tipagem das propriedades esperadas pelo componente SeeCabins
 interface SeeCabinsModalProps {
+  airport1: AirportType;
+  airport2: AirportType;
   cabinsToShow: CabinsType[]; // Lista de cabines a serem exibidas no modal
   isOpen: boolean; // Indica se o modal está visível ou não
   onClose: () => void; // Função callback chamada para fechar o modal
 }
 
 export default function SeeCabins({
+  airport1,
+  airport2,
   cabinsToShow,
   isOpen,
   onClose,
@@ -45,15 +51,27 @@ export default function SeeCabins({
                 </div>
 
                 {/* Exibe os detalhes numéricos da cabine: pontos máximos, bagagens, preços */}
-                <div className="bg-gray-800 p-2 rounded mb-2 flex flex-col gap-2">
+                <div className="bg-gray-800 p-2 rounded flex flex-col gap-2">
                   <div>Maximum Points: {cabin.maximumPoints}</div>
                   <div>Bags Amount: {cabin.bagsAmount}</div>
-                  <div>
-                    Passage Price: ${Number(cabin.passagePrice).toFixed(2)}
+
+                  <div className="flex flex-row gap-1 items-center">
+                    {airport1.airportCode}
+                    <MdFlight className="rotate-90" size={20} />
+                    {airport2.airportCode}
+                    <div>Sale Price (USD)</div>: $
+                    {Number(cabin.passagePriceFromAirport1To2).toFixed(2)}
                   </div>
-                  <div>
-                    Cancellation Price: $
-                    {Number(cabin.cancellationPrice).toFixed(2)}
+                  <div className="flex flex-row gap-1 items-center">
+                    {airport2.airportCode}
+                    <MdFlight className="rotate-90" size={20} />
+                    {airport1.airportCode}
+                    <div>Sale Price (USD)</div>: $
+                    {Number(cabin.passagePriceFromAirport2To1).toFixed(2)}
+                  </div>
+                  <div className="flex flex-row gap-1 items-center">
+                    Rounded Trip Sale Price (USD): $
+                    {Number(cabin.passagePriceRoundTrip).toFixed(2)}
                   </div>
                 </div>
               </div>
