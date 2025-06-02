@@ -29,7 +29,7 @@ export default async function SearchFlights({
       destinationAirportId={destinationAirport}
       cabin={cabin}
       seats={seats}
-      route={route}
+      routeId={route}
     />
   );
 }
