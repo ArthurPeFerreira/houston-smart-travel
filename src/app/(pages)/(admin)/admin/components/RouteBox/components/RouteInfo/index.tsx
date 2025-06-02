@@ -12,6 +12,9 @@ import { MdOutlineExpandCircleDown } from "react-icons/md";
 import Image from "next/image";
 import SeeCabins from "./components/SeeCabins";
 import EditRoute from "./components/EditRoute";
+import { toastConfigs } from "@/lib/toastify/toastify";
+import { toast } from "react-toastify";
+import { api } from "@/lib/api/api";
 
 // Tipagem das props esperadas pelo modal de informações de rotas
 interface RouteInfoModalProps {
@@ -64,6 +67,23 @@ export default function RouteInfo({
   // Estado que define qual rota está sendo editada
   const [routeToEdit, setRouteToEdit] = useState<RouteType | undefined>();
 
+  const [isLoadingUpdateRoutes, setIsLoadingUpdateRoutes] = useState(false);
+
+  async function handleClick() {
+    setIsLoadingUpdateRoutes(true); // Ativa o loading
+
+    try {
+      await api.get("http://54.204.244.247:8000/update");
+
+      toast.success("Update routes request sent successfully.", toastConfigs);
+    } catch (error) {
+      console.log(error)
+      toast.error("Error updating routes.", toastConfigs);
+    } finally {
+      setIsLoadingUpdateRoutes(false);
+    }
+  }
+
   // Verifica se o modal deve ser exibido
   if (!isOpen) return null;
 
@@ -73,7 +93,23 @@ export default function RouteInfo({
       {/* Conteúdo interno do modal */}
       <div className={`bg-gray-800 p-6 rounded shadow-lg h-fit w-10/12`}>
         {/* Título do modal */}
-        <h1 className="text-center font-bold text-3xl mb-5 relative">Routes</h1>
+        <h1 className="text-center font-bold text-3xl mb-5 relative">
+          Routes
+          <div className="mt-2 sm:mt-0 sm:absolute top-0 left-0 text-sm md:text-lg font-normal">
+            <button
+              onClick={() => {
+                handleClick();
+              }}
+              className="bg-blue-500 py-2 px-5 rounded cursor-pointer hover:bg-blue-600"
+            >
+              {isLoadingUpdateRoutes ? (
+                <FaSpinner className="animate-spin" size={24} />
+              ) : (
+                "Save New Order"
+              )}
+            </button>
+          </div>
+        </h1>
 
         {/* Dropdown para selecionar o aeroporto e filtrar as rotas relacionadas */}
         <select
