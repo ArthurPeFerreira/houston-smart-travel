@@ -182,6 +182,12 @@ exports.Prisma.RoutesDataScalarFieldEnum = {
   seats: 'seats'
 };
 
+exports.Prisma.AccessCounterScalarFieldEnum = {
+  id: 'id',
+  count: 'count',
+  lastAccessAt: 'lastAccessAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -205,7 +211,8 @@ exports.Prisma.ModelName = {
   Route: 'Route',
   CabinsRoute: 'CabinsRoute',
   AirportsRoute: 'AirportsRoute',
-  RoutesData: 'RoutesData'
+  RoutesData: 'RoutesData',
+  AccessCounter: 'AccessCounter'
 };
 
 /**

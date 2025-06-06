@@ -153,3 +153,9 @@ model RoutesData {
   // Otimiza consultas filtradas por rota e cabine
   @@index([routeId, cabinKey, date], name: "IndexRoutesData")
 }
+
+model AccessCounter {
+  id           Int      @id @default(autoincrement()) // Chave primária
+  count        Int      @default(0) // Quantidade de acessos
+  lastAccessAt DateTime @updatedAt // Atualiza automaticamente ao salvar
+}

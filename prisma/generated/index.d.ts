@@ -48,6 +48,11 @@ export type AirportsRoute = $Result.DefaultSelection<Prisma.$AirportsRoutePayloa
  * 
  */
 export type RoutesData = $Result.DefaultSelection<Prisma.$RoutesDataPayload>
+/**
+ * Model AccessCounter
+ * 
+ */
+export type AccessCounter = $Result.DefaultSelection<Prisma.$AccessCounterPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -243,6 +248,16 @@ export class PrismaClient<
     * ```
     */
   get routesData(): Prisma.RoutesDataDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.accessCounter`: Exposes CRUD operations for the **AccessCounter** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AccessCounters
+    * const accessCounters = await prisma.accessCounter.findMany()
+    * ```
+    */
+  get accessCounter(): Prisma.AccessCounterDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -689,7 +704,8 @@ export namespace Prisma {
     Route: 'Route',
     CabinsRoute: 'CabinsRoute',
     AirportsRoute: 'AirportsRoute',
-    RoutesData: 'RoutesData'
+    RoutesData: 'RoutesData',
+    AccessCounter: 'AccessCounter'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -708,7 +724,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "users" | "airports" | "locals" | "route" | "cabinsRoute" | "airportsRoute" | "routesData"
+      modelProps: "users" | "airports" | "locals" | "route" | "cabinsRoute" | "airportsRoute" | "routesData" | "accessCounter"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1230,6 +1246,80 @@ export namespace Prisma {
           }
         }
       }
+      AccessCounter: {
+        payload: Prisma.$AccessCounterPayload<ExtArgs>
+        fields: Prisma.AccessCounterFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AccessCounterFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccessCounterPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AccessCounterFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccessCounterPayload>
+          }
+          findFirst: {
+            args: Prisma.AccessCounterFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccessCounterPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AccessCounterFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccessCounterPayload>
+          }
+          findMany: {
+            args: Prisma.AccessCounterFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccessCounterPayload>[]
+          }
+          create: {
+            args: Prisma.AccessCounterCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccessCounterPayload>
+          }
+          createMany: {
+            args: Prisma.AccessCounterCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AccessCounterCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccessCounterPayload>[]
+          }
+          delete: {
+            args: Prisma.AccessCounterDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccessCounterPayload>
+          }
+          update: {
+            args: Prisma.AccessCounterUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccessCounterPayload>
+          }
+          deleteMany: {
+            args: Prisma.AccessCounterDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AccessCounterUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AccessCounterUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccessCounterPayload>[]
+          }
+          upsert: {
+            args: Prisma.AccessCounterUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccessCounterPayload>
+          }
+          aggregate: {
+            args: Prisma.AccessCounterAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAccessCounter>
+          }
+          groupBy: {
+            args: Prisma.AccessCounterGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AccessCounterGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AccessCounterCountArgs<ExtArgs>
+            result: $Utils.Optional<AccessCounterCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1321,6 +1411,7 @@ export namespace Prisma {
     cabinsRoute?: CabinsRouteOmit
     airportsRoute?: AirportsRouteOmit
     routesData?: RoutesDataOmit
+    accessCounter?: AccessCounterOmit
   }
 
   /* Types for Logging */
@@ -9313,6 +9404,1013 @@ export namespace Prisma {
 
 
   /**
+   * Model AccessCounter
+   */
+
+  export type AggregateAccessCounter = {
+    _count: AccessCounterCountAggregateOutputType | null
+    _avg: AccessCounterAvgAggregateOutputType | null
+    _sum: AccessCounterSumAggregateOutputType | null
+    _min: AccessCounterMinAggregateOutputType | null
+    _max: AccessCounterMaxAggregateOutputType | null
+  }
+
+  export type AccessCounterAvgAggregateOutputType = {
+    id: number | null
+    count: number | null
+  }
+
+  export type AccessCounterSumAggregateOutputType = {
+    id: number | null
+    count: number | null
+  }
+
+  export type AccessCounterMinAggregateOutputType = {
+    id: number | null
+    count: number | null
+    lastAccessAt: Date | null
+  }
+
+  export type AccessCounterMaxAggregateOutputType = {
+    id: number | null
+    count: number | null
+    lastAccessAt: Date | null
+  }
+
+  export type AccessCounterCountAggregateOutputType = {
+    id: number
+    count: number
+    lastAccessAt: number
+    _all: number
+  }
+
+
+  export type AccessCounterAvgAggregateInputType = {
+    id?: true
+    count?: true
+  }
+
+  export type AccessCounterSumAggregateInputType = {
+    id?: true
+    count?: true
+  }
+
+  export type AccessCounterMinAggregateInputType = {
+    id?: true
+    count?: true
+    lastAccessAt?: true
+  }
+
+  export type AccessCounterMaxAggregateInputType = {
+    id?: true
+    count?: true
+    lastAccessAt?: true
+  }
+
+  export type AccessCounterCountAggregateInputType = {
+    id?: true
+    count?: true
+    lastAccessAt?: true
+    _all?: true
+  }
+
+  export type AccessCounterAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AccessCounter to aggregate.
+     */
+    where?: AccessCounterWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AccessCounters to fetch.
+     */
+    orderBy?: AccessCounterOrderByWithRelationInput | AccessCounterOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AccessCounterWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AccessCounters from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AccessCounters.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AccessCounters
+    **/
+    _count?: true | AccessCounterCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: AccessCounterAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: AccessCounterSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AccessCounterMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AccessCounterMaxAggregateInputType
+  }
+
+  export type GetAccessCounterAggregateType<T extends AccessCounterAggregateArgs> = {
+        [P in keyof T & keyof AggregateAccessCounter]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAccessCounter[P]>
+      : GetScalarType<T[P], AggregateAccessCounter[P]>
+  }
+
+
+
+
+  export type AccessCounterGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AccessCounterWhereInput
+    orderBy?: AccessCounterOrderByWithAggregationInput | AccessCounterOrderByWithAggregationInput[]
+    by: AccessCounterScalarFieldEnum[] | AccessCounterScalarFieldEnum
+    having?: AccessCounterScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AccessCounterCountAggregateInputType | true
+    _avg?: AccessCounterAvgAggregateInputType
+    _sum?: AccessCounterSumAggregateInputType
+    _min?: AccessCounterMinAggregateInputType
+    _max?: AccessCounterMaxAggregateInputType
+  }
+
+  export type AccessCounterGroupByOutputType = {
+    id: number
+    count: number
+    lastAccessAt: Date
+    _count: AccessCounterCountAggregateOutputType | null
+    _avg: AccessCounterAvgAggregateOutputType | null
+    _sum: AccessCounterSumAggregateOutputType | null
+    _min: AccessCounterMinAggregateOutputType | null
+    _max: AccessCounterMaxAggregateOutputType | null
+  }
+
+  type GetAccessCounterGroupByPayload<T extends AccessCounterGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AccessCounterGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AccessCounterGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AccessCounterGroupByOutputType[P]>
+            : GetScalarType<T[P], AccessCounterGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AccessCounterSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    count?: boolean
+    lastAccessAt?: boolean
+  }, ExtArgs["result"]["accessCounter"]>
+
+  export type AccessCounterSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    count?: boolean
+    lastAccessAt?: boolean
+  }, ExtArgs["result"]["accessCounter"]>
+
+  export type AccessCounterSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    count?: boolean
+    lastAccessAt?: boolean
+  }, ExtArgs["result"]["accessCounter"]>
+
+  export type AccessCounterSelectScalar = {
+    id?: boolean
+    count?: boolean
+    lastAccessAt?: boolean
+  }
+
+  export type AccessCounterOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "count" | "lastAccessAt", ExtArgs["result"]["accessCounter"]>
+
+  export type $AccessCounterPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AccessCounter"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      count: number
+      lastAccessAt: Date
+    }, ExtArgs["result"]["accessCounter"]>
+    composites: {}
+  }
+
+  type AccessCounterGetPayload<S extends boolean | null | undefined | AccessCounterDefaultArgs> = $Result.GetResult<Prisma.$AccessCounterPayload, S>
+
+  type AccessCounterCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AccessCounterFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AccessCounterCountAggregateInputType | true
+    }
+
+  export interface AccessCounterDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AccessCounter'], meta: { name: 'AccessCounter' } }
+    /**
+     * Find zero or one AccessCounter that matches the filter.
+     * @param {AccessCounterFindUniqueArgs} args - Arguments to find a AccessCounter
+     * @example
+     * // Get one AccessCounter
+     * const accessCounter = await prisma.accessCounter.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AccessCounterFindUniqueArgs>(args: SelectSubset<T, AccessCounterFindUniqueArgs<ExtArgs>>): Prisma__AccessCounterClient<$Result.GetResult<Prisma.$AccessCounterPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AccessCounter that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AccessCounterFindUniqueOrThrowArgs} args - Arguments to find a AccessCounter
+     * @example
+     * // Get one AccessCounter
+     * const accessCounter = await prisma.accessCounter.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AccessCounterFindUniqueOrThrowArgs>(args: SelectSubset<T, AccessCounterFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AccessCounterClient<$Result.GetResult<Prisma.$AccessCounterPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AccessCounter that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccessCounterFindFirstArgs} args - Arguments to find a AccessCounter
+     * @example
+     * // Get one AccessCounter
+     * const accessCounter = await prisma.accessCounter.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AccessCounterFindFirstArgs>(args?: SelectSubset<T, AccessCounterFindFirstArgs<ExtArgs>>): Prisma__AccessCounterClient<$Result.GetResult<Prisma.$AccessCounterPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AccessCounter that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccessCounterFindFirstOrThrowArgs} args - Arguments to find a AccessCounter
+     * @example
+     * // Get one AccessCounter
+     * const accessCounter = await prisma.accessCounter.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AccessCounterFindFirstOrThrowArgs>(args?: SelectSubset<T, AccessCounterFindFirstOrThrowArgs<ExtArgs>>): Prisma__AccessCounterClient<$Result.GetResult<Prisma.$AccessCounterPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AccessCounters that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccessCounterFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AccessCounters
+     * const accessCounters = await prisma.accessCounter.findMany()
+     * 
+     * // Get first 10 AccessCounters
+     * const accessCounters = await prisma.accessCounter.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const accessCounterWithIdOnly = await prisma.accessCounter.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AccessCounterFindManyArgs>(args?: SelectSubset<T, AccessCounterFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccessCounterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AccessCounter.
+     * @param {AccessCounterCreateArgs} args - Arguments to create a AccessCounter.
+     * @example
+     * // Create one AccessCounter
+     * const AccessCounter = await prisma.accessCounter.create({
+     *   data: {
+     *     // ... data to create a AccessCounter
+     *   }
+     * })
+     * 
+     */
+    create<T extends AccessCounterCreateArgs>(args: SelectSubset<T, AccessCounterCreateArgs<ExtArgs>>): Prisma__AccessCounterClient<$Result.GetResult<Prisma.$AccessCounterPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AccessCounters.
+     * @param {AccessCounterCreateManyArgs} args - Arguments to create many AccessCounters.
+     * @example
+     * // Create many AccessCounters
+     * const accessCounter = await prisma.accessCounter.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AccessCounterCreateManyArgs>(args?: SelectSubset<T, AccessCounterCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AccessCounters and returns the data saved in the database.
+     * @param {AccessCounterCreateManyAndReturnArgs} args - Arguments to create many AccessCounters.
+     * @example
+     * // Create many AccessCounters
+     * const accessCounter = await prisma.accessCounter.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AccessCounters and only return the `id`
+     * const accessCounterWithIdOnly = await prisma.accessCounter.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AccessCounterCreateManyAndReturnArgs>(args?: SelectSubset<T, AccessCounterCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccessCounterPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AccessCounter.
+     * @param {AccessCounterDeleteArgs} args - Arguments to delete one AccessCounter.
+     * @example
+     * // Delete one AccessCounter
+     * const AccessCounter = await prisma.accessCounter.delete({
+     *   where: {
+     *     // ... filter to delete one AccessCounter
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AccessCounterDeleteArgs>(args: SelectSubset<T, AccessCounterDeleteArgs<ExtArgs>>): Prisma__AccessCounterClient<$Result.GetResult<Prisma.$AccessCounterPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AccessCounter.
+     * @param {AccessCounterUpdateArgs} args - Arguments to update one AccessCounter.
+     * @example
+     * // Update one AccessCounter
+     * const accessCounter = await prisma.accessCounter.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AccessCounterUpdateArgs>(args: SelectSubset<T, AccessCounterUpdateArgs<ExtArgs>>): Prisma__AccessCounterClient<$Result.GetResult<Prisma.$AccessCounterPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AccessCounters.
+     * @param {AccessCounterDeleteManyArgs} args - Arguments to filter AccessCounters to delete.
+     * @example
+     * // Delete a few AccessCounters
+     * const { count } = await prisma.accessCounter.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AccessCounterDeleteManyArgs>(args?: SelectSubset<T, AccessCounterDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AccessCounters.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccessCounterUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AccessCounters
+     * const accessCounter = await prisma.accessCounter.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AccessCounterUpdateManyArgs>(args: SelectSubset<T, AccessCounterUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AccessCounters and returns the data updated in the database.
+     * @param {AccessCounterUpdateManyAndReturnArgs} args - Arguments to update many AccessCounters.
+     * @example
+     * // Update many AccessCounters
+     * const accessCounter = await prisma.accessCounter.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AccessCounters and only return the `id`
+     * const accessCounterWithIdOnly = await prisma.accessCounter.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AccessCounterUpdateManyAndReturnArgs>(args: SelectSubset<T, AccessCounterUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccessCounterPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AccessCounter.
+     * @param {AccessCounterUpsertArgs} args - Arguments to update or create a AccessCounter.
+     * @example
+     * // Update or create a AccessCounter
+     * const accessCounter = await prisma.accessCounter.upsert({
+     *   create: {
+     *     // ... data to create a AccessCounter
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AccessCounter we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AccessCounterUpsertArgs>(args: SelectSubset<T, AccessCounterUpsertArgs<ExtArgs>>): Prisma__AccessCounterClient<$Result.GetResult<Prisma.$AccessCounterPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AccessCounters.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccessCounterCountArgs} args - Arguments to filter AccessCounters to count.
+     * @example
+     * // Count the number of AccessCounters
+     * const count = await prisma.accessCounter.count({
+     *   where: {
+     *     // ... the filter for the AccessCounters we want to count
+     *   }
+     * })
+    **/
+    count<T extends AccessCounterCountArgs>(
+      args?: Subset<T, AccessCounterCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AccessCounterCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AccessCounter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccessCounterAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AccessCounterAggregateArgs>(args: Subset<T, AccessCounterAggregateArgs>): Prisma.PrismaPromise<GetAccessCounterAggregateType<T>>
+
+    /**
+     * Group by AccessCounter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccessCounterGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AccessCounterGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AccessCounterGroupByArgs['orderBy'] }
+        : { orderBy?: AccessCounterGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AccessCounterGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAccessCounterGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AccessCounter model
+   */
+  readonly fields: AccessCounterFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AccessCounter.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AccessCounterClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AccessCounter model
+   */
+  interface AccessCounterFieldRefs {
+    readonly id: FieldRef<"AccessCounter", 'Int'>
+    readonly count: FieldRef<"AccessCounter", 'Int'>
+    readonly lastAccessAt: FieldRef<"AccessCounter", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AccessCounter findUnique
+   */
+  export type AccessCounterFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccessCounter
+     */
+    select?: AccessCounterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccessCounter
+     */
+    omit?: AccessCounterOmit<ExtArgs> | null
+    /**
+     * Filter, which AccessCounter to fetch.
+     */
+    where: AccessCounterWhereUniqueInput
+  }
+
+  /**
+   * AccessCounter findUniqueOrThrow
+   */
+  export type AccessCounterFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccessCounter
+     */
+    select?: AccessCounterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccessCounter
+     */
+    omit?: AccessCounterOmit<ExtArgs> | null
+    /**
+     * Filter, which AccessCounter to fetch.
+     */
+    where: AccessCounterWhereUniqueInput
+  }
+
+  /**
+   * AccessCounter findFirst
+   */
+  export type AccessCounterFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccessCounter
+     */
+    select?: AccessCounterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccessCounter
+     */
+    omit?: AccessCounterOmit<ExtArgs> | null
+    /**
+     * Filter, which AccessCounter to fetch.
+     */
+    where?: AccessCounterWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AccessCounters to fetch.
+     */
+    orderBy?: AccessCounterOrderByWithRelationInput | AccessCounterOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AccessCounters.
+     */
+    cursor?: AccessCounterWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AccessCounters from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AccessCounters.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AccessCounters.
+     */
+    distinct?: AccessCounterScalarFieldEnum | AccessCounterScalarFieldEnum[]
+  }
+
+  /**
+   * AccessCounter findFirstOrThrow
+   */
+  export type AccessCounterFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccessCounter
+     */
+    select?: AccessCounterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccessCounter
+     */
+    omit?: AccessCounterOmit<ExtArgs> | null
+    /**
+     * Filter, which AccessCounter to fetch.
+     */
+    where?: AccessCounterWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AccessCounters to fetch.
+     */
+    orderBy?: AccessCounterOrderByWithRelationInput | AccessCounterOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AccessCounters.
+     */
+    cursor?: AccessCounterWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AccessCounters from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AccessCounters.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AccessCounters.
+     */
+    distinct?: AccessCounterScalarFieldEnum | AccessCounterScalarFieldEnum[]
+  }
+
+  /**
+   * AccessCounter findMany
+   */
+  export type AccessCounterFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccessCounter
+     */
+    select?: AccessCounterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccessCounter
+     */
+    omit?: AccessCounterOmit<ExtArgs> | null
+    /**
+     * Filter, which AccessCounters to fetch.
+     */
+    where?: AccessCounterWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AccessCounters to fetch.
+     */
+    orderBy?: AccessCounterOrderByWithRelationInput | AccessCounterOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AccessCounters.
+     */
+    cursor?: AccessCounterWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AccessCounters from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AccessCounters.
+     */
+    skip?: number
+    distinct?: AccessCounterScalarFieldEnum | AccessCounterScalarFieldEnum[]
+  }
+
+  /**
+   * AccessCounter create
+   */
+  export type AccessCounterCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccessCounter
+     */
+    select?: AccessCounterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccessCounter
+     */
+    omit?: AccessCounterOmit<ExtArgs> | null
+    /**
+     * The data needed to create a AccessCounter.
+     */
+    data: XOR<AccessCounterCreateInput, AccessCounterUncheckedCreateInput>
+  }
+
+  /**
+   * AccessCounter createMany
+   */
+  export type AccessCounterCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AccessCounters.
+     */
+    data: AccessCounterCreateManyInput | AccessCounterCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AccessCounter createManyAndReturn
+   */
+  export type AccessCounterCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccessCounter
+     */
+    select?: AccessCounterSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccessCounter
+     */
+    omit?: AccessCounterOmit<ExtArgs> | null
+    /**
+     * The data used to create many AccessCounters.
+     */
+    data: AccessCounterCreateManyInput | AccessCounterCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AccessCounter update
+   */
+  export type AccessCounterUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccessCounter
+     */
+    select?: AccessCounterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccessCounter
+     */
+    omit?: AccessCounterOmit<ExtArgs> | null
+    /**
+     * The data needed to update a AccessCounter.
+     */
+    data: XOR<AccessCounterUpdateInput, AccessCounterUncheckedUpdateInput>
+    /**
+     * Choose, which AccessCounter to update.
+     */
+    where: AccessCounterWhereUniqueInput
+  }
+
+  /**
+   * AccessCounter updateMany
+   */
+  export type AccessCounterUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AccessCounters.
+     */
+    data: XOR<AccessCounterUpdateManyMutationInput, AccessCounterUncheckedUpdateManyInput>
+    /**
+     * Filter which AccessCounters to update
+     */
+    where?: AccessCounterWhereInput
+    /**
+     * Limit how many AccessCounters to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AccessCounter updateManyAndReturn
+   */
+  export type AccessCounterUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccessCounter
+     */
+    select?: AccessCounterSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccessCounter
+     */
+    omit?: AccessCounterOmit<ExtArgs> | null
+    /**
+     * The data used to update AccessCounters.
+     */
+    data: XOR<AccessCounterUpdateManyMutationInput, AccessCounterUncheckedUpdateManyInput>
+    /**
+     * Filter which AccessCounters to update
+     */
+    where?: AccessCounterWhereInput
+    /**
+     * Limit how many AccessCounters to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AccessCounter upsert
+   */
+  export type AccessCounterUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccessCounter
+     */
+    select?: AccessCounterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccessCounter
+     */
+    omit?: AccessCounterOmit<ExtArgs> | null
+    /**
+     * The filter to search for the AccessCounter to update in case it exists.
+     */
+    where: AccessCounterWhereUniqueInput
+    /**
+     * In case the AccessCounter found by the `where` argument doesn't exist, create a new AccessCounter with this data.
+     */
+    create: XOR<AccessCounterCreateInput, AccessCounterUncheckedCreateInput>
+    /**
+     * In case the AccessCounter was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AccessCounterUpdateInput, AccessCounterUncheckedUpdateInput>
+  }
+
+  /**
+   * AccessCounter delete
+   */
+  export type AccessCounterDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccessCounter
+     */
+    select?: AccessCounterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccessCounter
+     */
+    omit?: AccessCounterOmit<ExtArgs> | null
+    /**
+     * Filter which AccessCounter to delete.
+     */
+    where: AccessCounterWhereUniqueInput
+  }
+
+  /**
+   * AccessCounter deleteMany
+   */
+  export type AccessCounterDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AccessCounters to delete
+     */
+    where?: AccessCounterWhereInput
+    /**
+     * Limit how many AccessCounters to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AccessCounter without action
+   */
+  export type AccessCounterDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccessCounter
+     */
+    select?: AccessCounterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccessCounter
+     */
+    omit?: AccessCounterOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -9407,6 +10505,15 @@ export namespace Prisma {
   };
 
   export type RoutesDataScalarFieldEnum = (typeof RoutesDataScalarFieldEnum)[keyof typeof RoutesDataScalarFieldEnum]
+
+
+  export const AccessCounterScalarFieldEnum: {
+    id: 'id',
+    count: 'count',
+    lastAccessAt: 'lastAccessAt'
+  };
+
+  export type AccessCounterScalarFieldEnum = (typeof AccessCounterScalarFieldEnum)[keyof typeof AccessCounterScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -9957,6 +11064,50 @@ export namespace Prisma {
     seats?: IntWithAggregatesFilter<"RoutesData"> | number
   }
 
+  export type AccessCounterWhereInput = {
+    AND?: AccessCounterWhereInput | AccessCounterWhereInput[]
+    OR?: AccessCounterWhereInput[]
+    NOT?: AccessCounterWhereInput | AccessCounterWhereInput[]
+    id?: IntFilter<"AccessCounter"> | number
+    count?: IntFilter<"AccessCounter"> | number
+    lastAccessAt?: DateTimeFilter<"AccessCounter"> | Date | string
+  }
+
+  export type AccessCounterOrderByWithRelationInput = {
+    id?: SortOrder
+    count?: SortOrder
+    lastAccessAt?: SortOrder
+  }
+
+  export type AccessCounterWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: AccessCounterWhereInput | AccessCounterWhereInput[]
+    OR?: AccessCounterWhereInput[]
+    NOT?: AccessCounterWhereInput | AccessCounterWhereInput[]
+    count?: IntFilter<"AccessCounter"> | number
+    lastAccessAt?: DateTimeFilter<"AccessCounter"> | Date | string
+  }, "id">
+
+  export type AccessCounterOrderByWithAggregationInput = {
+    id?: SortOrder
+    count?: SortOrder
+    lastAccessAt?: SortOrder
+    _count?: AccessCounterCountOrderByAggregateInput
+    _avg?: AccessCounterAvgOrderByAggregateInput
+    _max?: AccessCounterMaxOrderByAggregateInput
+    _min?: AccessCounterMinOrderByAggregateInput
+    _sum?: AccessCounterSumOrderByAggregateInput
+  }
+
+  export type AccessCounterScalarWhereWithAggregatesInput = {
+    AND?: AccessCounterScalarWhereWithAggregatesInput | AccessCounterScalarWhereWithAggregatesInput[]
+    OR?: AccessCounterScalarWhereWithAggregatesInput[]
+    NOT?: AccessCounterScalarWhereWithAggregatesInput | AccessCounterScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"AccessCounter"> | number
+    count?: IntWithAggregatesFilter<"AccessCounter"> | number
+    lastAccessAt?: DateTimeWithAggregatesFilter<"AccessCounter"> | Date | string
+  }
+
   export type UsersCreateInput = {
     user: string
     password: string
@@ -10384,6 +11535,45 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     direct?: BoolFieldUpdateOperationsInput | boolean
     seats?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type AccessCounterCreateInput = {
+    count?: number
+    lastAccessAt?: Date | string
+  }
+
+  export type AccessCounterUncheckedCreateInput = {
+    id?: number
+    count?: number
+    lastAccessAt?: Date | string
+  }
+
+  export type AccessCounterUpdateInput = {
+    count?: IntFieldUpdateOperationsInput | number
+    lastAccessAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AccessCounterUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    count?: IntFieldUpdateOperationsInput | number
+    lastAccessAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AccessCounterCreateManyInput = {
+    id?: number
+    count?: number
+    lastAccessAt?: Date | string
+  }
+
+  export type AccessCounterUpdateManyMutationInput = {
+    count?: IntFieldUpdateOperationsInput | number
+    lastAccessAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AccessCounterUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    count?: IntFieldUpdateOperationsInput | number
+    lastAccessAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -10855,6 +12045,34 @@ export namespace Prisma {
     id?: SortOrder
     routeId?: SortOrder
     seats?: SortOrder
+  }
+
+  export type AccessCounterCountOrderByAggregateInput = {
+    id?: SortOrder
+    count?: SortOrder
+    lastAccessAt?: SortOrder
+  }
+
+  export type AccessCounterAvgOrderByAggregateInput = {
+    id?: SortOrder
+    count?: SortOrder
+  }
+
+  export type AccessCounterMaxOrderByAggregateInput = {
+    id?: SortOrder
+    count?: SortOrder
+    lastAccessAt?: SortOrder
+  }
+
+  export type AccessCounterMinOrderByAggregateInput = {
+    id?: SortOrder
+    count?: SortOrder
+    lastAccessAt?: SortOrder
+  }
+
+  export type AccessCounterSumOrderByAggregateInput = {
+    id?: SortOrder
+    count?: SortOrder
   }
 
   export type StringFieldUpdateOperationsInput = {

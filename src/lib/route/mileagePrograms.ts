@@ -1,9 +1,9 @@
 // Define a estrutura de um programa de milhagem, utilizada para garantir consistência nos dados
 export interface MileageProgram {
-  key: string;       // Identificador único do programa (usado como chave no objeto)
-  label: string;     // Nome completo do programa de milhagem (para exibição)
-  iataCode: string;  // Código IATA da companhia aérea associada ao programa
-  logoUrl: string;   // Caminho para a imagem (logo) do programa de milhagem
+  key: string; // Identificador único do programa (usado como chave no objeto)
+  label: string; // Nome completo do programa de milhagem (para exibição)
+  iataCode: string; // Código IATA da companhia aérea associada ao programa
+  logoUrl: string; // Caminho para a imagem (logo) do programa de milhagem
 }
 
 // Objeto que armazena os programas de milhagem disponíveis, indexado por string (a key do programa)
@@ -13,7 +13,7 @@ export const mileagePrograms: Record<string, MileageProgram> = {
     key: "eurobonus",
     label: "SAS EuroBonus",
     iataCode: "SK",
-logoUrl: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/mileageProgramsLogos/SK.png`,
+    logoUrl: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/mileageProgramsLogos/SK.png`,
   },
   // Programa de milhagem da Virgin Atlantic
   virginatlantic: {
