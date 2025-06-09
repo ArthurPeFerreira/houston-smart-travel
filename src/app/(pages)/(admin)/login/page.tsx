@@ -13,9 +13,11 @@ export const metadata: Metadata = {
 export default function Login() {
   return (
     // Estrutura da página de login
-    <div className="flex h-full items-center justify-center">
+    <main className="flex-1 flex flex-col items-center justify-center min-h-fit overflow-x-hidden overflow-y-hidden">
+
       {/* Renderiza o componente de login */}
       <LoginBox />
-    </div>
+
+    </main>
   );
 }

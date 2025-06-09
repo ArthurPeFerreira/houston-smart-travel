@@ -72,7 +72,7 @@ export default function LoginBox() {
 
   return (
     // Estrutura da página de login
-    <div className="text-white flex flex-col bg-gray-800 p-8 rounded-2xl w-100">
+    <div className="text-white flex flex-col bg-gray-800 p-8 rounded-2xl w-11/12 sm:w-100">
       {/* Título da página */}
       <h1 className="text-3xl font-semibold text-center mb-4">Login</h1>
 

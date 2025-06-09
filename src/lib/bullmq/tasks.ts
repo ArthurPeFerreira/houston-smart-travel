@@ -9,10 +9,10 @@ import { AvailabilityResponse, FlightsAvailability } from "../route/types";
 
 // Cada chave no `taskRegistry` é uma tarefa que pode ser chamada dinamicamente, associada a uma função que processa dados.
 const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
-  // Função assíncrona para atualizar os usuários para o Login ser mais rápido
-  incrementAccessCount: async (): Promise<any> => {
+  // Função assíncrona para atualizar a contagem de acessos à página inicial.
+  incrementHomeAccessCount: async (): Promise<any> => {
     try {
-      const access = await prismaClient.accessCounter.findFirst();
+      const access = await prismaClient.accessCounter.findFirst({where:{type: "home"}});
 
       if (access) {
         await prismaClient.accessCounter.update({
@@ -25,6 +25,7 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
       } else {
         await prismaClient.accessCounter.create({
           data: {
+            type: "home",
             count: 1,
             lastAccessAt: new Date(),
           },
@@ -32,7 +33,35 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
       }
     } catch (error) {
       // Loga um erro caso algo falhe durante o processo.
-      console.error(`Error while adding access increment task: ${error}`);
+      console.error(`Error while adding home access increment task: ${error}`);
+    }
+  },
+
+  // Função assíncrona para atualizar a contagem de acessos à página inicial.
+  incrementCheckFlightsAccessCount: async (): Promise<any> => {
+    try {
+      const access = await prismaClient.accessCounter.findFirst({where:{type: "check flights"}});
+
+      if (access) {
+        await prismaClient.accessCounter.update({
+          where: { id: access.id },
+          data: {
+            count: access.count + 1,
+            lastAccessAt: new Date(),
+          },
+        });
+      } else {
+        await prismaClient.accessCounter.create({
+          data: {
+            type: "check flights",
+            count: 1,
+            lastAccessAt: new Date(),
+          },
+        });
+      }
+    } catch (error) {
+      // Loga um erro caso algo falhe durante o processo.
+      console.error(`Error while adding check flights access increment task: ${error}`);
     }
   },
 
@@ -88,7 +117,7 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
 
             if (response.status === 200) {
               const data: AvailabilityResponse = response.data;
-
+              
               const seatAvailabilityList = data.data;
 
               while (data.hasMore) {

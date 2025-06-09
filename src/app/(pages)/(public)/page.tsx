@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default async function Home() {
 
   await queueHst.add(
-      "incrementAccessCount", // Nome da tarefa
+      "incrementHomeAccessCount", // Nome da tarefa
       {
         priority: 0, // Define a prioridade da tarefa (0 para alta prioridade)
         delay: 0, // Define o atraso (0 segundos)
@@ -23,7 +23,7 @@ export default async function Home() {
     );
 
   return (
-    <main className="flex-1 w-full min-h-screen bg-black flex flex-col items-center justify-center">
+    <main className="flex-1 w-full min-h-[100dvh] bg-black flex flex-col items-center justify-center">
       <HeroSection/>
       <Locals/>
       <CTASection/>

@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="h-screen bg-gray-900">
+      <body className="bg-gray-900  min-h-[100dvh] flex flex-col">
         {/* O conteúdo da aplicação será renderizado aqui */}
         {children}
         <ToastContainer />

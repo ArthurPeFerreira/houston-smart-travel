@@ -1,67 +1,90 @@
-// Indica que este é um componente do lado do cliente no Next.js (App Router)
 "use client";
 
-// Importação dos tipos para edição de usuário e usuário do sistema
-import { AirportType } from "@/lib/airport/types";
-
-// Importação dos hooks do React para gerenciamento de estado e efeitos colaterais
 import React, { useEffect, useState } from "react";
-
-// Importação do ícone de carregamento do React Icons
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { FaSpinner } from "react-icons/fa";
+import { api } from "@/lib/api/api";
+import { AirportType } from "@/lib/airport/types";
+import { toast } from "react-toastify";
+import { toastConfigs } from "@/lib/toastify/toastify";
+import eventEmitter from "@/lib/event/eventEmmiter";
 
-// Definição da interface das propriedades do modal de edição de aeroportos
-interface AirportsEditModalProps {
-  isOpen: boolean; // Indica se o modal está aberto ou fechado
-  isLoading: boolean; // Indica se os dados estão carregando
-  airport: AirportType; // Dados do aeroporto a ser editado
-  onClose: () => void; // Função para fechar o modal
-  onEditAirport: (data: AirportType) => void; // Função para editar o aeroporto
+interface AirportsEditProps {
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+  airportToEdit?: AirportType;
 }
 
-// Componente de modal para edição de aeroportos
-export default function AirportEdit({
-  isOpen,
-  isLoading,
-  airport,
-  onClose,
-  onEditAirport,
-}: AirportsEditModalProps) {
-  // Estados para armazenar os valores editáveis do aeroporto
-  const [city, setCity] = useState<string>("");
+// Classe de estilo para os inputs
+const inputs =
+  "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white";
+
+export default function AirportsEdit({ isOpen, setIsOpen, airportToEdit }: AirportsEditProps)   {
+  const [loading, setLoading] = useState<boolean>(false); // Estado de carregamento do modal
+  const [airportId, setAirportId] = useState<number>(0); 
+  const [airportCity, setAirportCity] = useState<string>(""); 
   const [airportCode, setAirportCode] = useState<string>("");
 
-  // Classe de estilo para os inputs
-  const inputs =
-    "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white";
-
-  // Atualiza os campos do formulário quando o aeroporto muda
+  // useEffect para carregar os aeroportos ao montar o componente
   useEffect(() => {
-    setCity(airport.city);
-    setAirportCode(airport.airportCode);
-  }, [airport]);
+    if (airportToEdit) {
+      setAirportId(airportToEdit.id);
+      setAirportCity(airportToEdit.city);
+      setAirportCode(airportToEdit.airportCode);
+    }
+  }, [airportToEdit]);
 
-  // Função para resetar os campos ao cancelar a edição
-  function handleCancel() {
-    setCity("");
-    setAirportCode("");
+  // Função para editar um aeroporto existente
+  async function handleEditAirport(data: AirportType) {
+    try {
+      setLoading(true);
+      await api.put(`api/admin/airport/${data.id}`, {
+        city: data.city,
+        airportCode: data.airportCode,
+      });
+  
+      toast.success("Airport edited successfully.", toastConfigs);
+    } catch (error: any) {
+      const errorMessage =
+        error?.response?.data?.error || "Failed to edit airport.";
+      toast.error(errorMessage, toastConfigs);
+    } finally {
+      setLoading(false);
+      eventEmitter.emit("updateAirports");
+      setTimeout(() => {
+        setIsOpen(false);
+      }, 1000);
+    }
   }
-
-  // Função para enviar o formulário de edição
-  function handleFormSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    onEditAirport({ id: airport.id, city, airportCode });
-  }
-
-  // Se o modal não estiver aberto, retorna null para não renderizar nada
-  if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-100 bg-gray-900">
-      {/* Modal principal */}
-      <div className="bg-gray-800 p-6 rounded shadow-lg w-full max-w-sm">
-        <h2 className="text-xl font-bold mb-4 text-white">Edit Airport</h2>
-        <form onSubmit={handleFormSubmit}>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogContent
+        showCloseButton={false}
+        className="bg-gray-800 rounded-md shadow-lg w-11/12 sm:w-100 max-w-md border-none text-white h-auto "
+      >
+        <DialogHeader>
+          <DialogTitle className="text-center text-2xl font-bold">
+            Edit Airport
+          </DialogTitle>
+        </DialogHeader>
+
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleEditAirport({
+              id: airportId,
+              city: airportCity,
+              airportCode: airportCode,
+            })
+          }}
+          className=" rounded shadow-lg w-full max-w-sm"
+        >
           {/* Campo de cidade */}
           <div className="mb-4">
             <label htmlFor="city" className="block mb-1 text-white">
@@ -70,9 +93,9 @@ export default function AirportEdit({
             <input
               id="city"
               type="text"
-              value={city}
+              value={airportCity}
               placeholder="Type city"
-              onChange={(e) => setCity(e.target.value)}
+              onChange={(e) => setAirportCity(e.target.value)}
               className={inputs}
               required
             />
@@ -95,35 +118,33 @@ export default function AirportEdit({
           </div>
 
           {/* Botões de ação */}
-          <div className="flex justify-end">
+          <div className="flex w-full ">
             {/* Botão de cancelar edição */}
-            <button
-              type="button"
-              onClick={() => {
-                handleCancel();
-                onClose();
-              }}
-              className="mr-2 bg-gray-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-gray-600"
-            >
-              Cancel
-            </button>
 
             {/* Botão de salvar com loading spinner quando a ação está em andamento */}
-            {isLoading ? (
-              <div className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600">
+            {loading ? (
+              <div className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600 w-full flex items-center justify-center">
                 <FaSpinner className="animate-spin" size={24} />
               </div>
             ) : (
               <button
                 type="submit"
-                className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600"
+                className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600 w-full flex items-center justify-center"
               >
                 Save
               </button>
             )}
           </div>
         </form>
-      </div>
-    </div>
+
+        {/* Botão para fechar o modal */}
+        <button
+          onClick={() => setIsOpen(false)}
+          className="w-full p-2 rounded bg-red-500 hover:bg-red-600 transition cursor-pointer"
+        >
+          Close
+        </button>
+      </DialogContent>
+    </Dialog>
   );
 }

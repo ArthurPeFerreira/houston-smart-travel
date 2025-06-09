@@ -316,8 +316,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.8.2
-   * Query Engine version: 2060c79ba17c6bb9f5823312b6f6b7f4a845738e
+   * Prisma Client JS version: 6.9.0
+   * Query Engine version: 81e4af48011447c3cc503a190e86995b66d2a28e
    */
   export type PrismaVersion = {
     client: string
@@ -2667,56 +2667,66 @@ export namespace Prisma {
 
   export type AirportsAvgAggregateOutputType = {
     id: number | null
+    order: number | null
   }
 
   export type AirportsSumAggregateOutputType = {
     id: number | null
+    order: number | null
   }
 
   export type AirportsMinAggregateOutputType = {
     id: number | null
     city: string | null
     airportCode: string | null
+    order: number | null
   }
 
   export type AirportsMaxAggregateOutputType = {
     id: number | null
     city: string | null
     airportCode: string | null
+    order: number | null
   }
 
   export type AirportsCountAggregateOutputType = {
     id: number
     city: number
     airportCode: number
+    order: number
     _all: number
   }
 
 
   export type AirportsAvgAggregateInputType = {
     id?: true
+    order?: true
   }
 
   export type AirportsSumAggregateInputType = {
     id?: true
+    order?: true
   }
 
   export type AirportsMinAggregateInputType = {
     id?: true
     city?: true
     airportCode?: true
+    order?: true
   }
 
   export type AirportsMaxAggregateInputType = {
     id?: true
     city?: true
     airportCode?: true
+    order?: true
   }
 
   export type AirportsCountAggregateInputType = {
     id?: true
     city?: true
     airportCode?: true
+    order?: true
     _all?: true
   }
 
@@ -2810,6 +2820,7 @@ export namespace Prisma {
     id: number
     city: string
     airportCode: string
+    order: number
     _count: AirportsCountAggregateOutputType | null
     _avg: AirportsAvgAggregateOutputType | null
     _sum: AirportsSumAggregateOutputType | null
@@ -2835,6 +2846,7 @@ export namespace Prisma {
     id?: boolean
     city?: boolean
     airportCode?: boolean
+    order?: boolean
     local?: boolean | Airports$localArgs<ExtArgs>
     routes?: boolean | Airports$routesArgs<ExtArgs>
     _count?: boolean | AirportsCountOutputTypeDefaultArgs<ExtArgs>
@@ -2844,21 +2856,24 @@ export namespace Prisma {
     id?: boolean
     city?: boolean
     airportCode?: boolean
+    order?: boolean
   }, ExtArgs["result"]["airports"]>
 
   export type AirportsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     city?: boolean
     airportCode?: boolean
+    order?: boolean
   }, ExtArgs["result"]["airports"]>
 
   export type AirportsSelectScalar = {
     id?: boolean
     city?: boolean
     airportCode?: boolean
+    order?: boolean
   }
 
-  export type AirportsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "city" | "airportCode", ExtArgs["result"]["airports"]>
+  export type AirportsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "city" | "airportCode" | "order", ExtArgs["result"]["airports"]>
   export type AirportsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     local?: boolean | Airports$localArgs<ExtArgs>
     routes?: boolean | Airports$routesArgs<ExtArgs>
@@ -2877,6 +2892,7 @@ export namespace Prisma {
       id: number
       city: string
       airportCode: string
+      order: number
     }, ExtArgs["result"]["airports"]>
     composites: {}
   }
@@ -3305,6 +3321,7 @@ export namespace Prisma {
     readonly id: FieldRef<"Airports", 'Int'>
     readonly city: FieldRef<"Airports", 'String'>
     readonly airportCode: FieldRef<"Airports", 'String'>
+    readonly order: FieldRef<"Airports", 'Int'>
   }
     
 
@@ -9427,18 +9444,21 @@ export namespace Prisma {
 
   export type AccessCounterMinAggregateOutputType = {
     id: number | null
+    type: string | null
     count: number | null
     lastAccessAt: Date | null
   }
 
   export type AccessCounterMaxAggregateOutputType = {
     id: number | null
+    type: string | null
     count: number | null
     lastAccessAt: Date | null
   }
 
   export type AccessCounterCountAggregateOutputType = {
     id: number
+    type: number
     count: number
     lastAccessAt: number
     _all: number
@@ -9457,18 +9477,21 @@ export namespace Prisma {
 
   export type AccessCounterMinAggregateInputType = {
     id?: true
+    type?: true
     count?: true
     lastAccessAt?: true
   }
 
   export type AccessCounterMaxAggregateInputType = {
     id?: true
+    type?: true
     count?: true
     lastAccessAt?: true
   }
 
   export type AccessCounterCountAggregateInputType = {
     id?: true
+    type?: true
     count?: true
     lastAccessAt?: true
     _all?: true
@@ -9562,6 +9585,7 @@ export namespace Prisma {
 
   export type AccessCounterGroupByOutputType = {
     id: number
+    type: string
     count: number
     lastAccessAt: Date
     _count: AccessCounterCountAggregateOutputType | null
@@ -9587,35 +9611,40 @@ export namespace Prisma {
 
   export type AccessCounterSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    type?: boolean
     count?: boolean
     lastAccessAt?: boolean
   }, ExtArgs["result"]["accessCounter"]>
 
   export type AccessCounterSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    type?: boolean
     count?: boolean
     lastAccessAt?: boolean
   }, ExtArgs["result"]["accessCounter"]>
 
   export type AccessCounterSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    type?: boolean
     count?: boolean
     lastAccessAt?: boolean
   }, ExtArgs["result"]["accessCounter"]>
 
   export type AccessCounterSelectScalar = {
     id?: boolean
+    type?: boolean
     count?: boolean
     lastAccessAt?: boolean
   }
 
-  export type AccessCounterOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "count" | "lastAccessAt", ExtArgs["result"]["accessCounter"]>
+  export type AccessCounterOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "type" | "count" | "lastAccessAt", ExtArgs["result"]["accessCounter"]>
 
   export type $AccessCounterPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "AccessCounter"
     objects: {}
     scalars: $Extensions.GetPayloadResult<{
       id: number
+      type: string
       count: number
       lastAccessAt: Date
     }, ExtArgs["result"]["accessCounter"]>
@@ -10042,6 +10071,7 @@ export namespace Prisma {
    */
   interface AccessCounterFieldRefs {
     readonly id: FieldRef<"AccessCounter", 'Int'>
+    readonly type: FieldRef<"AccessCounter", 'String'>
     readonly count: FieldRef<"AccessCounter", 'Int'>
     readonly lastAccessAt: FieldRef<"AccessCounter", 'DateTime'>
   }
@@ -10441,7 +10471,8 @@ export namespace Prisma {
   export const AirportsScalarFieldEnum: {
     id: 'id',
     city: 'city',
-    airportCode: 'airportCode'
+    airportCode: 'airportCode',
+    order: 'order'
   };
 
   export type AirportsScalarFieldEnum = (typeof AirportsScalarFieldEnum)[keyof typeof AirportsScalarFieldEnum]
@@ -10509,6 +10540,7 @@ export namespace Prisma {
 
   export const AccessCounterScalarFieldEnum: {
     id: 'id',
+    type: 'type',
     count: 'count',
     lastAccessAt: 'lastAccessAt'
   };
@@ -10701,6 +10733,7 @@ export namespace Prisma {
     id?: IntFilter<"Airports"> | number
     city?: StringFilter<"Airports"> | string
     airportCode?: StringFilter<"Airports"> | string
+    order?: IntFilter<"Airports"> | number
     local?: XOR<LocalsNullableScalarRelationFilter, LocalsWhereInput> | null
     routes?: AirportsRouteListRelationFilter
   }
@@ -10709,6 +10742,7 @@ export namespace Prisma {
     id?: SortOrder
     city?: SortOrder
     airportCode?: SortOrder
+    order?: SortOrder
     local?: LocalsOrderByWithRelationInput
     routes?: AirportsRouteOrderByRelationAggregateInput
   }
@@ -10720,6 +10754,7 @@ export namespace Prisma {
     OR?: AirportsWhereInput[]
     NOT?: AirportsWhereInput | AirportsWhereInput[]
     city?: StringFilter<"Airports"> | string
+    order?: IntFilter<"Airports"> | number
     local?: XOR<LocalsNullableScalarRelationFilter, LocalsWhereInput> | null
     routes?: AirportsRouteListRelationFilter
   }, "id" | "airportCode">
@@ -10728,6 +10763,7 @@ export namespace Prisma {
     id?: SortOrder
     city?: SortOrder
     airportCode?: SortOrder
+    order?: SortOrder
     _count?: AirportsCountOrderByAggregateInput
     _avg?: AirportsAvgOrderByAggregateInput
     _max?: AirportsMaxOrderByAggregateInput
@@ -10742,6 +10778,7 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"Airports"> | number
     city?: StringWithAggregatesFilter<"Airports"> | string
     airportCode?: StringWithAggregatesFilter<"Airports"> | string
+    order?: IntWithAggregatesFilter<"Airports"> | number
   }
 
   export type LocalsWhereInput = {
@@ -11069,12 +11106,14 @@ export namespace Prisma {
     OR?: AccessCounterWhereInput[]
     NOT?: AccessCounterWhereInput | AccessCounterWhereInput[]
     id?: IntFilter<"AccessCounter"> | number
+    type?: StringFilter<"AccessCounter"> | string
     count?: IntFilter<"AccessCounter"> | number
     lastAccessAt?: DateTimeFilter<"AccessCounter"> | Date | string
   }
 
   export type AccessCounterOrderByWithRelationInput = {
     id?: SortOrder
+    type?: SortOrder
     count?: SortOrder
     lastAccessAt?: SortOrder
   }
@@ -11084,12 +11123,14 @@ export namespace Prisma {
     AND?: AccessCounterWhereInput | AccessCounterWhereInput[]
     OR?: AccessCounterWhereInput[]
     NOT?: AccessCounterWhereInput | AccessCounterWhereInput[]
+    type?: StringFilter<"AccessCounter"> | string
     count?: IntFilter<"AccessCounter"> | number
     lastAccessAt?: DateTimeFilter<"AccessCounter"> | Date | string
   }, "id">
 
   export type AccessCounterOrderByWithAggregationInput = {
     id?: SortOrder
+    type?: SortOrder
     count?: SortOrder
     lastAccessAt?: SortOrder
     _count?: AccessCounterCountOrderByAggregateInput
@@ -11104,6 +11145,7 @@ export namespace Prisma {
     OR?: AccessCounterScalarWhereWithAggregatesInput[]
     NOT?: AccessCounterScalarWhereWithAggregatesInput | AccessCounterScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"AccessCounter"> | number
+    type?: StringWithAggregatesFilter<"AccessCounter"> | string
     count?: IntWithAggregatesFilter<"AccessCounter"> | number
     lastAccessAt?: DateTimeWithAggregatesFilter<"AccessCounter"> | Date | string
   }
@@ -11185,6 +11227,7 @@ export namespace Prisma {
   export type AirportsCreateInput = {
     city: string
     airportCode: string
+    order?: number
     local?: LocalsCreateNestedOneWithoutAirportInput
     routes?: AirportsRouteCreateNestedManyWithoutAirportInput
   }
@@ -11193,6 +11236,7 @@ export namespace Prisma {
     id?: number
     city: string
     airportCode: string
+    order?: number
     local?: LocalsUncheckedCreateNestedOneWithoutAirportInput
     routes?: AirportsRouteUncheckedCreateNestedManyWithoutAirportInput
   }
@@ -11200,6 +11244,7 @@ export namespace Prisma {
   export type AirportsUpdateInput = {
     city?: StringFieldUpdateOperationsInput | string
     airportCode?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
     local?: LocalsUpdateOneWithoutAirportNestedInput
     routes?: AirportsRouteUpdateManyWithoutAirportNestedInput
   }
@@ -11208,6 +11253,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     city?: StringFieldUpdateOperationsInput | string
     airportCode?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
     local?: LocalsUncheckedUpdateOneWithoutAirportNestedInput
     routes?: AirportsRouteUncheckedUpdateManyWithoutAirportNestedInput
   }
@@ -11216,17 +11262,20 @@ export namespace Prisma {
     id?: number
     city: string
     airportCode: string
+    order?: number
   }
 
   export type AirportsUpdateManyMutationInput = {
     city?: StringFieldUpdateOperationsInput | string
     airportCode?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
   }
 
   export type AirportsUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     city?: StringFieldUpdateOperationsInput | string
     airportCode?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
   }
 
   export type LocalsCreateInput = {
@@ -11538,40 +11587,47 @@ export namespace Prisma {
   }
 
   export type AccessCounterCreateInput = {
+    type: string
     count?: number
     lastAccessAt?: Date | string
   }
 
   export type AccessCounterUncheckedCreateInput = {
     id?: number
+    type: string
     count?: number
     lastAccessAt?: Date | string
   }
 
   export type AccessCounterUpdateInput = {
+    type?: StringFieldUpdateOperationsInput | string
     count?: IntFieldUpdateOperationsInput | number
     lastAccessAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AccessCounterUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
+    type?: StringFieldUpdateOperationsInput | string
     count?: IntFieldUpdateOperationsInput | number
     lastAccessAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AccessCounterCreateManyInput = {
     id?: number
+    type: string
     count?: number
     lastAccessAt?: Date | string
   }
 
   export type AccessCounterUpdateManyMutationInput = {
+    type?: StringFieldUpdateOperationsInput | string
     count?: IntFieldUpdateOperationsInput | number
     lastAccessAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AccessCounterUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
+    type?: StringFieldUpdateOperationsInput | string
     count?: IntFieldUpdateOperationsInput | number
     lastAccessAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -11764,26 +11820,31 @@ export namespace Prisma {
     id?: SortOrder
     city?: SortOrder
     airportCode?: SortOrder
+    order?: SortOrder
   }
 
   export type AirportsAvgOrderByAggregateInput = {
     id?: SortOrder
+    order?: SortOrder
   }
 
   export type AirportsMaxOrderByAggregateInput = {
     id?: SortOrder
     city?: SortOrder
     airportCode?: SortOrder
+    order?: SortOrder
   }
 
   export type AirportsMinOrderByAggregateInput = {
     id?: SortOrder
     city?: SortOrder
     airportCode?: SortOrder
+    order?: SortOrder
   }
 
   export type AirportsSumOrderByAggregateInput = {
     id?: SortOrder
+    order?: SortOrder
   }
 
   export type DecimalFilter<$PrismaModel = never> = {
@@ -12049,6 +12110,7 @@ export namespace Prisma {
 
   export type AccessCounterCountOrderByAggregateInput = {
     id?: SortOrder
+    type?: SortOrder
     count?: SortOrder
     lastAccessAt?: SortOrder
   }
@@ -12060,12 +12122,14 @@ export namespace Prisma {
 
   export type AccessCounterMaxOrderByAggregateInput = {
     id?: SortOrder
+    type?: SortOrder
     count?: SortOrder
     lastAccessAt?: SortOrder
   }
 
   export type AccessCounterMinOrderByAggregateInput = {
     id?: SortOrder
+    type?: SortOrder
     count?: SortOrder
     lastAccessAt?: SortOrder
   }
@@ -12644,6 +12708,7 @@ export namespace Prisma {
   export type AirportsCreateWithoutLocalInput = {
     city: string
     airportCode: string
+    order?: number
     routes?: AirportsRouteCreateNestedManyWithoutAirportInput
   }
 
@@ -12651,6 +12716,7 @@ export namespace Prisma {
     id?: number
     city: string
     airportCode: string
+    order?: number
     routes?: AirportsRouteUncheckedCreateNestedManyWithoutAirportInput
   }
 
@@ -12673,6 +12739,7 @@ export namespace Prisma {
   export type AirportsUpdateWithoutLocalInput = {
     city?: StringFieldUpdateOperationsInput | string
     airportCode?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
     routes?: AirportsRouteUpdateManyWithoutAirportNestedInput
   }
 
@@ -12680,6 +12747,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     city?: StringFieldUpdateOperationsInput | string
     airportCode?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
     routes?: AirportsRouteUncheckedUpdateManyWithoutAirportNestedInput
   }
 
@@ -12889,6 +12957,7 @@ export namespace Prisma {
   export type AirportsCreateWithoutRoutesInput = {
     city: string
     airportCode: string
+    order?: number
     local?: LocalsCreateNestedOneWithoutAirportInput
   }
 
@@ -12896,6 +12965,7 @@ export namespace Prisma {
     id?: number
     city: string
     airportCode: string
+    order?: number
     local?: LocalsUncheckedCreateNestedOneWithoutAirportInput
   }
 
@@ -12940,6 +13010,7 @@ export namespace Prisma {
   export type AirportsUpdateWithoutRoutesInput = {
     city?: StringFieldUpdateOperationsInput | string
     airportCode?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
     local?: LocalsUpdateOneWithoutAirportNestedInput
   }
 
@@ -12947,6 +13018,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     city?: StringFieldUpdateOperationsInput | string
     airportCode?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
     local?: LocalsUncheckedUpdateOneWithoutAirportNestedInput
   }
 
