@@ -1,30 +1,4 @@
-//   const [imageToSee, setImageToSee] = useState<string>("");
-
-//   // Estado que controla a exibição do modal de imagem
-//   const [showSeeImageModal, setShowSeeImageModal] = useState<boolean>(false);
-
-//   // Estado local que mantém os dados dos locais, permitindo alterações temporárias como reordenação
-//   const [locals, setLocalsData] = useState<LocalType[]>([]);
-
-//   const [loading, setLoading] = useState<boolean>(true);
-
-//   useEffect(() => {
-//     if (locals !== undefined) {           // chegou (pode ser [] ou com dados)
-//       setLocalsData(locals);
-//       setLoading(false);                  // agora pode mostrar resultado
-//     } else {
-//       setLoading(true);                   // ainda esperando resposta
-//     }
-//   }, [locals]);
-
-//   // Caso o modal não esteja aberto, não renderiza nada
-//   if (!isOpen) return null;
-
-//   return (
-
-//   );
-// }
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -37,12 +11,12 @@ import {
 import {
   FaArrowDown,
   FaArrowUp,
-  FaPen,
+
   FaSpinner,
-  FaTrash,
+
 } from "react-icons/fa";
 import { api } from "@/lib/api/api";
-import { AirportType } from "@/lib/airport/types";
+
 import { toast } from "react-toastify";
 import { toastConfigs } from "@/lib/toastify/toastify";
 import eventEmitter from "@/lib/event/eventEmmiter";
