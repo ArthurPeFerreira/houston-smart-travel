@@ -24,10 +24,14 @@ interface AirportsEditProps {
 const inputs =
   "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white";
 
-export default function AirportsEdit({ isOpen, setIsOpen, airportToEdit }: AirportsEditProps)   {
+export default function AirportsEdit({
+  isOpen,
+  setIsOpen,
+  airportToEdit,
+}: AirportsEditProps) {
   const [loading, setLoading] = useState<boolean>(false); // Estado de carregamento do modal
-  const [airportId, setAirportId] = useState<number>(0); 
-  const [airportCity, setAirportCity] = useState<string>(""); 
+  const [airportId, setAirportId] = useState<number>(0);
+  const [airportCity, setAirportCity] = useState<string>("");
   const [airportCode, setAirportCode] = useState<string>("");
 
   // useEffect para carregar os aeroportos ao montar o componente
@@ -47,7 +51,7 @@ export default function AirportsEdit({ isOpen, setIsOpen, airportToEdit }: Airpo
         city: data.city,
         airportCode: data.airportCode,
       });
-  
+
       toast.success("Airport edited successfully.", toastConfigs);
     } catch (error: any) {
       const errorMessage =
@@ -56,6 +60,7 @@ export default function AirportsEdit({ isOpen, setIsOpen, airportToEdit }: Airpo
     } finally {
       setLoading(false);
       eventEmitter.emit("updateAirports");
+      eventEmitter.emit("updateLocalsModal");
       setTimeout(() => {
         setIsOpen(false);
       }, 1000);
@@ -81,7 +86,7 @@ export default function AirportsEdit({ isOpen, setIsOpen, airportToEdit }: Airpo
               id: airportId,
               city: airportCity,
               airportCode: airportCode,
-            })
+            });
           }}
           className=" rounded shadow-lg w-full max-w-sm"
         >
@@ -119,8 +124,6 @@ export default function AirportsEdit({ isOpen, setIsOpen, airportToEdit }: Airpo
 
           {/* Botões de ação */}
           <div className="flex w-full ">
-            {/* Botão de cancelar edição */}
-
             {/* Botão de salvar com loading spinner quando a ação está em andamento */}
             {loading ? (
               <div className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600 w-full flex items-center justify-center">

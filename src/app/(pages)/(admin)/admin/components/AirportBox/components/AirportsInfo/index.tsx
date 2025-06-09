@@ -26,9 +26,6 @@ export default function AirportsInfo({ isOpen, setIsOpen }: AirportsInfoProps) {
   const [showAirportsEditModal, setShowAirportsEditModal] =
     useState<boolean>(false); // Controla a visibilidade do modal de informações
   const [airportToEdit, setAirportToEdit] = useState<AirportType>();
-  
-  
-
 
   async function fetchInitialData() {
     try {
@@ -67,6 +64,7 @@ export default function AirportsInfo({ isOpen, setIsOpen }: AirportsInfoProps) {
       toast.error(errorMessage, toastConfigs);
     } finally {
       eventEmitter.emit("updateAirports");
+      eventEmitter.emit("updateLocalsModal");
     }
   }
 
@@ -143,7 +141,11 @@ export default function AirportsInfo({ isOpen, setIsOpen }: AirportsInfoProps) {
           Close
         </button>
       </DialogContent>
-      <AirportsEdit isOpen={showAirportsEditModal} setIsOpen={setShowAirportsEditModal} airportToEdit={airportToEdit}/>
+      <AirportsEdit
+        isOpen={showAirportsEditModal}
+        setIsOpen={setShowAirportsEditModal}
+        airportToEdit={airportToEdit}
+      />
     </Dialog>
   );
 }
