@@ -145,20 +145,20 @@ export default function RouteBox() {
     if (airportId1 > 0) {
       setAirport1(airports.find((airport) => airport.id === airportId1));
     }
-  }, [airports,airportId1]);
+  }, [airports, airportId1]);
 
   // Busca dados do aeroporto 2
   useEffect(() => {
     if (airportId2 > 0) {
       setAirport2(airports.find((airport) => airport.id === airportId2));
     }
-  }, [airports,airportId2]);
+  }, [airports, airportId2]);
 
   useEffect(() => {
     if (airportId2 > 0 && airportId2 > 0) {
       addNewCabin("economy");
     }
-  }, [airportId1,airportId2]);
+  }, [airportId1, airportId2]);
 
   useEffect(() => {
     if (
@@ -301,6 +301,11 @@ export default function RouteBox() {
 
   // Adiciona nova cabine à rota e remove da lista de disponíveis
   function addNewCabin(cabinKey: CabinKey) {
+    // Verifica existência
+    if (cabinList.some((c) => c.key === cabinKey)) {
+      return;
+    }
+
     const cabin = cabins[cabinKey];
 
     // Remove a cabine da lista de disponíveis

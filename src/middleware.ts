@@ -1,6 +1,6 @@
-import { getToken } from 'next-auth/jwt';
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { getToken } from "next-auth/jwt";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 export async function middleware(req: NextRequest) {
   const token = await getToken({ req });
@@ -12,7 +12,10 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(underConstructionUrl);
   }
 
-  if (!token && (pathname == "/admin" || pathname.startsWith("/api/admin"))) {
+  if (
+    !token &&
+    (pathname.startsWith("/admin") || pathname.startsWith("/api/admin"))
+  ) {
     const loginUrl = req.nextUrl.clone();
     loginUrl.pathname = "/login";
     return NextResponse.redirect(loginUrl);
