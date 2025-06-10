@@ -26,9 +26,8 @@ import eventEmitter from "@/lib/event/eventEmmiter";
 import LocalsInfo from "./components/LocalInfo";
 
 // Tipos utilizados para criação e edição de locais
-import { EditLocalTypeFile, LocalType } from "@/lib/local/types";
+import { LocalType } from "@/lib/local/types";
 import Decimal from "decimal.js";
-
 
 // Componente principal responsável por criar e gerenciar locais turísticos vinculados a aeroportos
 export default function LocalBox() {
@@ -38,8 +37,9 @@ export default function LocalBox() {
 
   // Estados para armazenar os dados de aeroportos e locais
   const [airports, setAirports] = useState<AirportType[]>();
+  const [locals, setLocals] = useState<LocalType[]>([]);
+
   const [airportsToShow, setAirportsToShow] = useState<AirportType[]>();
-  const [locals, setLocals] = useState<LocalType[]>();
 
   // Estados para o formulário de criação de local
   const [airportId, setAirportId] = useState<number>(0);
@@ -50,48 +50,41 @@ export default function LocalBox() {
   const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  // Estados para controlar modais e carregamentos relacionados
-  const [loadingLocalsEditModal, setLoadingLocalsEditModal] =
-    useState<boolean>(false);
-  const [loadingEditLocalsOrder, setLoadingEditLocalsOrder] =
-    useState<boolean>(false);
   const [showLocalsInfoModal, setShowLocalsInfoModal] =
     useState<boolean>(false);
-  const [showLocalsEditModal, setShowLocalsEditModal] =
-    useState<boolean>(false);
-
-  // Estado que armazena o local que está sendo editado
-  const [localToEdit, setLocalToEdit] = useState<LocalType>({
-    id: 0,
-    active: true,
-    airport: { id: 0, city: "", airportCode: "" },
-    city: "",
-    country: "",
-    passagePrice: Decimal(0.0),
-    image: "",
-  });
 
   // useEffect inicial: popula dados iniciais e escuta eventos globais
   useEffect(() => {
-    // Função executada ao disparar evento global "updateAirports"
-    async function handleEvent() {
-      const responseAirports = await api.get("api/admin/airport");
-      setAirports(responseAirports.data);
+    async function fetchLocalsInitialData() {
+      try {
+        const responseLocals = await api.get("api/admin/local");
+        setLocals(responseLocals.data);
+      } catch {
+        toast.error("Failed to get locals.", toastConfigs);
+      }
+    }
 
-      const responseLocals = await api.get("api/admin/local");
-      setLocals(responseLocals.data);
+    async function fetchAirportsInitialData() {
+      try {
+        const response = await api.get("api/admin/airport");
+        setAirports(response.data);
+      } catch {
+        toast.error("Failed to get airports.", toastConfigs);
+      } finally {
+        setLoading(false);
+      }
     }
-    try {
-      handleEvent();
-    } catch (e) {
-      console.log(e);
-    }
+
     // Carrega dados iniciais de aeroportos e locais
+    fetchAirportsInitialData();
+    fetchLocalsInitialData();
 
     // Registra o evento e faz cleanup ao desmontar o componente
-    eventEmitter.on("updateAirports", handleEvent);
+    eventEmitter.on("updateAirports", fetchAirportsInitialData);
+    eventEmitter.on("updateLocals", fetchLocalsInitialData);
     return () => {
-      eventEmitter.off("updateAirports", handleEvent);
+      eventEmitter.off("updateAirports", fetchAirportsInitialData);
+      eventEmitter.off("updateLocals", fetchLocalsInitialData);
     };
   }, []);
 
@@ -134,25 +127,25 @@ export default function LocalBox() {
     setLoading(true);
 
     if (airportId === 0) {
-      toast.error("Please select an airport.", toastConfigs);
+      toast.info("Please select an airport.", toastConfigs);
       setLoading(false);
       return;
     }
 
     if (!selectedFile) {
-      toast.error("Please select an image to upload.", toastConfigs);
+      toast.info("Please select an image to upload.", toastConfigs);
       setLoading(false);
       return;
     }
 
     if (city === "") {
-      toast.error("Please type an city.", toastConfigs);
+      toast.info("Please type an city.", toastConfigs);
       setLoading(false);
       return;
     }
 
     if (country === "") {
-      toast.error("Please type an country.", toastConfigs);
+      toast.info("Please type an country.", toastConfigs);
       setLoading(false);
       return;
     }
@@ -193,119 +186,11 @@ export default function LocalBox() {
       // Atualiza os dados locais
       const responseLocals = await api.get("api/admin/local");
       setLocals(responseLocals.data);
+      eventEmitter.emit("updateLocalsModal");
     }
   }
 
-  // Função para excluir local específico
-  async function handleDeleteLocal(localId: number) {
-    try {
-      if (confirm("Are you sure you want to delete this local?")) {
-        await api.delete(`api/admin/local/${localId}`);
-        const response = await api.get("api/admin/local");
-        setLocals(response.data);
-        toast.success("Local deleted successfully!", toastConfigs);
-      }
-    } catch (error: any) {
-      // Tenta extrair mensagem de erro do servidor
-      const errorMessage =
-        error?.response?.data?.error || "Failed to delete local.";
-
-      // Exibe mensagem de erro
-      toast.error(errorMessage, toastConfigs);
-    }
-  }
-
-  // Fecha o modal de informações de locais
-  function onCloseLocalsInfoModal() {
-    setLocalToEdit({
-      id: 0,
-      active: true,
-      airport: { id: 0, city: "", airportCode: "" },
-      city: "",
-      country: "",
-      passagePrice: Decimal(0.0),
-      image: "",
-    });
-
-    setShowLocalsInfoModal(false);
-    document.body.classList.remove("overflow-hidden");
-  }
-
-  // Envia dados atualizados para edição de local existente
-  async function handleEditLocal(
-    data: EditLocalTypeFile
-  ) {
-    setLoadingLocalsEditModal(true);
-
-    if (!data.image) {
-      toast.error("Please select an image to upload.", toastConfigs);
-      setLoading(false);
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("airportId", data.airportId.toString());
-    formData.append("city", data.city);
-    formData.append("country", data.country);
-    formData.append("passagePrice", data.passagePrice.toString());
-    formData.append("active", data.active.toString());
-    formData.append("image", data.image);
-
-    try {
-      const response = await api.put(
-        `api/admin/local/${localToEdit.id}`,
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
-
-      if (response.status === 200) {
-        toast.success("Local edited successfully!", toastConfigs);
-      }
-    } catch (error: any) {
-      // Tenta extrair mensagem de erro do servidor
-      const errorMessage =
-        error?.response?.data?.error || "Failed to edit local.";
-
-      // Exibe mensagem de erro
-      toast.error(errorMessage, toastConfigs);
-    } finally {
-      const responseLocals = await api.get("api/admin/local");
-      setLocals(responseLocals.data);
-      setLoadingLocalsEditModal(false);
-      setShowLocalsEditModal(false);
-
-      setLocalToEdit({
-        id: 0,
-        active: true,
-        airport: { id: 0, city: "", airportCode: "" },
-        city: "",
-        country: "",
-        passagePrice: Decimal(0.0),
-        image: "",
-      });
-    }
-  }
-
-  // Atualiza a ordem dos locais no backend
-  async function handleEditLocalsOrder(data: LocalType[]) {
-    setLoadingEditLocalsOrder(true);
-
-    try {
-      const response = await api.put(`api/admin/local`, data);
-
-      if (response.status === 200) {
-        toast.success("Locals order edited successfully!", toastConfigs);
-      }
-    } catch {
-      toast.error("Failed to edit locals order!", toastConfigs);
-    } finally {
-      const responseLocals = await api.get("api/admin/local");
-      setLocals(responseLocals.data);
-      setLoadingEditLocalsOrder(false);
-    }
-  }
+ 
 
   // JSX do componente (formulário e modais)
   return (
@@ -364,7 +249,9 @@ export default function LocalBox() {
             required
           />
 
-          <label className="block mb-1 text-white mt-4">Passage Price (USD)</label>
+          <label className="block mb-1 text-white mt-4">
+            Passage Price (USD)
+          </label>
           <input
             id="passage price"
             type="number"
@@ -426,8 +313,6 @@ export default function LocalBox() {
           className="mt-2 w-full text-start text-blue-500 cursor-pointer hover:underline"
           onClick={() => {
             setShowLocalsInfoModal(true);
-
-            document.body.classList.add("overflow-hidden");
           }}
         >
           See Locals
@@ -437,17 +322,7 @@ export default function LocalBox() {
       {/* Componente de modal para visualização, edição e ordenação dos locais */}
       <LocalsInfo
         isOpen={showLocalsInfoModal}
-        onClose={onCloseLocalsInfoModal}
-        locals={locals}
-        localToEdit={localToEdit}
-        setLocalToEdit={setLocalToEdit}
-        isOpenEditModal={showLocalsEditModal}
-        setIsOpenEditModal={setShowLocalsEditModal}
-        isLoadingEditModal={loadingLocalsEditModal}
-        onEditLocal={handleEditLocal}
-        onDeleteLocal={handleDeleteLocal}
-        onEditLocalsOrder={handleEditLocalsOrder}
-        isLoadingEditLocalsOrder={loadingEditLocalsOrder}
+        setIsOpen={setShowLocalsInfoModal}
       />
     </div>
   );

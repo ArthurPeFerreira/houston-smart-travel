@@ -3,7 +3,7 @@ import { Redis } from "ioredis";
 
 // Configuração de conexão com o Redis
 export const redis = new Redis({
-  host: `${process.env.REDIS_IP}`, // Define o host do Redis a partir da variável de ambiente
+  host: process.env.REDIS_IP, // Define o host do Redis a partir da variável de ambiente
   port: Number(process.env.REDIS_PORT), // Define a porta do Redis convertendo a variável de ambiente para número
   maxRetriesPerRequest: null, // Desabilita o limite de tentativas para solicitações
 });

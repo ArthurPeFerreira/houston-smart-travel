@@ -38,7 +38,7 @@ function handleSendWhatsApp({
   const roundTripPrice = cabinSelected.passagePriceRoundTrip;
 
   const message = roundedTrip
-    ? `Hello! I'd like to book a round trip.\n\n` +
+    ? `Hello! I'd like to book these round trip.\n\n` +
       `Class: ${cabins[cabin].label}, ` +
       `Checked bags: ${cabinSelected.bagsAmount}, ` +
       `Seats: ${seats}\n\n` +
@@ -47,7 +47,7 @@ function handleSendWhatsApp({
       `Return: ${formattedReturn} (${destinationAirport.airportCode} → ${originAirport.airportCode}), ` +
       `Price: $${Number(returnPrice).toFixed(2)}\n\n` +
       `Total round trip: $${Number(roundTripPrice).toFixed(2)}`
-    : `Hello! I'd like to book a one-way trip.\n\n` +
+    : `Hello! I'd like to book this one-way trip.\n\n` +
       `Class: ${cabins[cabin].label}, ` +
       `Checked bags: ${cabinSelected.bagsAmount}, ` +
       `Seats: ${seats}\n\n` +

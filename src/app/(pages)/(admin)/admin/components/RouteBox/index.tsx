@@ -155,6 +155,12 @@ export default function RouteBox() {
   }, [airports,airportId2]);
 
   useEffect(() => {
+    if (airportId2 > 0 && airportId2 > 0) {
+      addNewCabin("economy");
+    }
+  }, [airportId1,airportId2]);
+
+  useEffect(() => {
     if (
       !lastModifiedField ||
       !["passagePriceFromAirport1To2", "passagePriceFromAirport2To1"].includes(

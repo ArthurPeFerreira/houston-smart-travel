@@ -1,28 +1,30 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { api } from "@/lib/api/api";
-import { EditLocalTypeFile, LocalType } from "@/lib/local/types";
-import { toastConfigs } from "@/lib/toastify/toastify";
-import Decimal from "decimal.js";
 import React, { useEffect, useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { FaSpinner } from "react-icons/fa";
+import { api } from "@/lib/api/api";
 import { toast } from "react-toastify";
+import { toastConfigs } from "@/lib/toastify/toastify";
+import eventEmitter from "@/lib/event/eventEmmiter";
+import { EditLocalTypeFile, LocalType } from "@/lib/local/types";
+import Decimal from "decimal.js";
 
-// Interface que define as props esperadas pelo componente LocalEdit
 interface LocalEditProps {
-  isOpen: boolean; // Controla a exibição do modal
-  onClose: () => void; // Função chamada para fechar o modal
-  handleEditLocal: (data: EditLocalTypeFile) => void; // Função que executa a lógica de edição do local
-  isLoading: boolean; // Indica se a operação de salvamento está em andamento
-  local: LocalType; // Objeto com os dados do local a ser editado
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+  local: LocalType | undefined; // Objeto com os dados do local a ser editado
 }
 
-// Componente que renderiza o modal de edição de um local
 export default function LocalEdit({
   isOpen,
-  onClose,
-  handleEditLocal,
-  isLoading,
+  setIsOpen,
   local,
 }: LocalEditProps) {
   // Classe base reutilizável para os inputs de texto
@@ -36,11 +38,13 @@ export default function LocalEdit({
   const [active, setActive] = useState<boolean>(false); // Status de atividade do local
   const [selectedEditFile, setSelectedEditFile] = useState<File | null>(null); // Arquivo de imagem selecionado
   const [previewEdit, setPreviewEdit] = useState<string | null>(null); // Preview da imagem selecionada
+  const [loading, setLoading] = useState<boolean>(false); // Estado de carregamento do modal
 
   // useEffect para inicializar os campos do formulário com os dados recebidos via props
   useEffect(() => {
     async function setInitialData() {
       try {
+        if (!local) return; // Se não houver local, não faz nada
         // preenche campos de texto
         setCity(local.city);
         setCountry(local.country);
@@ -59,11 +63,10 @@ export default function LocalEdit({
         // Converte em File e guarda no state
         const file = new File([blob], local.image, { type: blob.type });
         setSelectedEditFile(file);
-      } catch{
+      } catch {
         toast.error("Error loading image!", toastConfigs);
       }
     }
-
     setInitialData(); // roda sempre que 'local' mudar
   }, [local]);
 
@@ -84,19 +87,63 @@ export default function LocalEdit({
     }
   }
 
-  // Se o modal não estiver aberto, retorna null
-  if (!isOpen) return null;
+  // Envia dados atualizados para edição de local existente
+  async function handleEditLocal(data: EditLocalTypeFile) {
+    setLoading(true);
+
+    if (!data.image) {
+      toast.error("Please select an image to upload.", toastConfigs);
+      setLoading(false);
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("airportId", data.airportId.toString());
+    formData.append("city", data.city);
+    formData.append("country", data.country);
+    formData.append("passagePrice", data.passagePrice.toString());
+    formData.append("active", data.active.toString());
+    formData.append("image", data.image);
+
+    try {
+      const response = await api.put(`api/admin/local/${local?.id}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      if (response.status === 200) {
+        toast.success("Local edited successfully!", toastConfigs);
+      }
+    } catch (error: any) {
+      // Tenta extrair mensagem de erro do servidor
+      const errorMessage =
+        error?.response?.data?.error || "Failed to edit local.";
+
+      // Exibe mensagem de erro
+      toast.error(errorMessage, toastConfigs);
+    } finally {
+      setLoading(false);
+      eventEmitter.emit("updateLocalsModal");
+      setTimeout(() => {
+        setIsOpen(false);
+      }, 1000);
+    }
+  }
 
   return (
-    // Container do modal, centralizado e com fundo escuro
-    <div className="fixed inset-0 flex items-center justify-center z-100 bg-gray-900">
-      {/* Conteúdo do modal com limite de largura */}
-      <div className="bg-gray-800 p-6 rounded shadow-lg w-full max-w-sm">
-        {/* Título do modal */}
-        <h1 className="text-center font-bold text-3xl">Edit Local</h1>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogContent
+        showCloseButton={false}
+        className="bg-gray-800 rounded-md shadow-lg w-11/12 max-w-md border-none text-white h-auto "
+      >
+        <DialogHeader>
+          <DialogTitle className="text-center text-2xl font-bold">
+            Edit Local
+          </DialogTitle>
+        </DialogHeader>
 
         {/* Formulário de edição */}
         <form
+          className="flex flex-col gap-2"
           onSubmit={(e) => {
             e.preventDefault();
 
@@ -108,7 +155,7 @@ export default function LocalEdit({
             // Chama a função de edição passando os dados atualizados
             handleEditLocal({
               active: active,
-              airportId: local.airport.id,
+              airportId: local?.airport.id || 0,
               city: city,
               image: selectedEditFile,
               country: country,
@@ -116,45 +163,49 @@ export default function LocalEdit({
             });
           }}
         >
-          {/* Campo de texto para o nome da cidade */}
-          <label className="block mb-1 text-white mt-4">City</label>
-          <input
-            id="city local edit"
-            type="text"
-            value={city}
-            placeholder="Type airport city"
-            onChange={(e) => setCity(e.target.value)}
-            className={inputs}
-            required
-          />
-
+          <div>
+            {/* Campo de texto para o nome da cidade */}
+            <label className="block mb-1 text-white">City</label>
+            <input
+              id="city local edit"
+              type="text"
+              value={city}
+              placeholder="Type airport city"
+              onChange={(e) => setCity(e.target.value)}
+              className={inputs}
+              required
+            />
+          </div>
           {/* Input para nome da cidade */}
-          <label className="block mb-1 text-white mt-4">Country</label>
-          <input
-            id="local country edit"
-            type="text"
-            value={country}
-            placeholder="Type airport country"
-            onChange={(e) => setCountry(e.target.value)}
-            className={inputs}
-            required
-          />
-
-          <label className="block mb-1 text-white mt-4">Passage Price</label>
-          <input
-            id="passage price edit"
-            type="number"
-            inputMode="decimal"
-            step="0.01"
-            value={Number(passagePrice)}
-            onChange={(e) => setPassagePrice(Decimal(e.target.value))}
-            className={inputs}
-            required
-            min={0}
-          />
+          <div>
+            <label className="block mb-1 text-white">Country</label>
+            <input
+              id="local country edit"
+              type="text"
+              value={country}
+              placeholder="Type airport country"
+              onChange={(e) => setCountry(e.target.value)}
+              className={inputs}
+              required
+            />
+          </div>
+          <div>
+            <label className="block mb-1 text-white">Passage Price</label>
+            <input
+              id="passage price edit"
+              type="number"
+              inputMode="decimal"
+              step="0.01"
+              value={Number(passagePrice)}
+              onChange={(e) => setPassagePrice(Decimal(e.target.value))}
+              className={inputs}
+              required
+              min={0}
+            />
+          </div>
 
           {/* Checkbox para indicar se o local está ativo */}
-          <div className="mt-2 cursor-pointer">
+          <div className="cursor-pointer">
             <input
               id="active"
               type="checkbox"
@@ -170,7 +221,7 @@ export default function LocalEdit({
           </div>
 
           {/* Seção de upload de imagem */}
-          <div className="mt-2">
+          <div>
             {/* Input de arquivo oculto */}
             <input
               type="file"
@@ -182,7 +233,7 @@ export default function LocalEdit({
             {/* Label que aciona o input de imagem */}
             <label
               htmlFor="fileEdit"
-              className="bg-blue-500 w-full text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600 flex items-center justify-center"
+              className="bg-blue-500 w-full mb-2 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600 flex items-center justify-center"
             >
               Upload Image
             </label>
@@ -193,40 +244,36 @@ export default function LocalEdit({
               <img
                 src={previewEdit}
                 alt="Preview"
-                className="w-full h-30 mt-2 object-cover"
+                className="w-full h-30 object-cover"
               />
             )}
           </div>
-
-          {/* Botões de ação do formulário */}
-          <div className="flex justify-end mt-4">
-            {/* Botão de cancelar */}
-            <button
-              type="button"
-              onClick={() => {
-                onClose();
-              }}
-              className="mr-2 bg-gray-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-gray-600"
-            >
-              Cancel
-            </button>
-
-            {/* Botão de salvar ou indicador de carregamento */}
-            {isLoading ? (
-              <div className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600">
+          {/* Botões de ação */}
+          <div className="flex w-full mt-2">
+            {/* Botão de salvar com loading spinner quando a ação está em andamento */}
+            {loading ? (
+              <div className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600 w-full flex items-center justify-center">
                 <FaSpinner className="animate-spin" size={24} />
               </div>
             ) : (
               <button
                 type="submit"
-                className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600"
+                className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600 w-full flex items-center justify-center"
               >
                 Save
               </button>
             )}
           </div>
         </form>
-      </div>
-    </div>
+
+        {/* Botão para fechar o modal */}
+        <button
+          onClick={() => setIsOpen(false)}
+          className="w-full p-2 rounded bg-red-500 hover:bg-red-600 transition cursor-pointer"
+        >
+          Close
+        </button>
+      </DialogContent>
+    </Dialog>
   );
 }

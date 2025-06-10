@@ -73,12 +73,12 @@ export default function RouteInfo({
     setIsLoadingUpdateRoutes(true); // Ativa o loading
 
     try {
-      await api.get("http://54.204.244.247:8000/update");
+      await api.put("/api/admin/route/update");
 
-      toast.success("Update routes request sent successfully.", toastConfigs);
+      toast.success("Update calendar request sent successfully.", toastConfigs);
     } catch (error) {
       console.log(error)
-      toast.error("Error updating routes.", toastConfigs);
+      toast.error("Error on requesting update calendar.", toastConfigs);
     } finally {
       setIsLoadingUpdateRoutes(false);
     }
@@ -105,7 +105,7 @@ export default function RouteInfo({
               {isLoadingUpdateRoutes ? (
                 <FaSpinner className="animate-spin" size={24} />
               ) : (
-                "Save New Order"
+                "Update Calendar"
               )}
             </button>
           </div>
