@@ -19,7 +19,7 @@ import { useRouter } from "next/navigation";
 export default function Navbar() {
   // Estado para controlar o carregamento do logout
   const [loading, setLoading] = useState<boolean>(false);
-  
+
   // Hook para redirecionamento de páginas
   const router = useRouter();
 
@@ -33,15 +33,25 @@ export default function Navbar() {
 
   return (
     <nav className="text-white w-full h-15 bg-gray-800 flex items-center justify-between px-4 py-3">
-      {/* Link para a página inicial */}
-      <Link href={"/"}>
-        <h2 className="font-medium hover:text-gray-300 transition-colors duration-200">
-          Home
-        </h2>
-      </Link>
+      <div className="flex flex-row gap-8 text-xl">
+        <Link href={"/"}>
+          <h2 className="font-medium hover:text-gray-300 transition-colors duration-200">
+            Home
+          </h2>
+        </Link>
 
-      {/* Título do painel de administração */}
-      <h1 className="font-bold text-3xl">Admin Panel</h1>
+        <Link href={"/admin"}>
+          <h2 className="font-medium hover:text-gray-300 transition-colors duration-200">
+            Admin
+          </h2>
+        </Link>
+
+        <Link href={"/admin/statistics"}>
+          <h2 className="font-medium hover:text-gray-300 transition-colors duration-200">
+            Statistics
+          </h2>
+        </Link>
+      </div>
 
       {/* Botão de logout */}
       <button

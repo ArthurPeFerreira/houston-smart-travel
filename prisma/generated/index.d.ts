@@ -11120,13 +11120,13 @@ export namespace Prisma {
 
   export type AccessCounterWhereUniqueInput = Prisma.AtLeast<{
     id?: number
+    type?: string
     AND?: AccessCounterWhereInput | AccessCounterWhereInput[]
     OR?: AccessCounterWhereInput[]
     NOT?: AccessCounterWhereInput | AccessCounterWhereInput[]
-    type?: StringFilter<"AccessCounter"> | string
     count?: IntFilter<"AccessCounter"> | number
     lastAccessAt?: DateTimeFilter<"AccessCounter"> | Date | string
-  }, "id">
+  }, "id" | "type">
 
   export type AccessCounterOrderByWithAggregationInput = {
     id?: SortOrder

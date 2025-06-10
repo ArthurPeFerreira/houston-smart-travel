@@ -6,6 +6,7 @@ import { getRouteByCache } from "../route/cacheRoute";
 import { mileagePrograms } from "../route/mileagePrograms";
 import { api } from "../api/api";
 import { AvailabilityResponse, FlightsAvailability } from "../route/types";
+import { updateAcessCounterCache } from "../statistics/acessCounter/cacheAcessCounter";
 
 // Cada chave no `taskRegistry` é uma tarefa que pode ser chamada dinamicamente, associada a uma função que processa dados.
 const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
@@ -31,6 +32,7 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
           },
         });
       }
+      await updateAcessCounterCache("home")
     } catch (error) {
       // Loga um erro caso algo falhe durante o processo.
       console.error(`Error while adding home access increment task: ${error}`);
@@ -59,6 +61,8 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
           },
         });
       }
+
+      await updateAcessCounterCache("check flights")
     } catch (error) {
       // Loga um erro caso algo falhe durante o processo.
       console.error(`Error while adding check flights access increment task: ${error}`);

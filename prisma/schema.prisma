@@ -156,9 +156,13 @@ model RoutesData {
   @@index([routeId, cabinKey, date], name: "IndexRoutesData")
 }
 
+// ======================================================
+// Modelo da Tabela Contador de Acessos
+// ======================================================
 model AccessCounter {
   id           Int      @id @default(autoincrement()) // Chave primária
-  type         String   // Tipo de acesso 
+  type         String   @unique // Tipo de acesso 
   count        Int      @default(0) // Quantidade de acessos
   lastAccessAt DateTime @updatedAt // Atualiza automaticamente ao salvar
+
 }
