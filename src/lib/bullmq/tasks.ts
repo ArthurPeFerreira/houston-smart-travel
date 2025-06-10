@@ -13,7 +13,9 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
   // Função assíncrona para atualizar a contagem de acessos à página inicial.
   incrementHomeAccessCount: async (): Promise<any> => {
     try {
-      const access = await prismaClient.accessCounter.findFirst({where:{type: "home"}});
+      const access = await prismaClient.accessCounter.findFirst({
+        where: { type: "home" },
+      });
 
       if (access) {
         await prismaClient.accessCounter.update({
@@ -32,7 +34,7 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
           },
         });
       }
-      await updateAcessCounterCache("home")
+      await updateAcessCounterCache("home");
     } catch (error) {
       // Loga um erro caso algo falhe durante o processo.
       console.error(`Error while adding home access increment task: ${error}`);
@@ -42,7 +44,9 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
   // Função assíncrona para atualizar a contagem de acessos à página inicial.
   incrementCheckFlightsAccessCount: async (): Promise<any> => {
     try {
-      const access = await prismaClient.accessCounter.findFirst({where:{type: "check flights"}});
+      const access = await prismaClient.accessCounter.findFirst({
+        where: { type: "check flights" },
+      });
 
       if (access) {
         await prismaClient.accessCounter.update({
@@ -62,16 +66,16 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
         });
       }
 
-      await updateAcessCounterCache("check flights")
+      await updateAcessCounterCache("check flights");
     } catch (error) {
       // Loga um erro caso algo falhe durante o processo.
-      console.error(`Error while adding check flights access increment task: ${error}`);
+      console.error(
+        `Error while adding check flights access increment task: ${error}`
+      );
     }
   },
 
   getSeatsAvailability: async (): Promise<any> => {
-    await prismaClient.routesData.deleteMany();
-
     const routes = await getRouteByCache(0);
 
     if (!routes) {
@@ -85,6 +89,10 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
     const date1YearStr = format(date1Year, "yyyy-MM-dd");
 
     for (const route of routes) {
+      await prismaClient.routesData.deleteMany({
+        where: { routeId: route.id },
+      });
+
       if (!route.active) continue;
 
       for (const direction of ["outbound", "return"] as const) {
@@ -121,7 +129,7 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
 
             if (response.status === 200) {
               const data: AvailabilityResponse = response.data;
-              
+
               const seatAvailabilityList = data.data;
 
               while (data.hasMore) {
