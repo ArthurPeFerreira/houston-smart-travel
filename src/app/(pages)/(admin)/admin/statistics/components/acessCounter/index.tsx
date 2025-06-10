@@ -1,6 +1,7 @@
 "use client";
 
 import { api } from "@/lib/api/api";
+import { convertToHoustonTime } from "@/lib/date/convertToHoustonTime";
 import {
   AccessCounterType,
   AccessCounterTypes,
@@ -66,7 +67,7 @@ export default function AcessCounterBox({ type }: AcessCounterBoxProps) {
           </span>
           <span className="text-gray-500">
             {acessCounter
-              ? new Date(acessCounter.lastAccessAt).toLocaleString()
+              ? convertToHoustonTime(String(acessCounter.lastAccessAt))
               : "--"}
           </span>
         </div>
