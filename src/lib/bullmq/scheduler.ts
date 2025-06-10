@@ -8,7 +8,7 @@ const globalKey = "__hst_task_scheduled__";
 // Check if the task has already been scheduled during the current server lifecycle
 if (!(globalThis as any)[globalKey]) {
   // Schedule the "getSeatsAvailability" task to run every day at midnight
-  addRepeatingTaskCron("getSeatsAvailability", {}, "0 0 * * *")
+  addRepeatingTaskCron("getSeatsAvailability", {}, "0 5 * * *")
     .then(() => {
       // Mark as scheduled to prevent duplicate executions
       (globalThis as any)[globalKey] = true;
