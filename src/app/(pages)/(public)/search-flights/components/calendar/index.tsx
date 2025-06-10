@@ -143,7 +143,7 @@ export default function Calendar({
 
         if (responseReturnEvents.data.length > 0) {
           setReturnEventsData(
-            responseDepartureEvents.data.map((data: RoutesDataType) => {
+            responseReturnEvents.data.map((data: RoutesDataType) => {
               const date = new Date(data.date).toISOString().slice(0, 10);
               return {
                 title: `${data.originAirport} -> ${data.destinationAirport} - ${date}`,
