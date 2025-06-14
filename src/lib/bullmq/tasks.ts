@@ -155,6 +155,9 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
       route.mileageProgram
     );
 
+    // Valor padrão de assentos usado apenas para programas de milhagem que ignoram o filtro de assentos reais
+    const seatCountForExcludedPrograms = 9;
+
     // Remove do banco os dados antigos de disponibilidade para essa rota
     await prismaClient.routesData.deleteMany({
       where: { routeId: route.id },
@@ -238,6 +241,10 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
                       ? seatAvailability.YDirectRemainingSeats > 0
                       : true)
                   ) {
+                    const seatCount = shouldCheckSeats
+                      ? seatAvailability.YDirectRemainingSeats
+                      : seatCountForExcludedPrograms;
+
                     seatAvailabilityToSave.push({
                       routeId: route.id,
                       cabinKey: cabin.key,
@@ -245,7 +252,7 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
                       direct: true,
                       originAirport: originAirport,
                       destinationAirport: destinationAirport,
-                      seats: seatAvailability.YDirectRemainingSeats,
+                      seats: seatCount,
                     });
                   } else if (route.enableLayovers) {
                     if (
@@ -255,6 +262,10 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
                         ? seatAvailability.YRemainingSeats > 0
                         : true)
                     ) {
+                      const seatCount = shouldCheckSeats
+                        ? seatAvailability.YRemainingSeats
+                        : seatCountForExcludedPrograms;
+
                       seatAvailabilityToSave.push({
                         routeId: route.id,
                         cabinKey: cabin.key,
@@ -262,7 +273,7 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
                         direct: false,
                         originAirport: originAirport,
                         destinationAirport: destinationAirport,
-                        seats: seatAvailability.YRemainingSeats,
+                        seats: seatCount,
                       });
                     }
                   }
@@ -278,6 +289,10 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
                       ? seatAvailability.JDirectRemainingSeats > 0
                       : true)
                   ) {
+                    const seatCount = shouldCheckSeats
+                      ? seatAvailability.JDirectRemainingSeats
+                      : seatCountForExcludedPrograms;
+
                     seatAvailabilityToSave.push({
                       routeId: route.id,
                       cabinKey: cabin.key,
@@ -285,7 +300,7 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
                       direct: true,
                       originAirport: originAirport,
                       destinationAirport: destinationAirport,
-                      seats: seatAvailability.JDirectRemainingSeats,
+                      seats: seatCount,
                     });
                   } else if (route.enableLayovers) {
                     if (
@@ -295,6 +310,10 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
                         ? seatAvailability.JRemainingSeats > 0
                         : true)
                     ) {
+                      const seatCount = shouldCheckSeats
+                        ? seatAvailability.JRemainingSeats
+                        : seatCountForExcludedPrograms;
+
                       seatAvailabilityToSave.push({
                         routeId: route.id,
                         cabinKey: cabin.key,
@@ -302,7 +321,7 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
                         direct: false,
                         originAirport: originAirport,
                         destinationAirport: destinationAirport,
-                        seats: seatAvailability.JRemainingSeats,
+                        seats: seatCount,
                       });
                     }
                   }
@@ -318,6 +337,10 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
                       ? seatAvailability.FDirectRemainingSeats > 0
                       : true)
                   ) {
+                    const seatCount = shouldCheckSeats
+                      ? seatAvailability.FDirectRemainingSeats
+                      : seatCountForExcludedPrograms;
+
                     seatAvailabilityToSave.push({
                       routeId: route.id,
                       cabinKey: cabin.key,
@@ -325,7 +348,7 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
                       direct: true,
                       originAirport: originAirport,
                       destinationAirport: destinationAirport,
-                      seats: seatAvailability.FDirectRemainingSeats,
+                      seats: seatCount,
                     });
                   } else if (route.enableLayovers) {
                     if (
@@ -335,6 +358,10 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
                         ? seatAvailability.FRemainingSeats > 0
                         : true)
                     ) {
+                      const seatCount = shouldCheckSeats
+                        ? seatAvailability.FRemainingSeats
+                        : seatCountForExcludedPrograms;
+
                       seatAvailabilityToSave.push({
                         routeId: route.id,
                         cabinKey: cabin.key,
@@ -342,7 +369,7 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
                         direct: false,
                         originAirport: originAirport,
                         destinationAirport: destinationAirport,
-                        seats: seatAvailability.FRemainingSeats,
+                        seats: seatCount,
                       });
                     }
                   }
@@ -358,6 +385,10 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
                       ? seatAvailability.WDirectRemainingSeats > 0
                       : true)
                   ) {
+                    const seatCount = shouldCheckSeats
+                      ? seatAvailability.WDirectRemainingSeats
+                      : seatCountForExcludedPrograms;
+
                     seatAvailabilityToSave.push({
                       routeId: route.id,
                       cabinKey: cabin.key,
@@ -365,7 +396,7 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
                       direct: true,
                       originAirport: originAirport,
                       destinationAirport: destinationAirport,
-                      seats: seatAvailability.WDirectRemainingSeats,
+                      seats: seatCount,
                     });
                   } else if (route.enableLayovers) {
                     if (
@@ -375,6 +406,10 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
                         ? seatAvailability.WRemainingSeats > 0
                         : true)
                     ) {
+                      const seatCount = shouldCheckSeats
+                        ? seatAvailability.WRemainingSeats
+                        : seatCountForExcludedPrograms;
+
                       seatAvailabilityToSave.push({
                         routeId: route.id,
                         cabinKey: cabin.key,
@@ -382,7 +417,7 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
                         direct: false,
                         originAirport: originAirport,
                         destinationAirport: destinationAirport,
-                        seats: seatAvailability.WRemainingSeats,
+                        seats: seatCount,
                       });
                     }
                   }
