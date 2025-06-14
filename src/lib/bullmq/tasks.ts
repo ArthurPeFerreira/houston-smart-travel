@@ -54,11 +54,13 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
   // Função assíncrona para atualizar a contagem de acessos à página inicial.
   incrementCheckFlightsAccessCount: async (): Promise<undefined> => {
     try {
+      // Busca o registro de contagem de acessos do tipo "check flights"
       const access = await prismaClient.accessCounter.findFirst({
         where: { type: "check flights" },
       });
 
       if (access) {
+        // Se o registro já existir, incrementa o contador e atualiza a data do último acesso
         await prismaClient.accessCounter.update({
           where: { id: access.id },
           data: {
@@ -67,6 +69,7 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
           },
         });
       } else {
+        // Se não existir, cria um novo registro com contador iniciado em 1
         await prismaClient.accessCounter.create({
           data: {
             type: "check flights",
@@ -76,6 +79,7 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
         });
       }
 
+      // Atualiza o cache com o novo valor do contador de acessos
       await updateAcessCounterCache("check flights");
     } catch (error) {
       // Loga um erro caso algo falhe durante o processo.
@@ -85,28 +89,39 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
     }
   },
 
+  // Função responsável por agendar tarefas de atualização de disponibilidade de assentos
+  // para todas as rotas ativas armazenadas no cache (Redis). Cada tarefa é enfileirada
+  // individualmente com intervalo de 1 ano a partir da data atual.
   getSeatsAvailability: async (): Promise<undefined> => {
+    // Busca as rotas armazenadas no cache
     const routes = await getRouteByCache(0);
 
+    // Verifica se há rotas disponíveis no cache
     if (!routes) {
       console.log("No routes found in Redis");
       return;
     }
+
+    // Define o intervalo de datas: de hoje até um ano à frente
     const dateToday = new Date();
     const date1Year = addYears(dateToday, 1);
 
+    // Formata as datas no padrão yyyy-MM-dd
     const dateTodayStr = format(dateToday, "yyyy-MM-dd");
     const date1YearStr = format(date1Year, "yyyy-MM-dd");
 
+    // Itera por todas as rotas ativas
     for (const route of routes) {
       if (!route.active) continue;
 
+      // Monta os dados para a tarefa
       const data: UpdateSeatsAvailabilityType = {
         route: route,
         startDate: dateTodayStr,
         endDate: date1YearStr,
       };
 
+      // Adiciona uma nova tarefa à fila para atualizar a disponibilidade da rota
       await queueHst.add(
         "updateSeatAvailability", // Nome da tarefa
         data,
@@ -122,6 +137,9 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
     }
   },
 
+  // Função responsável por buscar a disponibilidade de assentos em uma rota específica
+  // entre duas datas, considerando todas as cabines configuradas e direções (ida e volta).
+  // A resposta é armazenada no banco após validação de milhas, disponibilidade e assentos restantes.
   updateSeatAvailability: async ({
     route,
     startDate,
@@ -129,26 +147,33 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
   }: UpdateSeatsAvailabilityType): Promise<undefined> => {
     const url = "https://seats.aero";
 
+    // Remove do banco os dados antigos de disponibilidade para essa rota
     await prismaClient.routesData.deleteMany({
       where: { routeId: route.id },
     });
 
+    // Itera sobre os dois sentidos da viagem: ida (outbound) e volta (return)
     for (const direction of ["outbound", "return"] as const) {
+      // Define o aeroporto de origem com base na direção
       const originAirport =
         direction === "outbound"
           ? route.airports[0].airportCode
           : route.airports[1].airportCode;
 
+      // Define o aeroporto de destino com base na direção
       const destinationAirport =
         direction === "outbound"
           ? route.airports[1].airportCode
           : route.airports[0].airportCode;
 
+      // Loga informações úteis para debug
       console.log(
         `Route ${route.id} | ${originAirport} -> ${destinationAirport} | Mileage Program: ${route.mileageProgram}`
       );
 
+      // Itera por todas as cabines configuradas na rota
       for (const cabin of route.cabins) {
+        // Monta a URL da requisição com os filtros desejados
         let requestUrl = `${url}/partnerapi/search?origin_airport=${originAirport}&destination_airport=${destinationAirport}&cabin=${
           cabin.key
         }&start_date=${startDate}&end_date=${endDate}&take=1000&order_by=lowest_mileage&skip=0&only_direct_flights=${!route.enableLayovers}&source=${
@@ -156,6 +181,7 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
         }`;
 
         try {
+          // Faz a requisição principal à API do seats.aero
           let response = await api.get(requestUrl, {
             headers: {
               "Partner-Authorization": process.env.PARTNER_AUTHORIZATION,
@@ -168,6 +194,7 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
 
             const seatAvailabilityList = data.data;
 
+            // Enquanto houver mais páginas de dados, busca usando moreURL
             while (data.hasMore) {
               requestUrl = `${url}${data.moreURL}`;
 
@@ -183,14 +210,17 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
 
                 seatAvailabilityList.push(...data.data);
               } else {
-                continue;
+                continue; // Pula em caso de erro na próxima página
               }
             }
 
+            // Lista onde será armazenada a disponibilidade que será salva
             const seatAvailabilityToSave: FlightsAvailability[] = [];
 
+            // Processa cada item de disponibilidade retornado
             for (const seatAvailability of seatAvailabilityList) {
               switch (cabin.key) {
+                // Verifica disponibilidade para cabine econômica
                 case "economy":
                   if (
                     seatAvailability.YDirect &&
@@ -202,7 +232,6 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
                       routeId: route.id,
                       cabinKey: cabin.key,
                       date: new Date(seatAvailability.Date),
-
                       direct: true,
                       originAirport: originAirport,
                       destinationAirport: destinationAirport,
@@ -218,7 +247,6 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
                         routeId: route.id,
                         cabinKey: cabin.key,
                         date: new Date(seatAvailability.Date),
-
                         direct: false,
                         originAirport: originAirport,
                         destinationAirport: destinationAirport,
@@ -228,6 +256,7 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
                   }
                   break;
 
+                // Verifica disponibilidade para cabine executiva
                 case "business":
                   if (
                     seatAvailability.JDirect &&
@@ -239,7 +268,6 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
                       routeId: route.id,
                       cabinKey: cabin.key,
                       date: new Date(seatAvailability.Date),
-
                       direct: true,
                       originAirport: originAirport,
                       destinationAirport: destinationAirport,
@@ -255,7 +283,6 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
                         routeId: route.id,
                         cabinKey: cabin.key,
                         date: new Date(seatAvailability.Date),
-
                         direct: false,
                         originAirport: originAirport,
                         destinationAirport: destinationAirport,
@@ -265,6 +292,7 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
                   }
                   break;
 
+                // Verifica disponibilidade para primeira classe
                 case "first":
                   if (
                     seatAvailability.FDirect &&
@@ -276,7 +304,6 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
                       routeId: route.id,
                       cabinKey: cabin.key,
                       date: new Date(seatAvailability.Date),
-
                       direct: true,
                       originAirport: originAirport,
                       destinationAirport: destinationAirport,
@@ -292,7 +319,6 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
                         routeId: route.id,
                         cabinKey: cabin.key,
                         date: new Date(seatAvailability.Date),
-
                         direct: false,
                         originAirport: originAirport,
                         destinationAirport: destinationAirport,
@@ -302,6 +328,7 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
                   }
                   break;
 
+                // Verifica disponibilidade para premium economy
                 case "premium":
                   if (
                     seatAvailability.WDirect &&
@@ -313,7 +340,6 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
                       routeId: route.id,
                       cabinKey: cabin.key,
                       date: new Date(seatAvailability.Date),
-
                       direct: true,
                       originAirport: originAirport,
                       destinationAirport: destinationAirport,
@@ -329,7 +355,6 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
                         routeId: route.id,
                         cabinKey: cabin.key,
                         date: new Date(seatAvailability.Date),
-
                         direct: false,
                         originAirport: originAirport,
                         destinationAirport: destinationAirport,
@@ -341,15 +366,17 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
               }
             }
 
+            // Salva no banco todas as disponibilidades válidas encontradas
             if (seatAvailabilityToSave.length > 0) {
               await prismaClient.routesData.createMany({
                 data: seatAvailabilityToSave,
               });
             }
           } else {
-            continue;
+            continue; // Pula em caso de status diferente de 200
           }
         } catch (error) {
+          // Loga o erro, mas não interrompe o processo para outras rotas ou cabines
           console.error(
             `Error while fetching seat availability for route ${route.id}, cabin ${cabin.key}: ${error}`
           );
