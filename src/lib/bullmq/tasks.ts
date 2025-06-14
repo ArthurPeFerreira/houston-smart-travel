@@ -147,6 +147,14 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
   }: UpdateSeatsAvailabilityType): Promise<undefined> => {
     const url = "https://seats.aero";
 
+    // Define os programas de milhagem que serão excluídos da verificação de assentos disponíveis
+    const excludedSeatFilterPrograms = new Set(["azul"]);
+
+    // Verifica se o programa de milhagem da rota deve aplicar o filtro de assentos
+    const shouldCheckSeats = !excludedSeatFilterPrograms.has(
+      route.mileageProgram
+    );
+
     // Remove do banco os dados antigos de disponibilidade para essa rota
     await prismaClient.routesData.deleteMany({
       where: { routeId: route.id },
@@ -226,7 +234,9 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
                     seatAvailability.YDirect &&
                     seatAvailability.YDirectMileageCost <=
                       cabin.maximumPoints &&
-                    seatAvailability.YDirectRemainingSeats > 0
+                    (shouldCheckSeats
+                      ? seatAvailability.YDirectRemainingSeats > 0
+                      : true)
                   ) {
                     seatAvailabilityToSave.push({
                       routeId: route.id,
@@ -241,7 +251,9 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
                     if (
                       seatAvailability.YAvailable &&
                       seatAvailability.YMileageCost <= cabin.maximumPoints &&
-                      seatAvailability.YRemainingSeats > 0
+                      (shouldCheckSeats
+                        ? seatAvailability.YRemainingSeats > 0
+                        : true)
                     ) {
                       seatAvailabilityToSave.push({
                         routeId: route.id,
@@ -262,7 +274,9 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
                     seatAvailability.JDirect &&
                     seatAvailability.JDirectMileageCost <=
                       cabin.maximumPoints &&
-                    seatAvailability.JDirectRemainingSeats > 0
+                    (shouldCheckSeats
+                      ? seatAvailability.JDirectRemainingSeats > 0
+                      : true)
                   ) {
                     seatAvailabilityToSave.push({
                       routeId: route.id,
@@ -277,7 +291,9 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
                     if (
                       seatAvailability.JAvailable &&
                       seatAvailability.JMileageCost <= cabin.maximumPoints &&
-                      seatAvailability.JRemainingSeats > 0
+                      (shouldCheckSeats
+                        ? seatAvailability.JRemainingSeats > 0
+                        : true)
                     ) {
                       seatAvailabilityToSave.push({
                         routeId: route.id,
@@ -298,7 +314,9 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
                     seatAvailability.FDirect &&
                     seatAvailability.FDirectMileageCost <=
                       cabin.maximumPoints &&
-                    seatAvailability.FDirectRemainingSeats > 0
+                    (shouldCheckSeats
+                      ? seatAvailability.FDirectRemainingSeats > 0
+                      : true)
                   ) {
                     seatAvailabilityToSave.push({
                       routeId: route.id,
@@ -313,7 +331,9 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
                     if (
                       seatAvailability.FAvailable &&
                       seatAvailability.FMileageCost <= cabin.maximumPoints &&
-                      seatAvailability.FRemainingSeats > 0
+                      (shouldCheckSeats
+                        ? seatAvailability.FRemainingSeats > 0
+                        : true)
                     ) {
                       seatAvailabilityToSave.push({
                         routeId: route.id,
@@ -334,7 +354,9 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
                     seatAvailability.WDirect &&
                     seatAvailability.WDirectMileageCost <=
                       cabin.maximumPoints &&
-                    seatAvailability.WDirectRemainingSeats > 0
+                    (shouldCheckSeats
+                      ? seatAvailability.WDirectRemainingSeats > 0
+                      : true)
                   ) {
                     seatAvailabilityToSave.push({
                       routeId: route.id,
@@ -349,7 +371,9 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
                     if (
                       seatAvailability.WAvailable &&
                       seatAvailability.WMileageCost <= cabin.maximumPoints &&
-                      seatAvailability.WRemainingSeats > 0
+                      (shouldCheckSeats
+                        ? seatAvailability.WRemainingSeats > 0
+                        : true)
                     ) {
                       seatAvailabilityToSave.push({
                         routeId: route.id,
