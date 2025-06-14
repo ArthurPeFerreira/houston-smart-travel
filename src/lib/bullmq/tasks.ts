@@ -5,19 +5,26 @@ import { prismaClient } from "../prisma/prisma";
 import { getRouteByCache } from "../route/cacheRoute";
 import { mileagePrograms } from "../route/mileagePrograms";
 import { api } from "../api/api";
-import { AvailabilityResponse, FlightsAvailability } from "../route/types";
+import {
+  AvailabilityResponse,
+  FlightsAvailability,
+  UpdateSeatsAvailabilityType,
+} from "../route/types";
 import { updateAcessCounterCache } from "../statistics/acessCounter/cacheAcessCounter";
+import { queueHst } from "./bullmq";
 
 // Cada chave no `taskRegistry` é uma tarefa que pode ser chamada dinamicamente, associada a uma função que processa dados.
 const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
   // Função assíncrona para atualizar a contagem de acessos à página inicial.
-  incrementHomeAccessCount: async (): Promise<any> => {
+  incrementHomeAccessCount: async (): Promise<undefined> => {
     try {
+      // Busca o registro de contagem de acessos do tipo "home"
       const access = await prismaClient.accessCounter.findFirst({
         where: { type: "home" },
       });
 
       if (access) {
+        // Se já existir, incrementa o contador e atualiza a data do último acesso
         await prismaClient.accessCounter.update({
           where: { id: access.id },
           data: {
@@ -26,6 +33,7 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
           },
         });
       } else {
+        // Se não existir, cria um novo registro com contador iniciado em 1
         await prismaClient.accessCounter.create({
           data: {
             type: "home",
@@ -34,6 +42,8 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
           },
         });
       }
+
+      // Atualiza o cache relacionado ao contador de acessos
       await updateAcessCounterCache("home");
     } catch (error) {
       // Loga um erro caso algo falhe durante o processo.
@@ -42,7 +52,7 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
   },
 
   // Função assíncrona para atualizar a contagem de acessos à página inicial.
-  incrementCheckFlightsAccessCount: async (): Promise<any> => {
+  incrementCheckFlightsAccessCount: async (): Promise<undefined> => {
     try {
       const access = await prismaClient.accessCounter.findFirst({
         where: { type: "check flights" },
@@ -75,7 +85,7 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
     }
   },
 
-  getSeatsAvailability: async (): Promise<any> => {
+  getSeatsAvailability: async (): Promise<undefined> => {
     const routes = await getRouteByCache(0);
 
     if (!routes) {
@@ -89,236 +99,261 @@ const taskRegistry: { [key: string]: (data: any) => Promise<void> } = {
     const date1YearStr = format(date1Year, "yyyy-MM-dd");
 
     for (const route of routes) {
-      await prismaClient.routesData.deleteMany({
-        where: { routeId: route.id },
-      });
-
       if (!route.active) continue;
 
-      for (const direction of ["outbound", "return"] as const) {
-        const originAirport =
-          direction === "outbound"
-            ? route.airports[0].airportCode
-            : route.airports[1].airportCode;
+      const data: UpdateSeatsAvailabilityType = {
+        route: route,
+        startDate: dateTodayStr,
+        endDate: date1YearStr,
+      };
 
-        const destinationAirport =
-          direction === "outbound"
-            ? route.airports[1].airportCode
-            : route.airports[0].airportCode;
+      await queueHst.add(
+        "updateSeatAvailability", // Nome da tarefa
+        data,
+        {
+          priority: 0, // Define a prioridade da tarefa (0 para alta prioridade)
+          delay: 0, // Define o atraso (0 segundos)
+          attempts: 3, // Número de tentativas permitidas em caso de falha
+          removeOnComplete: true, // Remove a tarefa da fila automaticamente após a conclusão bem-sucedida
+          removeOnFail: false, // Mantém a tarefa na fila em caso de falha
+          stackTraceLimit: 5, // Limita o número de rastros de pilha mantidos para erros
+        }
+      );
+    }
+  },
 
-        console.log(
-          `Route ${route.id} | ${originAirport} -> ${destinationAirport} | Mileage Program: ${route.mileageProgram}`
-        );
+  updateSeatAvailability: async ({
+    route,
+    startDate,
+    endDate,
+  }: UpdateSeatsAvailabilityType): Promise<undefined> => {
+    const url = "https://seats.aero";
 
-        for (const cabin of route.cabins) {
-          const url = "https://seats.aero";
+    await prismaClient.routesData.deleteMany({
+      where: { routeId: route.id },
+    });
 
-          let requestUrl = `${url}/partnerapi/search?origin_airport=${originAirport}&destination_airport=${destinationAirport}&cabin=${
-            cabin.key
-          }&start_date=${dateTodayStr}&end_date=${date1YearStr}&take=1000&order_by=lowest_mileage&skip=0&only_direct_flights=${!route.enableLayovers}&source=${
-            mileagePrograms[route.mileageProgram].key
-          }`;
+    for (const direction of ["outbound", "return"] as const) {
+      const originAirport =
+        direction === "outbound"
+          ? route.airports[0].airportCode
+          : route.airports[1].airportCode;
 
-          try {
-            let response = await api.get(requestUrl, {
-              headers: {
-                "Partner-Authorization": process.env.PARTNER_AUTHORIZATION,
-                Accept: "application/json",
-              },
-            });
+      const destinationAirport =
+        direction === "outbound"
+          ? route.airports[1].airportCode
+          : route.airports[0].airportCode;
 
-            if (response.status === 200) {
-              const data: AvailabilityResponse = response.data;
+      console.log(
+        `Route ${route.id} | ${originAirport} -> ${destinationAirport} | Mileage Program: ${route.mileageProgram}`
+      );
 
-              const seatAvailabilityList = data.data;
+      for (const cabin of route.cabins) {
+        let requestUrl = `${url}/partnerapi/search?origin_airport=${originAirport}&destination_airport=${destinationAirport}&cabin=${
+          cabin.key
+        }&start_date=${startDate}&end_date=${endDate}&take=1000&order_by=lowest_mileage&skip=0&only_direct_flights=${!route.enableLayovers}&source=${
+          mileagePrograms[route.mileageProgram].key
+        }`;
 
-              while (data.hasMore) {
-                requestUrl = `${url}${data.moreURL}`;
+        try {
+          let response = await api.get(requestUrl, {
+            headers: {
+              "Partner-Authorization": process.env.PARTNER_AUTHORIZATION,
+              Accept: "application/json",
+            },
+          });
 
-                response = await api.get(requestUrl, {
-                  headers: {
-                    "Partner-Authorization": process.env.PARTNER_AUTHORIZATION,
-                    Accept: "application/json",
-                  },
-                });
+          if (response.status === 200) {
+            const data: AvailabilityResponse = response.data;
 
-                if (response.status === 200) {
-                  const data: AvailabilityResponse = response.data;
+            const seatAvailabilityList = data.data;
 
-                  seatAvailabilityList.push(...data.data);
-                } else {
-                  continue;
-                }
+            while (data.hasMore) {
+              requestUrl = `${url}${data.moreURL}`;
+
+              response = await api.get(requestUrl, {
+                headers: {
+                  "Partner-Authorization": process.env.PARTNER_AUTHORIZATION,
+                  Accept: "application/json",
+                },
+              });
+
+              if (response.status === 200) {
+                const data: AvailabilityResponse = response.data;
+
+                seatAvailabilityList.push(...data.data);
+              } else {
+                continue;
               }
-
-              const seatAvailabilityToSave: FlightsAvailability[] = [];
-
-              for (const seatAvailability of seatAvailabilityList) {
-                switch (cabin.key) {
-                  case "economy":
-                    if (
-                      seatAvailability.YDirect &&
-                      seatAvailability.YDirectMileageCost <=
-                        cabin.maximumPoints &&
-                      seatAvailability.YDirectRemainingSeats > 0
-                    ) {
-                      seatAvailabilityToSave.push({
-                        routeId: route.id,
-                        cabinKey: cabin.key,
-                        date: new Date(seatAvailability.Date),
-
-                        direct: true,
-                        originAirport: originAirport,
-                        destinationAirport: destinationAirport,
-                        seats: seatAvailability.YDirectRemainingSeats,
-                      });
-                    } else if (route.enableLayovers) {
-                      if (
-                        seatAvailability.YAvailable &&
-                        seatAvailability.YMileageCost <= cabin.maximumPoints &&
-                        seatAvailability.YRemainingSeats > 0
-                      ) {
-                        seatAvailabilityToSave.push({
-                          routeId: route.id,
-                          cabinKey: cabin.key,
-                          date: new Date(seatAvailability.Date),
-
-                          direct: false,
-                          originAirport: originAirport,
-                          destinationAirport: destinationAirport,
-                          seats: seatAvailability.YRemainingSeats,
-                        });
-                      }
-                    }
-                    break;
-
-                  case "business":
-                    if (
-                      seatAvailability.JDirect &&
-                      seatAvailability.JDirectMileageCost <=
-                        cabin.maximumPoints &&
-                      seatAvailability.JDirectRemainingSeats > 0
-                    ) {
-                      seatAvailabilityToSave.push({
-                        routeId: route.id,
-                        cabinKey: cabin.key,
-                        date: new Date(seatAvailability.Date),
-
-                        direct: true,
-                        originAirport: originAirport,
-                        destinationAirport: destinationAirport,
-                        seats: seatAvailability.JDirectRemainingSeats,
-                      });
-                    } else if (route.enableLayovers) {
-                      if (
-                        seatAvailability.JAvailable &&
-                        seatAvailability.JMileageCost <= cabin.maximumPoints &&
-                        seatAvailability.JRemainingSeats > 0
-                      ) {
-                        seatAvailabilityToSave.push({
-                          routeId: route.id,
-                          cabinKey: cabin.key,
-                          date: new Date(seatAvailability.Date),
-
-                          direct: false,
-                          originAirport: originAirport,
-                          destinationAirport: destinationAirport,
-                          seats: seatAvailability.JRemainingSeats,
-                        });
-                      }
-                    }
-                    break;
-
-                  case "first":
-                    if (
-                      seatAvailability.FDirect &&
-                      seatAvailability.FDirectMileageCost <=
-                        cabin.maximumPoints &&
-                      seatAvailability.FDirectRemainingSeats > 0
-                    ) {
-                      seatAvailabilityToSave.push({
-                        routeId: route.id,
-                        cabinKey: cabin.key,
-                        date: new Date(seatAvailability.Date),
-
-                        direct: true,
-                        originAirport: originAirport,
-                        destinationAirport: destinationAirport,
-                        seats: seatAvailability.FDirectRemainingSeats,
-                      });
-                    } else if (route.enableLayovers) {
-                      if (
-                        seatAvailability.FAvailable &&
-                        seatAvailability.FMileageCost <= cabin.maximumPoints &&
-                        seatAvailability.FRemainingSeats > 0
-                      ) {
-                        seatAvailabilityToSave.push({
-                          routeId: route.id,
-                          cabinKey: cabin.key,
-                          date: new Date(seatAvailability.Date),
-
-                          direct: false,
-                          originAirport: originAirport,
-                          destinationAirport: destinationAirport,
-                          seats: seatAvailability.FRemainingSeats,
-                        });
-                      }
-                    }
-                    break;
-
-                  case "premium":
-                    if (
-                      seatAvailability.WDirect &&
-                      seatAvailability.WDirectMileageCost <=
-                        cabin.maximumPoints &&
-                      seatAvailability.WDirectRemainingSeats > 0
-                    ) {
-                      seatAvailabilityToSave.push({
-                        routeId: route.id,
-                        cabinKey: cabin.key,
-                        date: new Date(seatAvailability.Date),
-
-                        direct: true,
-                        originAirport: originAirport,
-                        destinationAirport: destinationAirport,
-                        seats: seatAvailability.WDirectRemainingSeats,
-                      });
-                    } else if (route.enableLayovers) {
-                      if (
-                        seatAvailability.WAvailable &&
-                        seatAvailability.WMileageCost <= cabin.maximumPoints &&
-                        seatAvailability.WRemainingSeats > 0
-                      ) {
-                        seatAvailabilityToSave.push({
-                          routeId: route.id,
-                          cabinKey: cabin.key,
-                          date: new Date(seatAvailability.Date),
-
-                          direct: false,
-                          originAirport: originAirport,
-                          destinationAirport: destinationAirport,
-                          seats: seatAvailability.WRemainingSeats,
-                        });
-                      }
-                    }
-                    break;
-                }
-              }
-
-              if (seatAvailabilityToSave.length > 0) {
-                await prismaClient.routesData.createMany({
-                  data: seatAvailabilityToSave,
-                });
-              }
-            } else {
-              continue;
             }
-          } catch (error) {
-            console.error(
-              `Error while fetching seat availability for route ${route.id}, cabin ${cabin.key}: ${error}`
-            );
+
+            const seatAvailabilityToSave: FlightsAvailability[] = [];
+
+            for (const seatAvailability of seatAvailabilityList) {
+              switch (cabin.key) {
+                case "economy":
+                  if (
+                    seatAvailability.YDirect &&
+                    seatAvailability.YDirectMileageCost <=
+                      cabin.maximumPoints &&
+                    seatAvailability.YDirectRemainingSeats > 0
+                  ) {
+                    seatAvailabilityToSave.push({
+                      routeId: route.id,
+                      cabinKey: cabin.key,
+                      date: new Date(seatAvailability.Date),
+
+                      direct: true,
+                      originAirport: originAirport,
+                      destinationAirport: destinationAirport,
+                      seats: seatAvailability.YDirectRemainingSeats,
+                    });
+                  } else if (route.enableLayovers) {
+                    if (
+                      seatAvailability.YAvailable &&
+                      seatAvailability.YMileageCost <= cabin.maximumPoints &&
+                      seatAvailability.YRemainingSeats > 0
+                    ) {
+                      seatAvailabilityToSave.push({
+                        routeId: route.id,
+                        cabinKey: cabin.key,
+                        date: new Date(seatAvailability.Date),
+
+                        direct: false,
+                        originAirport: originAirport,
+                        destinationAirport: destinationAirport,
+                        seats: seatAvailability.YRemainingSeats,
+                      });
+                    }
+                  }
+                  break;
+
+                case "business":
+                  if (
+                    seatAvailability.JDirect &&
+                    seatAvailability.JDirectMileageCost <=
+                      cabin.maximumPoints &&
+                    seatAvailability.JDirectRemainingSeats > 0
+                  ) {
+                    seatAvailabilityToSave.push({
+                      routeId: route.id,
+                      cabinKey: cabin.key,
+                      date: new Date(seatAvailability.Date),
+
+                      direct: true,
+                      originAirport: originAirport,
+                      destinationAirport: destinationAirport,
+                      seats: seatAvailability.JDirectRemainingSeats,
+                    });
+                  } else if (route.enableLayovers) {
+                    if (
+                      seatAvailability.JAvailable &&
+                      seatAvailability.JMileageCost <= cabin.maximumPoints &&
+                      seatAvailability.JRemainingSeats > 0
+                    ) {
+                      seatAvailabilityToSave.push({
+                        routeId: route.id,
+                        cabinKey: cabin.key,
+                        date: new Date(seatAvailability.Date),
+
+                        direct: false,
+                        originAirport: originAirport,
+                        destinationAirport: destinationAirport,
+                        seats: seatAvailability.JRemainingSeats,
+                      });
+                    }
+                  }
+                  break;
+
+                case "first":
+                  if (
+                    seatAvailability.FDirect &&
+                    seatAvailability.FDirectMileageCost <=
+                      cabin.maximumPoints &&
+                    seatAvailability.FDirectRemainingSeats > 0
+                  ) {
+                    seatAvailabilityToSave.push({
+                      routeId: route.id,
+                      cabinKey: cabin.key,
+                      date: new Date(seatAvailability.Date),
+
+                      direct: true,
+                      originAirport: originAirport,
+                      destinationAirport: destinationAirport,
+                      seats: seatAvailability.FDirectRemainingSeats,
+                    });
+                  } else if (route.enableLayovers) {
+                    if (
+                      seatAvailability.FAvailable &&
+                      seatAvailability.FMileageCost <= cabin.maximumPoints &&
+                      seatAvailability.FRemainingSeats > 0
+                    ) {
+                      seatAvailabilityToSave.push({
+                        routeId: route.id,
+                        cabinKey: cabin.key,
+                        date: new Date(seatAvailability.Date),
+
+                        direct: false,
+                        originAirport: originAirport,
+                        destinationAirport: destinationAirport,
+                        seats: seatAvailability.FRemainingSeats,
+                      });
+                    }
+                  }
+                  break;
+
+                case "premium":
+                  if (
+                    seatAvailability.WDirect &&
+                    seatAvailability.WDirectMileageCost <=
+                      cabin.maximumPoints &&
+                    seatAvailability.WDirectRemainingSeats > 0
+                  ) {
+                    seatAvailabilityToSave.push({
+                      routeId: route.id,
+                      cabinKey: cabin.key,
+                      date: new Date(seatAvailability.Date),
+
+                      direct: true,
+                      originAirport: originAirport,
+                      destinationAirport: destinationAirport,
+                      seats: seatAvailability.WDirectRemainingSeats,
+                    });
+                  } else if (route.enableLayovers) {
+                    if (
+                      seatAvailability.WAvailable &&
+                      seatAvailability.WMileageCost <= cabin.maximumPoints &&
+                      seatAvailability.WRemainingSeats > 0
+                    ) {
+                      seatAvailabilityToSave.push({
+                        routeId: route.id,
+                        cabinKey: cabin.key,
+                        date: new Date(seatAvailability.Date),
+
+                        direct: false,
+                        originAirport: originAirport,
+                        destinationAirport: destinationAirport,
+                        seats: seatAvailability.WRemainingSeats,
+                      });
+                    }
+                  }
+                  break;
+              }
+            }
+
+            if (seatAvailabilityToSave.length > 0) {
+              await prismaClient.routesData.createMany({
+                data: seatAvailabilityToSave,
+              });
+            }
+          } else {
             continue;
           }
+        } catch (error) {
+          console.error(
+            `Error while fetching seat availability for route ${route.id}, cabin ${cabin.key}: ${error}`
+          );
+          continue;
         }
       }
     }

@@ -189,3 +189,9 @@ export interface FlightsAvailability {
   originAirport: string;
   destinationAirport: string;
 }
+
+export interface UpdateSeatsAvailabilityType {
+  route: RouteType;
+  startDate: string;
+  endDate: string;
+}
