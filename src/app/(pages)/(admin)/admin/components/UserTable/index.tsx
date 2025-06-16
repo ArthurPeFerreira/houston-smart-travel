@@ -61,7 +61,7 @@ export default function UserTable() {
         const sessionData = await api.get("api/auth/session");
         setSession(sessionData.data);
       } catch {
-        console.error("Failed to Find Users!");
+        console.error("Failed to Find Users.");
       }
     }
     fetchInitialData();

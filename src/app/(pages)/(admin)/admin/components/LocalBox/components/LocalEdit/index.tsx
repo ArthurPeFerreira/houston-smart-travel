@@ -64,7 +64,7 @@ export default function LocalEdit({
         const file = new File([blob], local.image, { type: blob.type });
         setSelectedEditFile(file);
       } catch {
-        toast.error("Error loading image!", toastConfigs);
+        toast.error("Error loading image.", toastConfigs);
       }
     }
     setInitialData(); // roda sempre que 'local' mudar
@@ -111,7 +111,7 @@ export default function LocalEdit({
       });
 
       if (response.status === 200) {
-        toast.success("Local edited successfully!", toastConfigs);
+        toast.success("Local edited successfully.", toastConfigs);
       }
     } catch (error: any) {
       // Tenta extrair mensagem de erro do servidor
@@ -148,7 +148,7 @@ export default function LocalEdit({
             e.preventDefault();
 
             if (!selectedEditFile) {
-              toast.error("Please select an image!", toastConfigs);
+              toast.error("Please select an image.", toastConfigs);
               return;
             }
 

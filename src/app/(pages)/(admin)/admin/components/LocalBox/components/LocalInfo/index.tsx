@@ -99,10 +99,10 @@ export default function LocalsInfo({ isOpen, setIsOpen }: LocalsInfoProps) {
       const response = await api.put(`api/admin/local`, data);
 
       if (response.status === 200) {
-        toast.success("Locals order edited successfully!", toastConfigs);
+        toast.success("Locals order edited successfully.", toastConfigs);
       }
     } catch {
-      toast.error("Failed to edit locals order!", toastConfigs);
+      toast.error("Failed to edit locals order.", toastConfigs);
     } finally {
       const responseLocals = await api.get("api/admin/local");
       setLocals(responseLocals.data);
@@ -118,7 +118,7 @@ export default function LocalsInfo({ isOpen, setIsOpen }: LocalsInfoProps) {
 
         setLocals(locals.filter((local) => local.id !== localId));
 
-        toast.success("Local deleted successfully!", toastConfigs);
+        toast.success("Local deleted successfully.", toastConfigs);
       }
     } catch (error: any) {
       // Tenta extrair mensagem de erro do servidor

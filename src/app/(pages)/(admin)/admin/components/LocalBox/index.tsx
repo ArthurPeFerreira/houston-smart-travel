@@ -164,7 +164,7 @@ export default function LocalBox() {
       });
 
       if (response.status === 200) {
-        toast.success("Local created successfully!", toastConfigs);
+        toast.success("Local created successfully.", toastConfigs);
       }
     } catch (error: any) {
       // Tenta extrair mensagem de erro do servidor
