@@ -22,6 +22,10 @@ interface EditUserProps {
   session: Session | undefined;
 }
 
+// Classe CSS reutilizável para os inputs
+const inputs =
+  "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white";
+
 export default function EditUser({
   isOpen,
   setIsOpen,
@@ -36,10 +40,6 @@ export default function EditUser({
   const [name, setName] = useState<string>("");
   const [active, setActive] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-
-  // Classe CSS reutilizável para os inputs
-  const inputs =
-    "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white";
 
   // Atualiza os estados com os dados do usuário sempre que userInfo mudar
   useEffect(() => {

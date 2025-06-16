@@ -19,6 +19,10 @@ interface CreateUserProps {
   setIsOpen: (open: boolean) => void;
 }
 
+// Classe CSS reutilizável para os inputs
+const inputs =
+  "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white";
+
 export default function CreateUser({ isOpen, setIsOpen }: CreateUserProps) {
   // Estados locais para armazenar os valores do formulário
   const [user, setUser] = useState<string>("");
@@ -26,10 +30,6 @@ export default function CreateUser({ isOpen, setIsOpen }: CreateUserProps) {
   const [showPassword, setShowPassword] = useState<boolean>(true);
   const [name, setName] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-
-  // Classe CSS reutilizável para os inputs
-  const inputs =
-    "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white";
 
   // Função chamada ao enviar o formulário de criação de usuário
   const handleSubmit = async (e: React.FormEvent) => {

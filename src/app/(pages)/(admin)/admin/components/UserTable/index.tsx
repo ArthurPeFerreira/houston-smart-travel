@@ -31,11 +31,11 @@ import { signOut } from "next-auth/react";
 import { FaSpinner } from "react-icons/fa";
 import eventEmitter from "@/lib/event/eventEmmiter";
 
+// Classe CSS reutilizável para estilização das células da tabela
+const classItens = "border border-gray-800 p-2 text-center";
+
 // Componente principal que exibe a tabela de usuários
 export default function UserTable() {
-  // Classe CSS reutilizável para estilização das células da tabela
-  const classItens = "border border-gray-800 p-2 text-center";
-
   // Estados para armazenar os usuários e controlar modais
   const [users, setUsers] = useState<UserType[] | undefined>(undefined);
   const [showCreateUserModal, setShowCreateUserModal] =
