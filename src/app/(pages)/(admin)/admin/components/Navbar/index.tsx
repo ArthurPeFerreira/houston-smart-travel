@@ -1,38 +1,39 @@
 // Indica que este é um componente do lado do cliente no Next.js (App Router)
 "use client";
 
-// Importação da função de logout do NextAuth
+// Função de logout do NextAuth
 import { signOut } from "next-auth/react";
 
-// Importação do componente de link do Next.js para navegação interna
+// Componente de link do Next.js para navegação interna
 import Link from "next/link";
 
-// Importação dos ícones do React Icons
+// Ícones utilizados na barra de navegação
 import { IoIosLogOut } from "react-icons/io";
-import { FaSpinner } from "react-icons/fa"; // Ícone de carregamento
+import { FaSpinner } from "react-icons/fa";
 
-// Importação dos hooks do React para gerenciamento de estado e navegação
+// Hooks do React e do Next.js
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-// Componente Navbar para a barra de navegação
+// Componente de navegação principal do sistema
 export default function Navbar() {
-  // Estado para controlar o carregamento do logout
+  // Estado que controla o loading durante o processo de logout
   const [loading, setLoading] = useState<boolean>(false);
 
-  // Hook para redirecionamento de páginas
+  // Hook para redirecionar entre páginas
   const router = useRouter();
 
-  // Função para lidar com o logout do usuário
+  // Função responsável por executar o logout
   async function handleLogout() {
-    setLoading(true); // Ativa o estado de carregamento
-    await signOut({ redirect: false }); // Faz o logout sem redirecionamento automático
-    router.push("/login"); // Redireciona o usuário para a página de login
-    setLoading(false); // Desativa o estado de carregamento
+    setLoading(true); // Inicia o loading
+    await signOut({ redirect: false }); // Encerra a sessão sem redirecionar automaticamente
+    router.push("/login"); // Redireciona para a página de login
+    setLoading(false); // Finaliza o loading
   }
 
   return (
     <nav className="text-white w-full h-15 bg-gray-800 flex items-center justify-between px-4 py-3">
+      {/* Navegação entre páginas */}
       <div className="flex flex-row gap-8 text-xl">
         <Link href={"/"}>
           <h2 className="font-medium hover:text-gray-300 transition-colors duration-200">
@@ -53,17 +54,17 @@ export default function Navbar() {
         </Link>
       </div>
 
-      {/* Botão de logout */}
+      {/* Botão de logout com ícone */}
       <button
         className="p-2 hover:bg-gray-700 rounded transition-colors duration-200"
         onClick={handleLogout}
-        disabled={loading} // Desabilita o botão enquanto o logout está em andamento
+        disabled={loading}
       >
         {loading ? (
-          // Exibe o ícone de carregamento se o logout estiver em andamento
+          // Ícone de loading enquanto realiza logout
           <FaSpinner className="animate-spin p-2" size={40} />
         ) : (
-          // Exibe o ícone de logout normalmente
+          // Ícone de logout padrão
           <IoIosLogOut
             className="hover:cursor-pointer hover:opacity-80 transition-opacity duration-200"
             color="red"
