@@ -15,7 +15,7 @@ import { api } from "@/lib/api/api";
 import { useEffect, useState } from "react";
 
 // Importação de tipos relacionados a usuários
-import { UserType, Session, SendEditUserType } from "@/lib/user/types";
+import { UserType, Session } from "@/lib/user/types";
 
 // Importação dos componentes modais para criação e edição de usuários
 import CreateUserModal from "./components/CreateUser";

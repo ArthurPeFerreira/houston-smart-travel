@@ -108,7 +108,7 @@ export default function CreateUser({ isOpen, setIsOpen }: CreateUserProps) {
             <div className="flex">
               <input
                 id="password"
-                type={showPassword ? "text" : "password"}
+                type={showPassword ? "password" : "text"}
                 value={password}
                 placeholder="Type password"
                 onChange={(e) => setPassword(e.target.value)}

@@ -45,8 +45,6 @@ export async function PUT(request: NextRequest) {
 
     const { type }: { type: "check flights" | "home" | undefined } = body;
 
-    console.log(type)
-
     // Valida se veio o parâmetro no JSON
     if (!type) {
       return NextResponse.json(

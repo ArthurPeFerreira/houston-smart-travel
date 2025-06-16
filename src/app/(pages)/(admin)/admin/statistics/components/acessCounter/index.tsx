@@ -35,7 +35,6 @@ export default function AcessCounterBox({ type }: AcessCounterBoxProps) {
     }
   }
 
-  // useEffect para carregar os aeroportos ao montar o componente
   useEffect(() => {
     fetchCounter();
   }, []);

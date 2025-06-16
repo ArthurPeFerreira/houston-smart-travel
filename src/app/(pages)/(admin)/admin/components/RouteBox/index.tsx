@@ -21,14 +21,13 @@ import { FaPlus, FaSpinner, FaTrash } from "react-icons/fa";
 import Decimal from "decimal.js";
 
 // Tipagem do objeto de criação de rota
-import { CreateRouteType, EditRouteType, RouteType } from "@/lib/route/types";
+import { CreateRouteType } from "@/lib/route/types";
 
 // Configurações e instância do toast para notificações
 import { toastConfigs } from "@/lib/toastify/toastify";
 import { toast } from "react-toastify";
 import { api } from "@/lib/api/api";
 import RouteInfo from "./components/RouteInfo";
-import getRoutes from "./functions/getRoutes";
 import {
   customStyles,
   MileageProgramOption,
@@ -90,21 +89,10 @@ export default function RouteBox() {
 
   // Indicadores de carregamento para o botão de criação de rota e modais
   const [loading, setLoading] = useState<boolean>(false);
-  const [loadingRoutesInfoModal, setLoadingRoutesInfoModal] =
-    useState<boolean>(true);
-  const [loadingEditRouteModal, setLoadingEditRouteModal] =
-    useState<boolean>(false);
 
   // Controle de visibilidade dos modais de visualização e edição de rotas
   const [showRoutesInfoModal, setShowRoutesInfoModal] =
     useState<boolean>(false);
-  const [showEditRouteModal, setShowEditRouteModal] = useState<boolean>(false);
-
-  // Estado do aeroporto atualmente selecionado para filtragem de rotas
-  const [airportIdSelected, setAirportIdSelected] = useState<number>(0);
-
-  // Lista de rotas filtradas com base no aeroporto selecionado
-  const [filteredRoutes, setFilteredRoutes] = useState<RouteType[]>([]);
 
   const [lastModifiedField, setLastModifiedField] = useState<{
     cabinKey: CabinKey;
@@ -128,17 +116,6 @@ export default function RouteBox() {
       eventEmitter.off("updateAirports", handleEvent);
     };
   }, []);
-
-  // Hook que busca rotas sempre que um novo aeroporto for selecionado
-  useEffect(() => {
-    if (airportIdSelected !== 0) {
-      getRoutes({
-        airportIdSelected: airportIdSelected,
-        setFilteredRoutes: setFilteredRoutes,
-        setIsLoading: setLoadingRoutesInfoModal,
-      });
-    }
-  }, [airportIdSelected]);
 
   // Busca dados do aeroporto 1
   useEffect(() => {
@@ -246,45 +223,6 @@ export default function RouteBox() {
     }
   }
 
-  // Atualiza rota existente com dados fornecidos no modal de edição
-  async function handleEditRoute(data: EditRouteType) {
-    setLoadingEditRouteModal(true);
-    try {
-      await api.put(`api/admin/route/${data.id}`, data);
-      toast.success("Route edited successfully!", toastConfigs);
-    } catch (error: any) {
-      const errorMessage =
-        error?.response?.data?.error || "Failed to edit route.";
-      toast.error(errorMessage, toastConfigs);
-    } finally {
-      setLoadingEditRouteModal(false);
-      setShowEditRouteModal(false);
-      getRoutes({
-        airportIdSelected: airportIdSelected,
-        setFilteredRoutes: setFilteredRoutes,
-        setIsLoading: setLoadingRoutesInfoModal,
-      });
-    }
-  }
-
-  // Remove uma rota existente pelo seu ID
-  async function handleDeleteRoute(routeId: number) {
-    try {
-      await api.delete(`api/admin/route/${routeId}`);
-      toast.success("Route deleted successfully!", toastConfigs);
-    } catch (error: any) {
-      const errorMessage =
-        error?.response?.data?.error || "Failed to delete route.";
-      toast.error(errorMessage, toastConfigs);
-    } finally {
-      getRoutes({
-        airportIdSelected: airportIdSelected,
-        setFilteredRoutes: setFilteredRoutes,
-        setIsLoading: setLoadingRoutesInfoModal,
-      });
-    }
-  }
-
   // Ao selecionar o aeroporto 1, busca os possíveis destinos ainda não relacionados
   async function handleSelectAirport1(id: number) {
     try {
@@ -381,6 +319,24 @@ export default function RouteBox() {
           className="w-full mt-4 flex flex-col gap-4"
           onSubmit={handleCreateRoute}
         >
+          {/* Seção de seleção do programa de milhagem */}
+          <div>
+            <label className="block mb-1 text-white">Mileage Program</label>
+            <Select<MileageProgramOption>
+              instanceId="mileage-program-select"
+              inputId="mileage-program-select"
+              options={options}
+              components={{
+                Option: ProgramOption,
+                SingleValue: ProgramSingleValue,
+              }}
+              styles={customStyles}
+              defaultValue={options[0]}
+              value={mileageProgram}
+              onChange={(e) => setMileageProgram(e)}
+            />
+          </div>
+
           {/* Campo de seleção do primeiro aeroporto */}
           <div>
             <label className="block mb-1 text-white">Airport 1</label>
@@ -641,24 +597,6 @@ export default function RouteBox() {
             )}
           </div>
 
-          {/* Seção de seleção do programa de milhagem */}
-          <div>
-            <label className="block mb-1 text-white">Mileage Program</label>
-            <Select<MileageProgramOption>
-              instanceId="mileage-program-select"
-              inputId="mileage-program-select"
-              options={options}
-              components={{
-                Option: ProgramOption,
-                SingleValue: ProgramSingleValue,
-              }}
-              styles={customStyles}
-              defaultValue={options[0]}
-              value={mileageProgram}
-              onChange={(e) => setMileageProgram(e)}
-            />
-          </div>
-
           {/* Checkbox para permitir conexões na rota */}
           <div className="cursor-pointer">
             <input
@@ -696,7 +634,6 @@ export default function RouteBox() {
           className="mt-2 w-full text-start text-blue-500 cursor-pointer hover:underline"
           onClick={() => {
             setShowRoutesInfoModal(true);
-            document.body.classList.add("overflow-hidden");
           }}
         >
           See Routes
@@ -705,20 +642,7 @@ export default function RouteBox() {
         <RouteInfo
           airports={airports}
           isOpen={showRoutesInfoModal}
-          isOpenEditModal={showEditRouteModal}
-          setIsOpenEditModal={() => setShowEditRouteModal(true)}
-          onClose={() => {
-            setShowRoutesInfoModal(false);
-            document.body.classList.remove("overflow-hidden");
-          }}
-          onCloseEditModal={() => setShowEditRouteModal(false)}
-          isLoading={loadingRoutesInfoModal}
-          isLoadingEditModal={loadingEditRouteModal}
-          airportIdSelected={airportIdSelected}
-          setAirportIdSelected={setAirportIdSelected}
-          filteredRoutes={filteredRoutes}
-          onDeleteRoute={handleDeleteRoute}
-          onEditRoute={(data) => handleEditRoute(data)}
+          setIsOpen={setShowRoutesInfoModal}
         />
       </div>
     </div>

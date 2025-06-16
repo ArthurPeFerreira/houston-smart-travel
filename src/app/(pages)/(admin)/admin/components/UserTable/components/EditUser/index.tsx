@@ -1,31 +1,3 @@
-// // Importação dos tipos para edição de usuário e usuário do sistema
-// import {  SendEditUserType, UserType } from "@/lib/user/types";
-
-// // Importação dos hooks do React para gerenciamento de estado e efeitos colaterais
-// import React, { useEffect, useState } from "react";
-
-// // Importação dos ícones do React Icons para exibir senha visível/oculta e carregamento
-// import { FaEye, FaEyeSlash, FaSpinner } from "react-icons/fa";
-
-// // Definição da interface das propriedades do modal de edição de usuário
-// interface EditUserModalProps {
-//   isOpen: boolean; // Indica se o modal está aberto ou fechado
-//   isLoading: boolean; // Indica se a ação de edição está em andamento
-//   onClose: () => void; // Função para fechar o modal
-//   onEditUser: (data: SendEditUserType, userId: number) => void; // Função para editar o usuário
-// }
-
-// // Componente de modal para edição de usuários
-// export default function EditUserModal({
-//   isOpen,
-//   isLoading,
-//   userInfo,
-//   onClose,
-//   onEditUser,
-// }: EditUserModalProps) {
-
-// }
-
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -36,7 +8,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { FaEye, FaEyeSlash, FaSpinner } from "react-icons/fa";
-import { EditUserType, Session, UserType } from "@/lib/user/types";
+import { Session, UserType } from "@/lib/user/types";
 import { api } from "@/lib/api/api";
 import { toast } from "react-toastify";
 import { toastConfigs } from "@/lib/toastify/toastify";
