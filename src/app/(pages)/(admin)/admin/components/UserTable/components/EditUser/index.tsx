@@ -1,29 +1,37 @@
-// Importação dos tipos para edição de usuário e usuário do sistema
-import {  SendEditUserType, UserType } from "@/lib/user/types";
+"use client";
 
-// Importação dos hooks do React para gerenciamento de estado e efeitos colaterais
 import React, { useEffect, useState } from "react";
-
-// Importação dos ícones do React Icons para exibir senha visível/oculta e carregamento
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { FaEye, FaEyeSlash, FaSpinner } from "react-icons/fa";
+import { Session, UserType } from "@/lib/user/types";
+import { api } from "@/lib/api/api";
+import { toast } from "react-toastify";
+import { toastConfigs } from "@/lib/toastify/toastify";
+import eventEmitter from "@/lib/event/eventEmmiter";
+import { signOut } from "next-auth/react";
 
-// Definição da interface das propriedades do modal de edição de usuário
-interface EditUserModalProps {
-  isOpen: boolean; // Indica se o modal está aberto ou fechado
-  isLoading: boolean; // Indica se a ação de edição está em andamento
-  userInfo: UserType; // Dados do usuário a ser editado
-  onClose: () => void; // Função para fechar o modal
-  onEditUser: (data: SendEditUserType, userId: number) => void; // Função para editar o usuário
+interface EditUserProps {
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+  userInfo: UserType | undefined; // Dados do usuário a ser editado[
+  session: Session | undefined;
 }
 
-// Componente de modal para edição de usuários
-export default function EditUserModal({
+// Classe CSS reutilizável para os inputs
+const inputs =
+  "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white";
+
+export default function EditUser({
   isOpen,
-  isLoading,
+  setIsOpen,
   userInfo,
-  onClose,
-  onEditUser,
-}: EditUserModalProps) {
+  session,
+}: EditUserProps) {
   // Estados locais para armazenar os valores do formulário
   const [user, setUser] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -31,22 +39,52 @@ export default function EditUserModal({
   const [showPassword, setShowPassword] = useState<boolean>(true);
   const [name, setName] = useState<string>("");
   const [active, setActive] = useState<boolean>(false);
-
-  // Classe CSS reutilizável para os inputs
-  const inputs =
-    "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white";
+  const [loading, setLoading] = useState<boolean>(false);
 
   // Atualiza os estados com os dados do usuário sempre que userInfo mudar
   useEffect(() => {
-    setUser(userInfo.user);
-    setName(userInfo.name);
-    setActive(userInfo.active);
+    setUser(userInfo?.user ?? "");
+    setName(userInfo?.name ?? "");
+    setActive(userInfo?.active ?? false);
   }, [userInfo]);
 
   // Função para lidar com o envio do formulário
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onEditUser({ user, password, name, active }, userInfo.id);
+    setLoading(true);
+    const userData = { user, password, name, active };
+
+    try {
+      // Requisição para atualizar os dados do usuário
+      const userEditedData = await api.put(
+        `api/admin/user/${userInfo?.id}`,
+        userData
+      );
+      const userEdited: UserType = userEditedData.data;
+
+      // Atualiza a lista de usuários após a criação
+      eventEmitter.emit("updateUsers");
+
+      // Exibe notificação de sucesso
+      toast.success("User edited successfully.", toastConfigs);
+
+      // Se o usuário editado for o mesmo da sessão atual e foi desativado, realiza o logout
+      if (userEdited.id == session?.user.id && userEdited.active == false) {
+        setTimeout(async () => {
+          await signOut();
+        }, 1000);
+      }
+    } catch {
+      // Exibe notificação de erro
+      toast.error("Failed to edit user.", toastConfigs);
+    } finally {
+      // Finaliza o loading e fecha o modal
+      setLoading(false);
+
+      setTimeout(() => {
+        handleCancel();
+      }, 1000);
+    }
   };
 
   // Função para resetar os campos ao cancelar
@@ -54,16 +92,20 @@ export default function EditUserModal({
     setPassword("");
     setShowPassword(true);
     setChangePassword(false);
+    setIsOpen(!isOpen);
   }
 
-  // Se o modal não estiver aberto, retorna null para não renderizar nada
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-900 z-50">
-      {/* Modal principal */}
-      <div className="bg-gray-800 p-6 rounded shadow-lg w-full max-w-md">
-        <h2 className="text-xl font-bold mb-4 text-white">Edit User</h2>
+    <Dialog open={isOpen} onOpenChange={handleCancel}>
+      <DialogContent
+        showCloseButton={false}
+        className="bg-gray-800 p-6 rounded-md shadow-lg w-11/12 sm:w-full max-w-md border-none text-white h-auto max-h-11/12 "
+      >
+        <DialogHeader>
+          <DialogTitle className="text-center text-2xl font-bold">
+            Create User
+          </DialogTitle>
+        </DialogHeader>
         <form onSubmit={handleSubmit}>
           {/* Campo de usuário */}
           <div className="mb-4">
@@ -165,35 +207,31 @@ export default function EditUserModal({
           </div>
 
           {/* Botões de ação */}
-          <div className="flex justify-end">
-            {/* Botão de cancelar edição */}
-            <button
-              type="button"
-              onClick={() => {
-                handleCancel();
-                onClose();
-              }}
-              className="mr-2 bg-gray-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-gray-600"
-            >
-              Cancel
-            </button>
-
+          <div className="flex w-full ">
             {/* Botão de salvar com loading spinner quando a ação está em andamento */}
-            {isLoading ? (
-              <div className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600">
+            {loading ? (
+              <div className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600 w-full flex items-center justify-center">
                 <FaSpinner className="animate-spin" size={24} />
               </div>
             ) : (
               <button
                 type="submit"
-                className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600"
+                className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600 w-full flex items-center justify-center"
               >
                 Save
               </button>
             )}
           </div>
         </form>
-      </div>
-    </div>
+
+        {/* Botão para fechar o modal */}
+        <button
+          onClick={() => handleCancel()}
+          className="w-full p-2 rounded bg-red-500 hover:bg-red-600 transition cursor-pointer"
+        >
+          Close
+        </button>
+      </DialogContent>
+    </Dialog>
   );
 }

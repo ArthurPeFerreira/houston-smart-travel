@@ -1,10 +1,6 @@
-// Indica que este é um componente do lado do cliente (Next.js App Router)
-"use client";
+"use client"; // Indica que este é um componente do lado do cliente no Next.js (App Router)
 
-// Importações de tipos utilizados para edição e exibição de rotas
-import { EditRouteType, RouteType } from "@/lib/route/types";
-
-// Importação do componente Select e configurações do seletor customizado
+// Importa o componente customizado Select e suas configurações específicas
 import Select from "react-select";
 import {
   customStyles,
@@ -14,17 +10,23 @@ import {
   ProgramSingleValue,
 } from "../../../../functions/selectMileageProgram";
 
-// Hooks do React e utilitários
-import { useEffect, useState } from "react";
-import { mileagePrograms } from "@/lib/route/mileagePrograms";
+import React, { useEffect, useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+
+// Importa dados e tipagens relacionadas às cabines e rotas
 import { Cabin, CabinKey, cabinPriority, cabins } from "@/lib/route/cabins";
-import Decimal from "decimal.js";
-
-// Ícones utilizados nas ações
-import { FaPlus, FaSpinner, FaTrash } from "react-icons/fa";
 import { MdFlight } from "react-icons/md";
+import { EditRouteType, RouteType } from "@/lib/route/types";
+import Decimal from "decimal.js";
+import { mileagePrograms } from "@/lib/route/mileagePrograms";
+import { FaPlus, FaSpinner, FaTrash } from "react-icons/fa";
 
-// Tipagem interna das cabines utilizadas no formulário de edição
+// Tipagem dos dados da cabine usados no formulário
 interface CabinData {
   key: CabinKey;
   label: string;
@@ -36,22 +38,23 @@ interface CabinData {
   passagePriceRoundTrip: Decimal;
 }
 
-// Tipagem das props esperadas pelo modal de edição de rota
-interface EditRouteModalProps {
+// Propriedades esperadas pelo componente EditRoute
+interface EditRouteProps {
   isOpen: boolean;
-  isLoading: boolean;
-  onClose: () => void;
-  onSave: (data: EditRouteType) => void;
+  setIsOpen: (open: boolean) => void;
   initialData: RouteType;
+  onEdit: (data: EditRouteType) => void;
+  loading: boolean;
 }
 
+// Componente principal para edição de rotas de voo com programas de milhagem e diferentes cabines
 export default function EditRoute({
   isOpen,
-  isLoading,
-  onClose,
-  onSave,
+  setIsOpen,
   initialData,
-}: EditRouteModalProps) {
+  onEdit,
+  loading,
+}: EditRouteProps) {
   const inputs =
     "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white";
 
@@ -67,6 +70,7 @@ export default function EditRoute({
     field: string;
   } | null>(null);
 
+  // Preenche o formulário com os dados da rota que está sendo editada
   useEffect(() => {
     if (!initialData) return;
 
@@ -93,6 +97,7 @@ export default function EditRoute({
       }))
     );
 
+    // Define quais cabines ainda podem ser adicionadas à rota
     setCabinToShow(
       Object.values(cabins).filter(
         (cabin) => !initialData.cabins.some((added) => added.key === cabin.key)
@@ -100,6 +105,7 @@ export default function EditRoute({
     );
   }, [initialData]);
 
+  // Recalcula automaticamente o valor da viagem de ida e volta quando algum dos dois trechos é alterado
   useEffect(() => {
     if (
       !lastModifiedField ||
@@ -128,6 +134,7 @@ export default function EditRoute({
     setLastModifiedField(null);
   }, [cabinList, lastModifiedField]);
 
+  // Adiciona uma nova cabine à rota com valores iniciais zerados
   function addNewCabin(cabinKey: CabinKey) {
     const cabin = cabins[cabinKey];
 
@@ -155,6 +162,7 @@ export default function EditRoute({
     setCabinKey("");
   }
 
+  // Remove uma cabine da rota e a torna novamente disponível para adição
   function removeCabin(cabinKey: CabinKey) {
     const cabin = cabins[cabinKey];
 
@@ -173,6 +181,7 @@ export default function EditRoute({
     });
   }
 
+  // Atualiza um campo específico de uma cabine
   function updateCabinField(
     cabinKey: CabinKey,
     field: keyof Omit<CabinData, "key" | "label" | "code">,
@@ -187,16 +196,20 @@ export default function EditRoute({
     setLastModifiedField({ cabinKey, field });
   }
 
-  if (!isOpen) return null;
+  // Renderização principal
   return (
-    // Container principal do modal com fundo escuro cobrindo toda a tela
-    <div className="fixed inset-0 text-white flex items-center justify-center z-50 w-full h-full bg-gray-900">
-      {/* Caixa interna do modal com padding e aparência arredondada */}
-      <div className="bg-gray-800 p-6 rounded shadow-lg max-w-96 sm:max-w-11/12 w-fit max-h-11/12 overflow-y-auto">
-        {/* Título centralizado do modal */}
-        <h1 className="text-center font-bold text-3xl mb-5 relative">
-          Edit Route
-        </h1>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogContent
+        showCloseButton={false}
+        className="bg-gray-800 p-6 rounded-md shadow-lg w-11/12 sm:w-full max-w-fit border-none text-white max-h-[90vh] overflow-y-auto"
+      >
+        <DialogHeader>
+          <DialogTitle className="text-center text-2xl font-bold">
+            Edit Route
+          </DialogTitle>
+        </DialogHeader>
+
+        {/* Formulário principal */}
         <form
           className="flex flex-col gap-2"
           onSubmit={(e) => {
@@ -218,9 +231,10 @@ export default function EditRoute({
               active,
             };
 
-            onSave(data);
+            onEdit(data);
           }}
         >
+          {/* Lista de aeroportos envolvidos na rota */}
           <div className="flex flex-col gap-2">
             {initialData.airports.map((airport) => (
               <div
@@ -231,6 +245,25 @@ export default function EditRoute({
               </div>
             ))}
           </div>
+
+          {/* Seletor de programa de milhagem */}
+          <div>
+            <label className="block mb-1 text-white">Mileage Program</label>
+            <Select<MileageProgramOption>
+              instanceId="edit-mileage-program-select"
+              inputId="edit-mileage-program-select"
+              options={options}
+              components={{
+                Option: ProgramOption,
+                SingleValue: ProgramSingleValue,
+              }}
+              styles={customStyles}
+              defaultValue={mileageProgram}
+              value={mileageProgram}
+              onChange={(e) => setMileageProgram(e)}
+            />
+          </div>
+
           <div className="flex flex-col gap-2">
             {/* Seção de seleção e adição de cabines à rota */}
             <div className="flex flex-col">
@@ -358,9 +391,7 @@ export default function EditRoute({
                           type="number"
                           inputMode="decimal"
                           step="0.01"
-                          value={Number(
-                            cabin.passagePriceFromAirport1To2
-                          )}
+                          value={Number(cabin.passagePriceFromAirport1To2)}
                           onChange={(e) =>
                             updateCabinField(
                               cabin.key,
@@ -389,9 +420,7 @@ export default function EditRoute({
                           type="number"
                           inputMode="decimal"
                           step="0.01"
-                          value={Number(
-                            cabin.passagePriceFromAirport2To1
-                          )}
+                          value={Number(cabin.passagePriceFromAirport2To1)}
                           onChange={(e) =>
                             updateCabinField(
                               cabin.key,
@@ -434,23 +463,6 @@ export default function EditRoute({
               )}
             </div>
 
-            <div>
-              <label className="block mb-1 text-white">Mileage Program</label>
-              <Select<MileageProgramOption>
-                instanceId="edit-mileage-program-select"
-                inputId="edit-mileage-program-select"
-                options={options}
-                components={{
-                  Option: ProgramOption,
-                  SingleValue: ProgramSingleValue,
-                }}
-                styles={customStyles}
-                defaultValue={mileageProgram}
-                value={mileageProgram}
-                onChange={(e) => setMileageProgram(e)}
-              />
-            </div>
-
             {/* Checkbox para permitir conexões na rota */}
             <div className="cursor-pointer">
               <input
@@ -489,35 +501,32 @@ export default function EditRoute({
               </label>
             </div>
           </div>
-          {/* Botões de ação do formulário */}
-          <div className="flex justify-end">
-            {/* Botão de cancelar */}
-            <button
-              type="button"
-              onClick={() => {
-                onClose();
-              }}
-              className="mr-2 bg-gray-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-gray-600"
-            >
-              Cancel
-            </button>
-
-            {/* Botão de salvar ou indicador de carregamento */}
-            {isLoading ? (
-              <div className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600">
+          {/* Botões de ação */}
+          <div className="flex w-full ">
+            {/* Botão de salvar com loading spinner quando a ação está em andamento */}
+            {loading ? (
+              <div className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600 w-full flex items-center justify-center">
                 <FaSpinner className="animate-spin" size={24} />
               </div>
             ) : (
               <button
                 type="submit"
-                className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600"
+                className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600 w-full flex items-center justify-center"
               >
                 Save
               </button>
             )}
           </div>
         </form>
-      </div>
-    </div>
+
+        {/* Botão para fechar o modal */}
+        <button
+          onClick={() => setIsOpen(false)}
+          className="w-full p-2 rounded bg-red-500 hover:bg-red-600 transition cursor-pointer"
+        >
+          Close
+        </button>
+      </DialogContent>
+    </Dialog>
   );
 }

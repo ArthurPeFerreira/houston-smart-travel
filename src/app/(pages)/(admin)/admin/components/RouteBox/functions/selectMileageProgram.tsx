@@ -1,25 +1,26 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+// Importa os dados dos programas de milhagem disponíveis
 import { mileagePrograms } from "@/lib/route/mileagePrograms";
 import { components, OptionProps, SingleValueProps } from "react-select";
 
-// Tipagem para opções do Select que representam os programas de milhagem
+// Define o formato das opções de programa de milhagem usadas no Select
 export interface MileageProgramOption {
-  value: string;
-  label: string;
-  logoUrl: string;
+  value: string;      // identificador único (chave)
+  label: string;      // nome exibido
+  logoUrl: string;    // URL do ícone
 }
 
-// Mapeamento dos programas de milhagem para serem usados como opções no Select
+// Converte os programas de milhagem em opções para o Select
 export const options: MileageProgramOption[] = Object.values(mileagePrograms).map(
-    (program) => ({
-      value: program.key,
-      label: program.label,
-      logoUrl: program.logoUrl,
-    })
-  );
+  (program) => ({
+    value: program.key,
+    label: program.label,
+    logoUrl: program.logoUrl,
+  })
+);
 
-// Estilos customizados para o componente Select do react-select
+// Estilos personalizados do componente react-select para combinar com o tema escuro da aplicação
 export const customStyles = {
   control: (provided: any) => ({
     ...provided,
@@ -67,7 +68,7 @@ export const customStyles = {
   }),
 };
 
-// Componente customizado de item da lista de opções do Select (com ícone)
+// Componente customizado para exibir a opção no menu do Select, incluindo o ícone
 export function ProgramOption(props: OptionProps<MileageProgramOption>) {
   const { data } = props;
   return (
@@ -81,7 +82,7 @@ export function ProgramOption(props: OptionProps<MileageProgramOption>) {
   );
 }
 
-// Componente customizado para valor selecionado no Select (com ícone)
+// Componente customizado para exibir o valor selecionado no Select com ícone
 export function ProgramSingleValue(props: SingleValueProps<MileageProgramOption>) {
   const { data } = props;
   return (

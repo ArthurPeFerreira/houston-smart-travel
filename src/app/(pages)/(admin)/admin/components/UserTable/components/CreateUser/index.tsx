@@ -1,65 +1,88 @@
-// Importação do tipo `CreateUserType` para definir a estrutura dos dados do usuário a ser criado
-import { CreateUserType } from "@/lib/user/types";
+"use client";
 
-// Importação dos hooks do React para gerenciamento de estado
 import React, { useState } from "react";
-
-// Importação de ícones para alternar visibilidade da senha e exibir status de carregamento
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { FaEye, FaEyeSlash, FaSpinner } from "react-icons/fa";
+import { CreateUserType } from "@/lib/user/types";
+import { api } from "@/lib/api/api";
+import { toast } from "react-toastify";
+import { toastConfigs } from "@/lib/toastify/toastify";
+import eventEmitter from "@/lib/event/eventEmmiter";
 
-// Definição da interface das propriedades do modal de criação de usuário
-interface CreateUserModalProps {
-  isOpen: boolean; // Indica se o modal está aberto ou fechado
-  isLoading: boolean; // Indica se a requisição de criação de usuário está em andamento
-  onClose: () => void; // Função para fechar o modal
-  onCreateUser: (data: CreateUserType) => void; // Função chamada ao criar um novo usuário
+interface CreateUserProps {
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
 }
 
-// Componente de modal para criar usuários
-export default function CreateUserModal({
-  isOpen,
-  isLoading,
-  onClose,
-  onCreateUser,
-}: CreateUserModalProps) {
+// Classe CSS reutilizável para os inputs
+const inputs =
+  "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white";
+
+export default function CreateUser({ isOpen, setIsOpen }: CreateUserProps) {
   // Estados locais para armazenar os valores do formulário
   const [user, setUser] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(true);
   const [name, setName] = useState<string>("");
-
-  // Classe CSS reutilizável para os inputs
-  const inputs =
-    "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white";
+  const [loading, setLoading] = useState<boolean>(false);
 
   // Função chamada ao enviar o formulário de criação de usuário
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Passa os dados para a função recebida via props
-    onCreateUser({ user, password, name });
+    setLoading(true);
+    try {
+      const userData: CreateUserType = {
+        name,
+        password,
+        user,
+      };
+      // Requisição para criar um novo usuário
+      await api.post("api/admin/user", userData);
 
-    // Limpa os campos do formulário
-    setUser("");
-    setPassword("");
-    setName("");
+      // Atualiza a lista de usuários após a criação
+      eventEmitter.emit("updateUsers");
+
+      // Exibe notificação de sucesso
+      toast.success("User created successfully.", toastConfigs);
+    } catch {
+      // Exibe notificação de erro
+      toast.error("Failed to create user.", toastConfigs);
+    } finally {
+      // Finaliza o loading e fecha o modal
+      setLoading(false);
+
+      setTimeout(() => {
+        handleCancel();
+      }, 1000);
+    }
   };
 
   // Função para resetar os campos ao cancelar
   function handleCancel() {
     setUser("");
     setPassword("");
-    setShowPassword(true);
+    setShowPassword(false);
     setName("");
+    setIsOpen(!isOpen);
   }
 
-  // Se o modal não estiver aberto, retorna `null` para evitar renderização desnecessária
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 flex items-center bg-gray-900 justify-center bg-opacity-10">
-      {/* Container do modal */}
-      <div className="bg-gray-800 p-6 rounded shadow-lg w-full max-w-md">
-        <h2 className="text-xl font-bold mb-4 text-white">Create User</h2>
+    <Dialog open={isOpen} onOpenChange={handleCancel}>
+      <DialogContent
+        showCloseButton={false}
+        className="bg-gray-800 p-6 rounded-md shadow-lg w-11/12 sm:w-full max-w-md border-none text-white h-auto max-h-11/12 "
+      >
+        <DialogHeader>
+          <DialogTitle className="text-center text-2xl font-bold">
+            Create User
+          </DialogTitle>
+        </DialogHeader>
+
         <form onSubmit={handleSubmit}>
           {/* Campo de usuário */}
           <div className="mb-4">
@@ -120,35 +143,30 @@ export default function CreateUserModal({
           </div>
 
           {/* Botões de ação */}
-          <div className="flex justify-end">
-            {/* Botão de cancelar criação */}
-            <button
-              type="button"
-              onClick={() => {
-                handleCancel();
-                onClose();
-              }}
-              className="mr-2 bg-gray-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-gray-600"
-            >
-              Cancel
-            </button>
-
-            {/* Botão de criação com spinner de carregamento quando a ação está em andamento */}
-            {isLoading ? (
-              <div className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600">
+          <div className="flex w-full ">
+            {/* Botão de salvar com loading spinner quando a ação está em andamento */}
+            {loading ? (
+              <div className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600 w-full flex items-center justify-center">
                 <FaSpinner className="animate-spin" size={24} />
               </div>
             ) : (
               <button
                 type="submit"
-                className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600"
+                className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600 w-full flex items-center justify-center"
               >
                 Create
               </button>
             )}
           </div>
         </form>
-      </div>
-    </div>
+        {/* Botão para fechar o modal */}
+        <button
+          onClick={() => handleCancel()}
+          className="w-full p-2 rounded bg-red-500 hover:bg-red-600 transition cursor-pointer"
+        >
+          Close
+        </button>
+      </DialogContent>
+    </Dialog>
   );
 }

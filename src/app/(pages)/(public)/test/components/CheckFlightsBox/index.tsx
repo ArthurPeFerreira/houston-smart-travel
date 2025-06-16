@@ -239,6 +239,7 @@ export default function CheckFlightsBox({
                 onChange={(e) => setSeats(Number(e.target.value))}
                 className={inputs}
                 min={1}
+                max={9}
               />
             </div>
           </div>
