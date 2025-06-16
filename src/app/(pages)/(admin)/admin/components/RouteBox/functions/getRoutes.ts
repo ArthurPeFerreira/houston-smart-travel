@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
 // Importa a instância da API para realizar requisições HTTP
 import { api } from "@/lib/api/api";
 

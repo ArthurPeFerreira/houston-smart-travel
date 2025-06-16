@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-// Indica que este é um componente do lado do cliente no Next.js (App Router)
-"use client";
+"use client"; // Indica que este é um componente do lado do cliente no Next.js (App Router)
 
 import React, { useEffect, useState } from "react";
 import {
@@ -35,49 +34,35 @@ export default function RouteInfo({
   setIsOpen,
   airports,
 }: RouteInfoProps) {
-  // Classe de estilo para os inputs do formulário
+  // Classe para os inputs
   const inputs =
     "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white";
 
-  // Classe de estilo aplicada às células da tabela
+  // Classe para células da tabela
   const classItens = "border border-gray-800 p-2 text-center";
 
-  // Estado para armazenar as cabines selecionadas para visualização
   const [cabinsSelected, setCabinsSelected] = useState<CabinsType[]>([]);
   const [airport1Selected, setAirport1Selected] = useState<AirportType>();
   const [airport2Selected, setAirport2Selected] = useState<AirportType>();
-
-  // Estado para controlar a exibição do modal de cabines
   const [isOpenCabins, setIsOpenCabins] = useState(false);
-
-  // Estado que define qual rota está sendo editada
   const [routeToEdit, setRouteToEdit] = useState<RouteType | undefined>();
-
   const [isLoadingUpdateRoutes, setIsLoadingUpdateRoutes] = useState(false);
-
-  // Estado do aeroporto atualmente selecionado para filtragem de rotas
   const [airportIdSelected, setAirportIdSelected] = useState<number>(0);
-
-  // Lista de rotas filtradas com base no aeroporto selecionado
   const [filteredRoutes, setFilteredRoutes] = useState<RouteType[]>([]);
-
   const [loading, setLoading] = useState<boolean>(true);
   const [loadingEditModal, setLoadingEditModal] = useState<boolean>(false);
-
   const [showEditRouteModal, setShowEditRouteModal] = useState<boolean>(false);
 
-  // Hook que busca rotas sempre que um novo aeroporto for selecionado
   useEffect(() => {
     if (airportIdSelected !== 0) {
       getRoutes({
-        airportIdSelected: airportIdSelected,
-        setFilteredRoutes: setFilteredRoutes,
+        airportIdSelected,
+        setFilteredRoutes,
         setIsLoading: setLoading,
       });
     }
   }, [airportIdSelected]);
 
-  // Remove uma rota existente pelo seu ID
   async function handleDeleteRoute(routeId: number) {
     try {
       await api.delete(`api/admin/route/${routeId}`);
@@ -88,19 +73,17 @@ export default function RouteInfo({
       toast.error(errorMessage, toastConfigs);
     } finally {
       getRoutes({
-        airportIdSelected: airportIdSelected,
-        setFilteredRoutes: setFilteredRoutes,
+        airportIdSelected,
+        setFilteredRoutes,
         setIsLoading: setLoading,
       });
     }
   }
 
   async function handleUpdateAllRoutes() {
-    setIsLoadingUpdateRoutes(true); // Ativa o loading
-
+    setIsLoadingUpdateRoutes(true);
     try {
       await api.put("/api/admin/route/update");
-
       toast.success("All routes are being updated successfully.", toastConfigs);
     } catch {
       toast.error("Failed to request the update of all routes.", toastConfigs);
@@ -112,7 +95,6 @@ export default function RouteInfo({
   async function handleUpdateRoute(routeId: number) {
     try {
       await api.put(`/api/admin/route/update/${routeId}`);
-
       toast.success("Route update started successfully.", toastConfigs);
     } catch {
       toast.error("Failed to request update for this route.", toastConfigs);
@@ -124,7 +106,6 @@ export default function RouteInfo({
     setIsOpen(!isOpen);
   }
 
-  // Atualiza rota existente com dados fornecidos no modal de edição
   async function handleEditRoute(data: EditRouteType) {
     setLoadingEditModal(true);
     try {
@@ -136,16 +117,12 @@ export default function RouteInfo({
       toast.error(errorMessage, toastConfigs);
     } finally {
       setLoadingEditModal(false);
-
       getRoutes({
-        airportIdSelected: airportIdSelected,
-        setFilteredRoutes: setFilteredRoutes,
+        airportIdSelected,
+        setFilteredRoutes,
         setIsLoading: setLoading,
       });
-
-      setTimeout(() => {
-        setShowEditRouteModal(false);
-      }, 1000);
+      setTimeout(() => setShowEditRouteModal(false), 1000);
     }
   }
 

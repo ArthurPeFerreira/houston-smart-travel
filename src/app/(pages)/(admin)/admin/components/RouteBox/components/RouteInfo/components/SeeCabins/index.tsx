@@ -1,5 +1,6 @@
-"use client";
+"use client"; // Indica que este é um componente do lado do cliente no Next.js (App Router)
 
+// Componente React para exibição de informações de cabines em um modal
 import React from "react";
 import {
   Dialog,
@@ -13,14 +14,16 @@ import { CabinKey, cabins } from "@/lib/route/cabins";
 import { MdFlight } from "react-icons/md";
 import { CabinsType } from "@/lib/route/types";
 
+// Tipagem das propriedades esperadas pelo componente
 interface SeeCabinsProps {
-  isOpen: boolean;
-  setIsOpen: (open: boolean) => void;
-  airport1: AirportType;
-  airport2: AirportType;
-  cabinsToShow: CabinsType[]; // Lista de cabines a serem exibidas no modal
+  isOpen: boolean; // Define se o modal está aberto
+  setIsOpen: (open: boolean) => void; // Função para alterar o estado do modal
+  airport1: AirportType; // Aeroporto de origem
+  airport2: AirportType; // Aeroporto de destino
+  cabinsToShow: CabinsType[]; // Lista de cabines a serem exibidas
 }
 
+// Componente principal que renderiza o modal com os detalhes das cabines
 export default function SeeCabins({
   isOpen,
   setIsOpen,
@@ -40,22 +43,21 @@ export default function SeeCabins({
           </DialogTitle>
         </DialogHeader>
 
-        {/* Área de listagem das cabines com rolagem caso o conteúdo seja muito extenso */}
+        {/* Grid de exibição das cabines com rolagem se necessário */}
         <div
           className={`overflow-y-auto max-h-[400px] md:max-h-fit grid gap-2 grid-cols-1 ${
             cabinsToShow.length > 1 ? "md:grid-cols-2" : "md:grid-cols-1"
           }`}
         >
-          {/* Itera sobre a lista de cabines recebidas via props */}
+          {/* Mapeia cada cabine e exibe suas informações */}
           {cabinsToShow.map((cabin) => (
-            // Container individual para cada cabine
             <div key={cabin.id} className="p-4 bg-gray-700 rounded w-full">
-              {/* Exibe o rótulo da cabine com base na chave do objeto cabins */}
+              {/* Exibe o nome da cabine com base na chave definida em cabins */}
               <div className="bg-gray-800 p-2 rounded mb-2">
                 {String(cabins[cabin.key as CabinKey].label)}
               </div>
 
-              {/* Exibe os detalhes numéricos da cabine: pontos máximos, bagagens, preços */}
+              {/* Detalhes técnicos e financeiros da cabine */}
               <div className="bg-gray-800 p-2 rounded flex flex-col gap-2">
                 <div>Maximum Points: {cabin.maximumPoints}</div>
                 <div>Bags Amount: {cabin.bagsAmount}</div>

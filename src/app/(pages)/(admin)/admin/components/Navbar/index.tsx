@@ -1,5 +1,4 @@
-// Indica que este é um componente do lado do cliente no Next.js (App Router)
-"use client";
+"use client"; // Indica que este é um componente do lado do cliente no Next.js (App Router)
 
 // Função de logout do NextAuth
 import { signOut } from "next-auth/react";

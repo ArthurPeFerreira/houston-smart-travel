@@ -1,6 +1,6 @@
-"use client";
+"use client"; // Indica que este é um componente do lado do cliente no Next.js (App Router)
 
-// Importação do componente Select e configurações do seletor customizado
+// Importa o componente customizado Select e suas configurações específicas
 import Select from "react-select";
 import {
   customStyles,
@@ -18,15 +18,15 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
+// Importa dados e tipagens relacionadas às cabines e rotas
 import { Cabin, CabinKey, cabinPriority, cabins } from "@/lib/route/cabins";
 import { MdFlight } from "react-icons/md";
-import {  EditRouteType, RouteType } from "@/lib/route/types";
+import { EditRouteType, RouteType } from "@/lib/route/types";
 import Decimal from "decimal.js";
 import { mileagePrograms } from "@/lib/route/mileagePrograms";
 import { FaPlus, FaSpinner, FaTrash } from "react-icons/fa";
 
-
-// Tipagem interna das cabines utilizadas no formulário de edição
+// Tipagem dos dados da cabine usados no formulário
 interface CabinData {
   key: CabinKey;
   label: string;
@@ -38,6 +38,7 @@ interface CabinData {
   passagePriceRoundTrip: Decimal;
 }
 
+// Propriedades esperadas pelo componente EditRoute
 interface EditRouteProps {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
@@ -46,6 +47,7 @@ interface EditRouteProps {
   loading: boolean;
 }
 
+// Componente principal para edição de rotas de voo com programas de milhagem e diferentes cabines
 export default function EditRoute({
   isOpen,
   setIsOpen,
@@ -68,6 +70,7 @@ export default function EditRoute({
     field: string;
   } | null>(null);
 
+  // Preenche o formulário com os dados da rota que está sendo editada
   useEffect(() => {
     if (!initialData) return;
 
@@ -94,6 +97,7 @@ export default function EditRoute({
       }))
     );
 
+    // Define quais cabines ainda podem ser adicionadas à rota
     setCabinToShow(
       Object.values(cabins).filter(
         (cabin) => !initialData.cabins.some((added) => added.key === cabin.key)
@@ -101,6 +105,7 @@ export default function EditRoute({
     );
   }, [initialData]);
 
+  // Recalcula automaticamente o valor da viagem de ida e volta quando algum dos dois trechos é alterado
   useEffect(() => {
     if (
       !lastModifiedField ||
@@ -129,6 +134,7 @@ export default function EditRoute({
     setLastModifiedField(null);
   }, [cabinList, lastModifiedField]);
 
+  // Adiciona uma nova cabine à rota com valores iniciais zerados
   function addNewCabin(cabinKey: CabinKey) {
     const cabin = cabins[cabinKey];
 
@@ -156,6 +162,7 @@ export default function EditRoute({
     setCabinKey("");
   }
 
+  // Remove uma cabine da rota e a torna novamente disponível para adição
   function removeCabin(cabinKey: CabinKey) {
     const cabin = cabins[cabinKey];
 
@@ -174,6 +181,7 @@ export default function EditRoute({
     });
   }
 
+  // Atualiza um campo específico de uma cabine
   function updateCabinField(
     cabinKey: CabinKey,
     field: keyof Omit<CabinData, "key" | "label" | "code">,
@@ -188,6 +196,7 @@ export default function EditRoute({
     setLastModifiedField({ cabinKey, field });
   }
 
+  // Renderização principal
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent
@@ -200,6 +209,7 @@ export default function EditRoute({
           </DialogTitle>
         </DialogHeader>
 
+        {/* Formulário principal */}
         <form
           className="flex flex-col gap-2"
           onSubmit={(e) => {
@@ -224,6 +234,7 @@ export default function EditRoute({
             onEdit(data);
           }}
         >
+          {/* Lista de aeroportos envolvidos na rota */}
           <div className="flex flex-col gap-2">
             {initialData.airports.map((airport) => (
               <div
@@ -234,6 +245,8 @@ export default function EditRoute({
               </div>
             ))}
           </div>
+
+          {/* Seletor de programa de milhagem */}
           <div>
             <label className="block mb-1 text-white">Mileage Program</label>
             <Select<MileageProgramOption>

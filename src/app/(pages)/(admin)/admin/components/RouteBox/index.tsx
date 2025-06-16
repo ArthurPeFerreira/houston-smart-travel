@@ -1,29 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// Indica que este é um componente do lado do cliente no Next.js (App Router)
-"use client";
 
-// Hooks do React para controle de estado e efeito
+"use client"; // Indica que este é um componente do lado do cliente no Next.js (App Router)
+
 import { useEffect, useState } from "react";
-
-// Importação do componente Select do react-select para dropdowns customizados
 import Select from "react-select";
-
-// Tipagem dos dados de aeroporto
 import { AirportType } from "@/lib/airport/types";
-
-// Dados e tipos relacionados às cabines (classes de voo)
 import { Cabin, CabinKey, cabinPriority, cabins } from "@/lib/route/cabins";
-
-// Ícones para ações visuais
 import { FaPlus, FaSpinner, FaTrash } from "react-icons/fa";
-
-// Biblioteca para operações com números decimais
 import Decimal from "decimal.js";
-
-// Tipagem do objeto de criação de rota
 import { CreateRouteType } from "@/lib/route/types";
-
-// Configurações e instância do toast para notificações
 import { toastConfigs } from "@/lib/toastify/toastify";
 import { toast } from "react-toastify";
 import { api } from "@/lib/api/api";
