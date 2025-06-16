@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import CheckFlightsBox from "./components/CheckFlightsBox";
 import Image from "next/image";
-import { queueHst } from "@/lib/bullmq/bullmq";
+import ClientSideCounter from "../components/ClientSideCounter";
 
 export const metadata: Metadata = {
   title: "Check Flights",
@@ -15,18 +15,6 @@ export default async function CheckFlights({
   const airportId = (await searchParams)?.airportId;
   const destinationAirportId = airportId ? parseInt(airportId) : 0;
 
-  await queueHst.add(
-        "incrementCheckFlightsAccessCount", // Nome da tarefa
-        {
-          priority: 0, // Define a prioridade da tarefa (0 para alta prioridade)
-          delay: 0, // Define o atraso (0 segundos)
-          attempts: 3, // Número de tentativas permitidas em caso de falha
-          removeOnComplete: true, // Remove a tarefa da fila automaticamente após a conclusão bem-sucedida
-          removeOnFail: false, // Mantém a tarefa na fila em caso de falha
-          stackTraceLimit: 5, // Limita o número de rastros de pilha mantidos para erros
-        }
-      );
-
   return (
     <main className="relative flex-1 w-full min-h-[60vh] md:min-h-fit flex items-center justify-center bg-no-repeat bg-cover bg-center p-5">
       <Image
@@ -38,6 +26,7 @@ export default async function CheckFlights({
       />
       <div className="absolute inset-0">
         <CheckFlightsBox initialDestinationAirportId={destinationAirportId} />
+        <ClientSideCounter type="check flights" />
       </div>
     </main>
   );
