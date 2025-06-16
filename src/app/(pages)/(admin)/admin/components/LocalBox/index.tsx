@@ -29,12 +29,12 @@ import LocalsInfo from "./components/LocalInfo";
 import { LocalType } from "@/lib/local/types";
 import Decimal from "decimal.js";
 
+// Classe CSS reutilizável para inputs
+const inputs =
+  "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white";
+
 // Componente principal responsável por criar e gerenciar locais turísticos vinculados a aeroportos
 export default function LocalBox() {
-  // Classe CSS reutilizável para inputs
-  const inputs =
-    "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white";
-
   // Estados para armazenar os dados de aeroportos e locais
   const [airports, setAirports] = useState<AirportType[]>();
   const [locals, setLocals] = useState<LocalType[]>([]);
@@ -53,7 +53,7 @@ export default function LocalBox() {
   const [showLocalsInfoModal, setShowLocalsInfoModal] =
     useState<boolean>(false);
 
-  // useEffect inicial: popula dados iniciais e escuta eventos globais
+  // Carrega dados de locais e aeroportos ao montar o componente
   useEffect(() => {
     async function fetchLocalsInitialData() {
       try {
@@ -75,11 +75,10 @@ export default function LocalBox() {
       }
     }
 
-    // Carrega dados iniciais de aeroportos e locais
     fetchAirportsInitialData();
     fetchLocalsInitialData();
 
-    // Registra o evento e faz cleanup ao desmontar o componente
+    // Registra escuta para atualizações externas
     eventEmitter.on("updateAirports", fetchAirportsInitialData);
     eventEmitter.on("updateLocals", fetchLocalsInitialData);
     return () => {
@@ -88,7 +87,7 @@ export default function LocalBox() {
     };
   }, []);
 
-  // useEffect que filtra os aeroportos que ainda não têm locais associados
+  // Filtra aeroportos que ainda não têm local associado
   useEffect(() => {
     if (!airports) {
       setAirportsToShow(undefined);
@@ -100,10 +99,10 @@ export default function LocalBox() {
       return;
     }
 
-    // Cria um Set com IDs dos aeroportos que já têm locais registrados
+    // Cria um conjunto com os IDs dos aeroportos já utilizados
     const localAirportIds = new Set(locals.map((local) => local.airport.id));
 
-    // Filtra apenas aeroportos que ainda podem ser associados a um novo local
+    // Remove da lista os aeroportos que já têm locais
     const filteredAirports = airports.filter(
       (airport) => !localAirportIds.has(airport.id)
     );
@@ -111,7 +110,7 @@ export default function LocalBox() {
     setAirportsToShow(filteredAirports);
   }, [airports, locals]);
 
-  // Manipula a escolha de imagem e gera preview local
+  // Manipula imagem selecionada e gera preview
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
@@ -121,11 +120,12 @@ export default function LocalBox() {
     }
   }
 
-  // Submissão do formulário para criação de novo local
+  // Envia os dados do formulário para criação de novo local
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
 
+    // Validações básicas
     if (airportId === 0) {
       toast.info("Please select an airport.", toastConfigs);
       setLoading(false);
@@ -150,7 +150,7 @@ export default function LocalBox() {
       return;
     }
 
-    // Prepara dados para envio multipart (com imagem)
+    // Prepara o corpo da requisição com multipart/form-data
     const formData = new FormData();
     formData.append("airportId", airportId.toString());
     formData.append("city", city);
@@ -167,11 +167,8 @@ export default function LocalBox() {
         toast.success("Local created successfully.", toastConfigs);
       }
     } catch (error: any) {
-      // Tenta extrair mensagem de erro do servidor
       const errorMessage =
         error?.response?.data?.error || "Failed to create local.";
-
-      // Exibe mensagem de erro
       toast.error(errorMessage, toastConfigs);
     } finally {
       // Reseta os campos do formulário
@@ -190,18 +187,16 @@ export default function LocalBox() {
     }
   }
 
- 
-
-  // JSX do componente (formulário e modais)
+  // JSX principal
   return (
     <div className="mt-10 flex items-center justify-center">
       <div className="bg-gray-800 w-fit p-5 rounded-2xl flex flex-col items-center justify-center text-white">
-        {/* Título principal */}
+        {/* Título do formulário */}
         <h1 className="text-center font-bold text-3xl">Create New Local</h1>
 
         {/* Formulário de criação de local */}
         <form className="w-full mt-4" onSubmit={handleSubmit}>
-          {/* Dropdown para seleção de aeroporto */}
+          {/* Dropdown de seleção de aeroporto */}
           <label className="block mb-1 text-white">Airport</label>
           <select
             name="airports"
@@ -225,7 +220,7 @@ export default function LocalBox() {
             ))}
           </select>
 
-          {/* Input para nome da cidade */}
+          {/* Campo de cidade */}
           <label className="block mb-1 text-white mt-4">City</label>
           <input
             id="local city"
@@ -237,7 +232,7 @@ export default function LocalBox() {
             required
           />
 
-          {/* Input para nome da cidade */}
+          {/* Campo de país */}
           <label className="block mb-1 text-white mt-4">Country</label>
           <input
             id="local country"
@@ -249,6 +244,7 @@ export default function LocalBox() {
             required
           />
 
+          {/* Campo de preço da passagem */}
           <label className="block mb-1 text-white mt-4">
             Passage Price (USD)
           </label>
@@ -270,7 +266,7 @@ export default function LocalBox() {
             min={0}
           />
 
-          {/* Upload de imagem com botão e preview */}
+          {/* Upload de imagem */}
           <div className="mt-4">
             <input
               type="file"
@@ -285,6 +281,8 @@ export default function LocalBox() {
             >
               Upload Image
             </label>
+
+            {/* Preview da imagem */}
             {preview && (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -295,7 +293,7 @@ export default function LocalBox() {
             )}
           </div>
 
-          {/* Botão de envio com ícone de carregamento */}
+          {/* Botão de envio com loading */}
           <button
             type="submit"
             className="mt-4 bg-blue-500 w-full flex items-center justify-center text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600"
@@ -308,7 +306,7 @@ export default function LocalBox() {
           </button>
         </form>
 
-        {/* Link para visualizar locais cadastrados */}
+        {/* Acesso ao modal de gerenciamento de locais */}
         <button
           className="mt-2 w-full text-start text-blue-500 cursor-pointer hover:underline"
           onClick={() => {
@@ -319,7 +317,7 @@ export default function LocalBox() {
         </button>
       </div>
 
-      {/* Componente de modal para visualização, edição e ordenação dos locais */}
+      {/* Modal para visualização, edição e ordenação dos locais */}
       <LocalsInfo
         isOpen={showLocalsInfoModal}
         setIsOpen={setShowLocalsInfoModal}

@@ -1,6 +1,8 @@
-"use client";
+"use client"; // Indica que este componente será renderizado no cliente (App Router do Next.js)
 
 import React from "react";
+
+// Importa os componentes do modal reutilizável
 import {
   Dialog,
   DialogContent,
@@ -8,27 +10,31 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
+// Tipagem das propriedades recebidas pelo componente
 interface SeeImageProps {
-  isOpen: boolean;
-  setIsOpen: (open: boolean) => void;
-  image: string; // URL ou caminho da imagem a ser exibida
+  isOpen: boolean; // Define se o modal está aberto
+  setIsOpen: (open: boolean) => void; // Função para abrir/fechar o modal
+  image: string; // Nome ou caminho da imagem a ser exibida
 }
 
+// Componente responsável por exibir uma imagem em um modal
 export default function SeeImage({ isOpen, setIsOpen, image }: SeeImageProps) {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent
         showCloseButton={false}
-        className="bg-gray-800 rounded-md shadow-lg w-11/12 max-w-md border-none text-white h-auto "
+        className="bg-gray-800 rounded-md shadow-lg w-11/12 max-w-md border-none text-white h-auto"
       >
+        {/* Cabeçalho do modal */}
         <DialogHeader>
           <DialogTitle className="text-center text-2xl font-bold">
             Image
           </DialogTitle>
         </DialogHeader>
 
-        {/* Imagem exibida no modal, com ajuste para caber proporcionalmente no espaço */}
+        {/* Corpo do modal com a imagem exibida */}
         <div className="bg-gray-800 rounded shadow-lg max-w-[90vw] max-h-[90vh] overflow-auto">
+          {/* Imagem carregada a partir do CloudFront da AWS */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             alt="Local Image"
