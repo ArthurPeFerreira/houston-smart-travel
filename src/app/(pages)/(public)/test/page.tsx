@@ -16,18 +16,27 @@ export default async function CheckFlights({
   const destinationAirportId = airportId ? parseInt(airportId) : 0;
 
   return (
-    <main className="relative flex-1 w-full min-h-[60vh] md:min-h-fit flex items-center justify-center bg-no-repeat bg-cover bg-center p-5">
+     <main
+      className="
+        relative            
+        flex flex-1
+        w-full min-h-[60dvh] 
+        items-center justify-center
+        p-5 bg-center bg-cover bg-no-repeat
+      "
+    >
+      {/* plano de fundo */}
       <Image
         src={`${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/mountain.jpg`}
+        alt="Mountain Background"
         quality={100}
         fill
-        alt="Montain Background"
-        className="absolute inset-0"
+        className="absolute inset-0 -z-10 object-cover"
       />
-      <div className="absolute inset-0">
-        <CheckFlightsBox initialDestinationAirportId={destinationAirportId} />
-        <ClientSideCounter type="check flights" />
-      </div>
+
+      {/* conteúdo – agora no fluxo normal, sem absolute */}
+      <CheckFlightsBox initialDestinationAirportId={destinationAirportId} />
+      <ClientSideCounter type="check flights" />
     </main>
   );
 }

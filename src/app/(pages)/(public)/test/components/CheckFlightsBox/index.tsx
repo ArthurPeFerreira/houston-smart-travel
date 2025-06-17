@@ -1,139 +1,166 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-"use client"; // Indica que o componente será executado no cliente (necessário para hooks como useState e useEffect)
+"use client";
 
-import { AirportType } from "@/lib/airport/types"; // Tipo que representa um aeroporto
-import { api } from "@/lib/api/api"; // Instância Axios configurada para requisições
-import { Cabin, CabinKey, cabins } from "@/lib/route/cabins"; // Tipos e objeto de cabines disponíveis
-import { RouteType } from "@/lib/route/types"; // Tipo que representa uma rota
-import { toastConfigs } from "@/lib/toastify/toastify"; // Configuração para exibição de toasts
-import { useRouter } from "next/navigation"; // Hook de navegação do Next.js
-import { useEffect, useState } from "react"; // Hooks de estado e efeito
-import { FaSpinner } from "react-icons/fa"; // Ícone de carregamento
-import { toast } from "react-toastify"; // Biblioteca de notificação (toast)
+import { AirportType } from "@/lib/airport/types";
+import { api } from "@/lib/api/api";
+import { Cabin, CabinKey, cabins, cabinPriority } from "@/lib/route/cabins";
+import { RouteType } from "@/lib/route/types";
+import { toastConfigs } from "@/lib/toastify/toastify";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { FaSpinner } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 interface CheckFlightsBoxProps {
-  initialDestinationAirportId: number; // Propriedade recebida com o ID do aeroporto de destino inicial
+  initialDestinationAirportId: number;
 }
 
-// Componente principal que renderiza o formulário para consulta de voos
 export default function CheckFlightsBox({
   initialDestinationAirportId,
 }: CheckFlightsBoxProps) {
-  // Estilos utilitários para inputs/selects
   const selects = "w-full bg-gray-300 p-2 rounded";
   const inputs = "w-20 bg-gray-300 p-2 rounded";
+  const router = useRouter();
 
-  const router = useRouter(); // Hook de navegação
-
-  // Estados para armazenar aeroportos e configuração da rota
+  // ---------- state ----------
   const [originAirports, setOriginAirports] = useState<AirportType[]>([]);
   const [destinationAirports, setDestinationAirports] = useState<AirportType[]>(
     []
   );
   const [cabinsRoute, setCabinsRoute] = useState<Cabin[]>([]);
-  const [routeId, setRouteId] = useState<number>(0);
+  const [routeId, setRouteId] = useState(0);
 
-  // Estados de controle do formulário
-  const [loading, setLoading] = useState<boolean>(false);
-  const [originAirportId, setOriginAirportId] = useState<number>(0);
+  const [loading, setLoading] = useState(false);
+  const [originAirportId, setOriginAirportId] = useState(0);
   const [destinationAirportId, setDestinationAirportId] = useState<number>(
     initialDestinationAirportId
   );
-  const [seats, setSeats] = useState<number>(1);
-  const [cabin, setCabin] = useState<string>("");
+  const [seats, setSeats] = useState(1);
+  const [cabin, setCabin] = useState("");
 
-  // Efeito para carregar os aeroportos de origem disponíveis ao montar o componente
+  // ---------- handlers ----------
+  function handleOriginChange(id: number) {
+    setOriginAirportId(id);
+    setDestinationAirportId(0);
+    setDestinationAirports([]);
+    setCabinsRoute([]);
+    setCabin("");
+    setRouteId(0);
+  }
+
+  function handleDestinationChange(id: number) {
+    setDestinationAirportId(id);
+    setCabinsRoute([]);
+    setCabin("");
+    setRouteId(0);
+  }
+
+  // ---------- fetch origin list ----------
   useEffect(() => {
-    async function fetchInitialData() {
+    (async () => {
       try {
-        const response = await api.get("api/check-flights/airport");
-        setOriginAirports(response.data);
-      } catch (error: any) {
-        const errorMessage =
-          error?.response?.data?.error || "Failed to get origin airport.";
-        toast.error(errorMessage, toastConfigs);
+        const { data } = await api.get("api/check-flights/airport");
+        setOriginAirports(data);
+      } catch {
+        toast.error("Failed to fetch origin airports.", toastConfigs);
       }
-    }
-    fetchInitialData();
+    })();
   }, []);
 
-  // Efeito para buscar aeroportos de destino com base na origem selecionada
+  // ---------- fetch destinations ----------
   useEffect(() => {
-    async function fetchData() {
-      if (originAirportId === 0) return;
+    if (originAirportId === 0) return;
 
+    let abort = false;
+    (async () => {
       try {
-        const response = await api.get(
+        const { data } = await api.get(
           `api/check-flights/airport/${originAirportId}`
         );
-        if (response.data.length > 0) {
-          setDestinationAirports(response.data);
-        } else {
+        if (abort) return;
+
+        if (data.length === 0) {
+          toast.info(
+            "No destinations available for this origin.",
+            toastConfigs
+          );
           setDestinationAirports([]);
+        } else {
+          setDestinationAirports(data);
         }
-      } catch (error: any) {
-        const errorMessage =
-          error?.response?.data?.error || "Failed to get destination airport.";
-        toast.error(errorMessage, toastConfigs);
+      } catch {
+        if (!abort)
+          toast.error("Failed to fetch destination airports.", toastConfigs);
       }
-    }
-    fetchData();
+    })();
+
+    return () => {
+      abort = true;
+    };
   }, [originAirportId]);
 
-  // Efeito para buscar os dados da rota e as cabines disponíveis com base na origem e destino selecionados
+  // ---------- fetch route + cabins ----------
   useEffect(() => {
-    async function fetchData() {
-      if (originAirportId === 0) return;
+    if (originAirportId === 0 || destinationAirportId === 0) return;
 
+    // ensure destination still exists in current list
+    if (!destinationAirports.some((a) => a.id === destinationAirportId)) return;
+
+    let abort = false;
+    (async () => {
       try {
-        const response = await api.get(
+        const { data } = await api.get(
           `api/check-flights/route?origin=${originAirportId}&destination=${destinationAirportId}`
         );
-        if (response.data) {
-          const route = response.data as RouteType;
-          setRouteId(route.id);
-          setCabinsRoute(
-            route.cabins.map((cabin) => {
-              return cabins[cabin.key as CabinKey];
-            })
-          );
+        if (abort) return;
+
+        const route = data as RouteType;
+        setRouteId(route.id);
+
+        const list = route.cabins
+          .map((c) => cabins[c.key as CabinKey])
+          .sort((a, b) => cabinPriority[a.key] - cabinPriority[b.key]);
+
+        if (list.length === 0) {
+          toast.info("No cabins available for this route.", toastConfigs);
+          return;
         }
-      } catch (error: any) {
-        const errorMessage =
-          error?.response?.data?.error || "Failed to get cabins.";
-        toast.error(errorMessage, toastConfigs);
+
+        setCabinsRoute(list);
+        setCabin(list[0].key);
+      } catch (err: any) {
+        if (err?.response?.status === 404) {
+          toast.info("No route found between these airports.", toastConfigs);
+        } else if (!abort) {
+          toast.error("Failed to fetch cabins.", toastConfigs);
+        }
       }
-    }
+    })();
 
-    if (originAirportId !== 0 && destinationAirportId !== 0) {
-      fetchData();
-    }
-  }, [originAirportId, destinationAirportId]);
+    return () => {
+      abort = true;
+    };
+  }, [originAirportId, destinationAirportId, destinationAirports]);
 
-  // Função executada ao enviar o formulário
+  // ---------- submit ----------
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    // Validações do formulário
     if (originAirportId === 0) {
       toast.info("Please select an origin airport.", toastConfigs);
       return;
     }
-
     if (destinationAirportId === 0) {
-      toast.info("Please select an destination airport.", toastConfigs);
+      toast.info("Please select a destination airport.", toastConfigs);
       return;
     }
-
     if (cabin === "") {
       toast.info("Please select a cabin.", toastConfigs);
       return;
     }
 
-    setLoading(true); // Ativa estado de carregamento
-
-    // Cria os parâmetros da URL com os dados do formulário
+    setLoading(true);
     const params = new URLSearchParams({
       route: routeId.toString(),
       origin: originAirportId.toString(),
@@ -141,99 +168,92 @@ export default function CheckFlightsBox({
       cabin,
       seats: seats.toString(),
     });
-
-    // Redireciona para a página de resultados de busca
     router.push(`/search-flights?${params.toString()}`);
   }
 
-  // Renderização do componente
+  // ---------- ui ----------
   return (
-    <div className=" w-full min-h-full flex items-center justify-center p-5">
+    <div className="w-full min-h-full flex items-center justify-center p-5">
       <div className="p-5 bg-[#141414] max-w-[600px] w-full rounded-4xl shadow-2xl">
         <h1 className="text-center text-5xl text-white">
           Check Flights Availability
         </h1>
+
         <form
           className="w-full mt-4 flex flex-col gap-3"
           onSubmit={handleSubmit}
         >
-          {/* Seletor de aeroporto de origem */}
+          {/* origin */}
           <div>
             <label className="block mb-1 text-white">Select Origin:</label>
             <select
-              name="airports"
-              id="airports"
               className={`${selects} invalid:text-gray-500`}
-              onChange={(e) => setOriginAirportId(Number(e.target.value))}
               value={originAirportId}
+              onChange={(e) => handleOriginChange(Number(e.target.value))}
             >
-              <option value={0} key={0} disabled className="text-black">
+              <option value={0} disabled className="text-black">
                 Select Airport
               </option>
               {originAirports.map((airport) => (
-                <option value={airport.id} key={airport.id}>
+                <option key={airport.id} value={airport.id}>
                   {airport.city} - {airport.airportCode}
                 </option>
               ))}
             </select>
           </div>
 
-          {/* Seletor de aeroporto de destino */}
+          {/* destination */}
           <div>
             <label className="block mb-1 text-white">Select Destination:</label>
             <select
-              name="airports"
-              id="airports"
               className={`${selects} invalid:text-gray-500 cursor-default disabled:text-gray-500 disabled:cursor-not-allowed`}
-              onChange={(e) => setDestinationAirportId(Number(e.target.value))}
-              value={destinationAirportId}
               disabled={
-                originAirportId === 0 && destinationAirports.length === 0
+                originAirportId === 0 || destinationAirports.length === 0
               }
+              value={destinationAirportId}
+              onChange={(e) => handleDestinationChange(Number(e.target.value))}
             >
-              <option value={0} key={0} disabled className="text-gray-400">
+              <option value={0} disabled className="text-gray-400">
                 Select Airport
               </option>
               {destinationAirports.map((airport) => (
-                <option value={airport.id} key={airport.id}>
+                <option key={airport.id} value={airport.id}>
                   {airport.city} - {airport.airportCode}
                 </option>
               ))}
             </select>
           </div>
 
-          {/* Seletor de cabine/classe */}
+          {/* cabin */}
           <div>
             <label className="block mb-1 text-white">Select Class:</label>
             <select
-              name="airports"
-              id="airports"
               className={`${selects} cursor-default disabled:text-gray-500 disabled:cursor-not-allowed`}
-              onChange={(e) => setCabin(e.target.value)}
-              value={cabin}
               disabled={
                 originAirportId === 0 ||
                 destinationAirportId === 0 ||
                 cabinsRoute.length === 0
               }
+              value={cabin}
+              onChange={(e) => setCabin(e.target.value)}
             >
-              <option value={""} key={0} disabled className="text-gray-400">
+              <option value="" disabled className="text-gray-400">
                 Select Class
               </option>
-              {cabinsRoute.map((cabin) => (
-                <option value={cabin.key} key={cabin.key}>
-                  {cabin.label}
+              {cabinsRoute.map((c) => (
+                <option key={c.key} value={c.key}>
+                  {c.label}
                 </option>
               ))}
             </select>
           </div>
 
-          {/* Campo para número de assentos */}
+          {/* seats */}
           <div className="flex flex-row gap-10">
             <div>
               <label className="block mb-1 text-white">Seats:</label>
               <input
-                id="city"
+                id="seats"
                 type="number"
                 value={seats}
                 onChange={(e) => setSeats(Number(e.target.value))}
@@ -244,7 +264,7 @@ export default function CheckFlightsBox({
             </div>
           </div>
 
-          {/* Botão de envio do formulário */}
+          {/* submit */}
           <div className="flex justify-center">
             <button
               type="submit"
