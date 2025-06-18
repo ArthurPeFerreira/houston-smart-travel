@@ -4,7 +4,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import multiMonthPlugin from "@fullcalendar/multimonth";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import { addYears, startOfToday } from "date-fns";
 
 import "../../styles/calendar.css";
@@ -17,10 +17,11 @@ import { AirportType } from "@/lib/airport/types";
 import GoingBackModal from "./components/GoingBackModal";
 import { CabinKey } from "@/lib/route/cabins";
 import Link from "next/link";
-import { FaSpinner } from "react-icons/fa";
+import { FaPlane, FaSpinner } from "react-icons/fa";
 import InfoCard from "./components/InfoCard";
 import { toastConfigs } from "@/lib/toastify/toastify";
 import { toast } from "react-toastify";
+import { Plane } from "lucide-react";
 
 interface CalendarProps {
   originAirportId: number;
@@ -91,6 +92,24 @@ export default function Calendar({
   const [selection, setSelection] = useState<"departure" | "return">(
     "departure"
   );
+
+  // Eventos de ida que obedecem à data-limite imposta pela volta escolhida
+  const filteredDepartureEvents = useMemo(() => {
+    if (!returnDate) return departureEventsData;
+    const limit = new Date(returnDate);
+    return departureEventsData.filter(
+      (ev) => new Date(ev.start) < limit // <  (não pode ser =)
+    );
+  }, [departureEventsData, returnDate]);
+
+  // Eventos de volta que obedecem à data-limite imposta pela ida escolhida
+  const filteredReturnEvents = useMemo(() => {
+    if (!departureDate) return returnEventsData;
+    const limit = new Date(departureDate);
+    return returnEventsData.filter(
+      (ev) => new Date(ev.start) > limit // >  (não pode ser =)
+    );
+  }, [returnEventsData, departureDate]);
 
   useEffect(() => {
     async function fetchData() {
@@ -271,11 +290,11 @@ export default function Calendar({
 
   useEffect(() => {
     if (selection === "departure") {
-      setEventsData(departureEventsData);
+      setEventsData(filteredDepartureEvents);
     }
 
     if (selection === "return") {
-      setEventsData(returnEventsData);
+      setEventsData(filteredReturnEvents);
     }
   }, [selection, departureEventsData, returnEventsData]);
 
@@ -294,14 +313,30 @@ export default function Calendar({
               destinationAirport={destinationAirport}
               departureDate={departureDate}
               returnDate={returnDate}
-              cabin={cabin as CabinKey}
               roundedTrip={roundedTrip}
               selection={selection}
               setSelection={setSelection}
               seats={seats}
             />
-            <div className="px-2 max-w-7xl">
-              <div className="w-full h-fit rounded-lg">
+            <div className="px-2 max-w-7xl flex flex-col justify-center items-center">
+              <div className="w-fit flex flex-row items-end justify-center gap-3 text-4xl text-[#141414] my-5">
+                {selection === "departure" ? (
+                  <>
+                    {originAirport?.city} ({originAirport?.airportCode})
+                    <FaPlane size={35} />
+                    {destinationAirport?.city} (
+                    {destinationAirport?.airportCode})
+                  </>
+                ) : (
+                  <>
+                    {destinationAirport?.city} (
+                    {destinationAirport?.airportCode})
+                    <FaPlane size={35} />
+                    {originAirport?.city} ({originAirport?.airportCode})
+                  </>
+                )}
+              </div>
+              <div className="w-full h-fit mt-[-20px]">
                 {eventsData.length > 0 && (
                   <FullCalendar
                     key={calendarKey}
@@ -425,6 +460,10 @@ export default function Calendar({
                   setSelection("return");
                 }
               }}
+              cabinSelected={cabinSelected as CabinsType}
+              originAirport={originAirport}
+              destinationAirport={destinationAirport}
+              departureDate={departureDate}
             />
           </>
         )}

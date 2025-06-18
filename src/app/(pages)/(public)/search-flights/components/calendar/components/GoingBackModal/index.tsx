@@ -7,17 +7,30 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { CabinsType } from "@/lib/route/types";
+import { AirportType } from "@/lib/airport/types";
+import { CheckCircle, Luggage, Plane } from "lucide-react";
+import { CabinKey, cabins } from "@/lib/route/cabins";
+import { FaWhatsapp } from "react-icons/fa";
 
 interface GoingBackModalProps {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
   onSelect: (isRoundTrip: boolean) => void;
+  cabinSelected: CabinsType;
+  originAirport: AirportType | undefined;
+  destinationAirport: AirportType | undefined;
+  departureDate: string;
 }
 
 export default function GoingBackModal({
   isOpen,
   setIsOpen,
   onSelect,
+  cabinSelected,
+  departureDate,
+  destinationAirport,
+  originAirport,
 }: GoingBackModalProps) {
   const handleSelection = (isRoundTrip: boolean) => {
     onSelect(isRoundTrip);
@@ -26,25 +39,68 @@ export default function GoingBackModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent showCloseButton={false} className="bg-white text-[#00001e] rounded-md w-10/12 h-fit border-none shadow-lg p-6">
-        <DialogHeader>
+      <DialogContent
+        // showCloseButton={false}
+        className="bg-white text-[#00001e] rounded-md w-10/12 h-fit border-none shadow-lg p-6"
+      >
+        <DialogHeader className="mb-6">
           <DialogTitle className="text-center text-2xl font-bold">
-            Is this a round trip?
+            Is this a round-trip?
           </DialogTitle>
         </DialogHeader>
+        <div className="flex flex-col text-xl gap-4">
+          <div className="flex items-center justify-center w-full gap-2 font-semibold text-[#00001e]">
+            <CheckCircle className="text-green-600" size={20} />
+            Selected Cabin:
+            <span className="font-bold">
+              {cabins[cabinSelected.key as CabinKey].label}
+            </span>
+          </div>
 
-        <div className="flex flex-col gap-4">
-          <button
-            onClick={() => handleSelection(true)}
-            className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-white font-medium transition cursor-pointer"
-          >
-            Yes, I&apos;m coming back
-          </button>
+          <div className="flex items-center w-full justify-center gap-2">
+            <Luggage className="text-blue-600" size={20} />
+            <strong>{`Includes ${cabinSelected?.bagsAmount} checked bag(s) free of charge.`}</strong>
+          </div>
+
+          <div className="flex items-center justify-center gap-2">
+            <Plane className="text-indigo-600" size={20} />
+            <strong>One-way price:</strong>
+            <span>
+              <strong>{originAirport?.airportCode}</strong> →{" "}
+              <strong>{destinationAirport?.airportCode}</strong>: $
+              {Number(cabinSelected.passagePriceFromAirport1To2).toLocaleString(
+                "en-US",
+                {
+                  minimumFractionDigits: 2,
+                }
+              )}
+            </span>
+          </div>
+          <div className="flex flex-row gap-2 justify-center">
+            <span className="font-semibold">Departure:</span>{" "}
+            {new Date(departureDate).toLocaleDateString("en-US", {
+              weekday: "short",
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+              timeZone: "UTC",
+            })}
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-4 mt-6">
           <button
             onClick={() => handleSelection(false)}
+            className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-white font-medium transition cursor-pointer flex flex-row justify-center items-center gap-1"
+          >
+            <FaWhatsapp/>
+            One-way only, proceed on WhatsApp
+          </button>
+          <button
+            onClick={() => handleSelection(true)}
             className="bg-gray-400 hover:bg-gray-500 px-4 py-2 rounded-md text-white font-medium transition cursor-pointer"
           >
-            No, it&apos;s a one-way trip
+            Yes, add return flight
           </button>
         </div>
       </DialogContent>

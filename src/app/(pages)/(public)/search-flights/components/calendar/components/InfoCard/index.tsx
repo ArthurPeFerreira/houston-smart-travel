@@ -17,7 +17,6 @@ function handleSendWhatsApp({
   originAirport,
   destinationAirport,
   cabinSelected,
-  cabin,
   seats,
 }: {
   departureDate: string;
@@ -26,7 +25,6 @@ function handleSendWhatsApp({
   originAirport: AirportType;
   destinationAirport: AirportType;
   cabinSelected: CabinsType;
-  cabin: CabinKey;
   seats: number;
 }) {
   const baseURL = "https://wa.me/";
@@ -39,7 +37,7 @@ function handleSendWhatsApp({
 
   const message = roundedTrip
     ? `Hello! I'd like to book these round trip.\n\n` +
-      `Class: ${cabins[cabin].label}, ` +
+      `Class: ${cabins[cabinSelected.key as CabinKey].label}, ` +
       `Checked bags: ${cabinSelected.bagsAmount}, ` +
       `Seats: ${seats}\n\n` +
       `Departure: ${formattedDeparture} (${originAirport.airportCode} → ${destinationAirport.airportCode}), ` +
@@ -48,7 +46,7 @@ function handleSendWhatsApp({
       `Price: $${Number(returnPrice).toFixed(2)}\n\n` +
       `Total round trip: $${Number(roundTripPrice).toFixed(2)}`
     : `Hello! I'd like to book this one-way trip.\n\n` +
-      `Class: ${cabins[cabin].label}, ` +
+      `Class: ${cabins[cabinSelected.key as CabinKey].label}, ` +
       `Checked bags: ${cabinSelected.bagsAmount}, ` +
       `Seats: ${seats}\n\n` +
       `Departure: ${formattedDeparture} (${originAirport.airportCode} → ${destinationAirport.airportCode}), ` +
@@ -66,7 +64,6 @@ interface InfoCardProps {
   destinationAirport: AirportType | undefined;
   departureDate: string;
   returnDate: string;
-  cabin: CabinKey;
   roundedTrip: boolean;
   selection: "departure" | "return";
   setSelection: (selection: "departure" | "return") => void;
@@ -79,7 +76,6 @@ export default function InfoCard({
   destinationAirport,
   departureDate,
   returnDate,
-  cabin,
   roundedTrip,
   selection,
   setSelection,
@@ -88,21 +84,21 @@ export default function InfoCard({
   return (
     <>
       {cabinSelected && (
-        <div className="flex flex-col-reverse gap-4 lg:flex-row justify-center items-center w-full ">
-          <div className="w-fit p-4 border rounded-xl shadow-sm bg-white space-y-4">
-            <div className="flex items-center gap-2 text-xl font-semibold text-[#00001e]">
+        <div className="flex flex-col gap-4 lg:flex-row justify-center items-center w-full ">
+          <div className="w-fit p-4 border rounded-xl shadow-sm bg-white">
+            <div className="flex mb-4 items-center justify-center w-full gap-2 text-xl font-semibold text-[#00001e]">
               <CheckCircle className="text-green-600" size={20} />
               Selected Cabin:
               <span className="font-bold">
-                {cabins[cabin as CabinKey].label}
+                {cabins[cabinSelected.key as CabinKey].label}
               </span>
             </div>
-            <div className="flex items-center gap-2 text-base">
+            <div className="flex items-center mb-4 w-full justify-center gap-2 text-base">
               <Luggage className="text-blue-600" size={20} />
               <strong>{`Includes ${cabinSelected?.bagsAmount} checked bag(s) free of charge.`}</strong>
             </div>
             {originAirport && destinationAirport && (
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-row gap-10">
                 <div className="flex items-center gap-2">
                   <Plane className="text-indigo-600" size={20} />
                   <span>
@@ -146,60 +142,67 @@ export default function InfoCard({
             )}
             <div className="text-black">
               <div className="flex flex-col gap-2">
-                {departureDate ? (
-                  <div>
-                    <span className="font-semibold">Departure:</span>{" "}
-                    {new Date(departureDate).toLocaleDateString("en-US", {
-                      weekday: "short",
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })}
-                  </div>
-                ) : (
-                  <span className="text-gray-500 italic">
-                    Select your departure date
-                  </span>
-                )}
-                {returnDate ? (
-                  <div>
-                    <span className="font-semibold">Return:</span>{" "}
-                    {new Date(returnDate).toLocaleDateString("en-US", {
-                      weekday: "short",
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })}
-                  </div>
-                ) : roundedTrip ? (
-                  <span className="text-gray-500 italic">
-                    Select your return date
-                  </span>
-                ) : (
-                  <></>
-                )}
                 {roundedTrip && (
-                  <div className="flex items-center justify-center gap-2 mt-2">
-                    <button
-                      onClick={() => setSelection("departure")}
-                      className={`px-4 py-2 rounded-md border transition-all duration-200 ${
-                        selection === "departure"
-                          ? "bg-blue-600 text-white border-blue-600 shadow cursor-default"
-                          : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100 cursor-pointer"
-                      }`}
-                    >
-                      Departure
-                    </button>
-                    <button
-                      onClick={() => setSelection("return")}
-                      className={`px-4 py-2 rounded-md border transition-all duration-200 ${
-                        selection === "return"
-                          ? "bg-blue-600 text-white border-blue-600 shadow cursor-default"
-                          : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100 cursor-pointer"
-                      }`}
-                    >
-                      Return
-                    </button>
+                  <div className="mt-4">
+                    <div className="grid grid-cols-2">
+                      {departureDate ? (
+                        <div>
+                          <span className="font-semibold">Departure:</span>{" "}
+                          {new Date(departureDate).toLocaleDateString("en-US", {
+                            weekday: "short",
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                            timeZone: "UTC",
+                          })}
+                        </div>
+                      ) : (
+                        <span className="text-gray-500 italic">
+                          Select your departure date
+                        </span>
+                      )}
+                      {returnDate ? (
+                        <div>
+                          <span className="font-semibold">Return:</span>{" "}
+                          {new Date(returnDate).toLocaleDateString("en-US", {
+                            weekday: "short",
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                            timeZone: "UTC",
+                          })}
+                        </div>
+                      ) : roundedTrip ? (
+                        <span className="text-gray-500 italic">
+                          Select your return date
+                        </span>
+                      ) : (
+                        <></>
+                      )}
+                    </div>
+
+                    <div className="flex items-center justify-center gap-2 mt-4">
+                      <button
+                        onClick={() => setSelection("departure")}
+                        className={`px-4 py-2 rounded-md border transition-all duration-200 ${
+                          selection === "departure"
+                            ? "bg-blue-600 text-white border-blue-600 shadow cursor-default"
+                            : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100 cursor-pointer"
+                        }`}
+                      >
+                        Departure
+                      </button>
+                      <button
+                        onClick={() => setSelection("return")}
+                        className={`px-4 py-2 rounded-md border transition-all duration-200 ${
+                          selection === "return"
+                            ? "bg-blue-600 text-white border-blue-600 shadow cursor-default"
+                            : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100 cursor-pointer"
+                        }`}
+                      >
+                        Return
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -217,7 +220,6 @@ export default function InfoCard({
                           originAirport,
                           destinationAirport,
                           cabinSelected,
-                          cabin,
                           seats, // ou passe o valor dinâmico correto aqui
                         })
                       }
