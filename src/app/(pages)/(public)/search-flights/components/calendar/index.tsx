@@ -462,6 +462,7 @@ export default function Calendar({
               originAirport={originAirport}
               destinationAirport={destinationAirport}
               departureDate={departureDate}
+              seats={seats}
             />
           </>
         )}

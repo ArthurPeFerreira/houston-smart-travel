@@ -12,6 +12,7 @@ import { AirportType } from "@/lib/airport/types";
 import { CheckCircle, Luggage, Plane } from "lucide-react";
 import { CabinKey, cabins } from "@/lib/route/cabins";
 import { FaWhatsapp } from "react-icons/fa";
+import { sendWhatsappMessage } from "../sendWhatsappMessage";
 
 interface GoingBackModalProps {
   isOpen: boolean;
@@ -21,6 +22,7 @@ interface GoingBackModalProps {
   originAirport: AirportType | undefined;
   destinationAirport: AirportType | undefined;
   departureDate: string;
+  seats: number;
 }
 
 export default function GoingBackModal({
@@ -31,6 +33,7 @@ export default function GoingBackModal({
   departureDate,
   destinationAirport,
   originAirport,
+  seats
 }: GoingBackModalProps) {
   const handleSelection = (isRoundTrip: boolean) => {
     onSelect(isRoundTrip);
@@ -59,7 +62,7 @@ export default function GoingBackModal({
 
           <div className="flex items-center w-full justify-center gap-2">
             <Luggage className="text-blue-600" size={20} />
-            <strong>{`Includes ${cabinSelected?.bagsAmount} checked bag(s) free of charge.`}</strong>
+            <strong>{`Includes 1 carry-on and ${cabinSelected?.bagsAmount} checked (23kg) bag, free of charge.`}</strong>
           </div>
 
           <div className="flex items-center justify-center gap-2">
@@ -90,10 +93,25 @@ export default function GoingBackModal({
 
         <div className="flex flex-col gap-4 mt-6">
           <button
-            onClick={() => handleSelection(false)}
+            onClick={() => {
+              if (originAirport && destinationAirport) {
+                handleSelection(false);
+                sendWhatsappMessage({
+                  cabinSelected,
+                  departureDate,
+                  destinationAirport,
+                  originAirport,
+                  roundedTrip: false,
+                  seats: seats, 
+                  returnDate: "", 
+                });
+              } else {
+                alert("Please select both origin and destination airports.");
+              }
+            }}
             className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-white font-medium transition cursor-pointer flex flex-row justify-center items-center gap-1"
           >
-            <FaWhatsapp/>
+            <FaWhatsapp />
             One-way only, proceed on WhatsApp
           </button>
           <button

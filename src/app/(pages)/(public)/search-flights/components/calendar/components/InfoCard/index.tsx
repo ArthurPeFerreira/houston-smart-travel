@@ -3,61 +3,6 @@ import { CabinKey, cabins } from "@/lib/route/cabins";
 import { CabinsType } from "@/lib/route/types";
 import { CheckCircle, DollarSign, Luggage, Plane } from "lucide-react";
 
-import { format } from "date-fns";
-import { phone } from "@/lib/systemInfo/contacts";
-
-function formatDate(dateStr: string) {
-  return format(new Date(dateStr), "EEE, MMM dd, yyyy");
-}
-
-function handleSendWhatsApp({
-  departureDate,
-  returnDate,
-  roundedTrip,
-  originAirport,
-  destinationAirport,
-  cabinSelected,
-  seats,
-}: {
-  departureDate: string;
-  returnDate?: string;
-  roundedTrip: boolean;
-  originAirport: AirportType;
-  destinationAirport: AirportType;
-  cabinSelected: CabinsType;
-  seats: number;
-}) {
-  const baseURL = "https://wa.me/";
-  const formattedDeparture = formatDate(departureDate);
-  const formattedReturn = returnDate ? formatDate(returnDate) : "";
-
-  const oneWayPrice = cabinSelected.passagePriceFromAirport1To2;
-  const returnPrice = cabinSelected.passagePriceFromAirport2To1;
-  const roundTripPrice = cabinSelected.passagePriceRoundTrip;
-
-  const message = roundedTrip
-    ? `Hello! I'd like to book these round trip.\n\n` +
-      `Class: ${cabins[cabinSelected.key as CabinKey].label}, ` +
-      `Checked bags: ${cabinSelected.bagsAmount}, ` +
-      `Seats: ${seats}\n\n` +
-      `Departure: ${formattedDeparture} (${originAirport.airportCode} → ${destinationAirport.airportCode}), ` +
-      `Price: $${Number(oneWayPrice).toFixed(2)}\n\n` +
-      `Return: ${formattedReturn} (${destinationAirport.airportCode} → ${originAirport.airportCode}), ` +
-      `Price: $${Number(returnPrice).toFixed(2)}\n\n` +
-      `Total round trip: $${Number(roundTripPrice).toFixed(2)}`
-    : `Hello! I'd like to book this one-way trip.\n\n` +
-      `Class: ${cabins[cabinSelected.key as CabinKey].label}, ` +
-      `Checked bags: ${cabinSelected.bagsAmount}, ` +
-      `Seats: ${seats}\n\n` +
-      `Departure: ${formattedDeparture} (${originAirport.airportCode} → ${destinationAirport.airportCode}), ` +
-      `Price: $${Number(oneWayPrice).toFixed(2)}`;
-
-  const encodedMessage = encodeURIComponent(message);
-  const whatsappURL = `${baseURL}${phone}?text=${encodedMessage}`;
-
-  window.open(whatsappURL, "_blank");
-}
-
 interface InfoCardProps {
   cabinSelected: CabinsType;
   originAirport: AirportType | undefined;
@@ -95,7 +40,7 @@ export default function InfoCard({
             </div>
             <div className="flex items-center mb-4 w-full justify-center gap-2 text-base">
               <Luggage className="text-blue-600" size={20} />
-              <strong>{`Includes ${cabinSelected?.bagsAmount} checked bag(s) free of charge.`}</strong>
+              <strong>{`Includes 1 carry-on and ${cabinSelected?.bagsAmount} checked (23kg) bag, free of charge.`}</strong>
             </div>
             {originAirport && destinationAirport && (
               <div className="flex flex-row gap-10">
@@ -140,9 +85,9 @@ export default function InfoCard({
                 </div>
               </div>
             )}
-            <div className="text-black">
-              <div className="flex flex-col gap-2">
-                {roundedTrip && (
+            {roundedTrip && (
+              <div className="text-black h-fit">
+                <div className="flex flex-col gap-2">
                   <div className="mt-4">
                     <div className="grid grid-cols-2">
                       {departureDate ? (
@@ -204,32 +149,9 @@ export default function InfoCard({
                       </button>
                     </div>
                   </div>
-                )}
+                </div>
               </div>
-              <div className="flex justify-center mt-3">
-                {departureDate &&
-                  (!roundedTrip || (roundedTrip && returnDate)) &&
-                  originAirport &&
-                  destinationAirport && (
-                    <button
-                      onClick={() =>
-                        handleSendWhatsApp({
-                          departureDate,
-                          returnDate,
-                          roundedTrip,
-                          originAirport,
-                          destinationAirport,
-                          cabinSelected,
-                          seats, // ou passe o valor dinâmico correto aqui
-                        })
-                      }
-                      className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md shadow transition"
-                    >
-                      Send via WhatsApp
-                    </button>
-                  )}
-              </div>
-            </div>
+            )}
           </div>
         </div>
       )}{" "}
