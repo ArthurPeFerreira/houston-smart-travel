@@ -24,7 +24,6 @@ export default function InfoCard({
   roundedTrip,
   selection,
   setSelection,
-  seats,
 }: InfoCardProps) {
   return (
     <>
@@ -43,7 +42,7 @@ export default function InfoCard({
               <strong>{`Includes 1 carry-on and ${cabinSelected?.bagsAmount} checked (23kg) bag, free of charge.`}</strong>
             </div>
             {originAirport && destinationAirport && (
-              <div className="flex flex-row gap-10">
+              <div className="flex flex-col gap-4 items-center md:flex-row md:gap-10 ">
                 <div className="flex items-center gap-2">
                   <Plane className="text-indigo-600" size={20} />
                   <span>

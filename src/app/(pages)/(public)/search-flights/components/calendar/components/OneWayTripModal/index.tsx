@@ -14,7 +14,7 @@ import { CabinKey, cabins } from "@/lib/route/cabins";
 import { FaWhatsapp } from "react-icons/fa";
 import { sendWhatsappMessage } from "../sendWhatsappMessage";
 
-interface GoingBackModalProps {
+interface OneWayTripModalProps {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
   onSelect: (isRoundTrip: boolean) => void;
@@ -25,7 +25,7 @@ interface GoingBackModalProps {
   seats: number;
 }
 
-export default function GoingBackModal({
+export default function OneWayTripModal({
   isOpen,
   setIsOpen,
   onSelect,
@@ -33,8 +33,8 @@ export default function GoingBackModal({
   departureDate,
   destinationAirport,
   originAirport,
-  seats
-}: GoingBackModalProps) {
+  seats,
+}: OneWayTripModalProps) {
   const handleSelection = (isRoundTrip: boolean) => {
     onSelect(isRoundTrip);
     setIsOpen(false);
@@ -51,7 +51,7 @@ export default function GoingBackModal({
             Is this a round-trip?
           </DialogTitle>
         </DialogHeader>
-        <div className="flex flex-col text-xl gap-4">
+        <div className="flex flex-col text-md sm:text-lg md:text-xl gap-4">
           <div className="flex items-center justify-center w-full gap-2 font-semibold text-[#00001e]">
             <CheckCircle className="text-green-600" size={20} />
             Selected Cabin:
@@ -102,8 +102,8 @@ export default function GoingBackModal({
                   destinationAirport,
                   originAirport,
                   roundedTrip: false,
-                  seats: seats, 
-                  returnDate: "", 
+                  seats: seats,
+                  returnDate: "",
                 });
               } else {
                 alert("Please select both origin and destination airports.");
