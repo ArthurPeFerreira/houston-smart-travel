@@ -44,7 +44,7 @@ export default function OneWayTripModal({
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent
         // showCloseButton={false}
-        className="bg-white text-[#00001e] rounded-md w-6/12 h-fit border-none shadow-lg p-6"
+        className="bg-white text-[#00001e] rounded-md w-11/12 sm:w-10/12 md:w-9/12 lg:w-8/12 xl:w-7/12 h-fit border-none shadow-lg p-6"
       >
         <DialogHeader className="mb-6">
           <DialogTitle className="text-center text-2xl font-bold">
