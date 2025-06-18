@@ -4,7 +4,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import multiMonthPlugin from "@fullcalendar/multimonth";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import { addYears, startOfToday } from "date-fns";
 
 import "../../styles/calendar.css";
@@ -14,13 +14,13 @@ import "@fullcalendar/multimonth/index.js";
 import { api } from "@/lib/api/api";
 import { CabinsType, RoutesDataType } from "@/lib/route/types";
 import { AirportType } from "@/lib/airport/types";
-import GoingBackModal from "./components/GoingBackModal";
-import { CabinKey } from "@/lib/route/cabins";
 import Link from "next/link";
-import { FaSpinner } from "react-icons/fa";
+import { FaPlane, FaSpinner } from "react-icons/fa";
 import InfoCard from "./components/InfoCard";
 import { toastConfigs } from "@/lib/toastify/toastify";
 import { toast } from "react-toastify";
+import OneWayTripModal from "./components/OneWayTripModal";
+import RoundedTripModal from "./components/RoundedTripModal";
 
 interface CalendarProps {
   originAirportId: number;
@@ -83,7 +83,9 @@ export default function Calendar({
     new Date().toISOString()
   );
 
-  const [isOpenGoingBackModal, setIsOpenGoingBackModal] =
+  const [isOpenOneWayTripModal, setIsOpenOneWayTripModal] =
+    useState<boolean>(false);
+  const [isOpenRoundedTripModal, setIsOpenRoundedTripModal] =
     useState<boolean>(false);
 
   const [loading, setLoading] = useState<boolean>(true);
@@ -91,6 +93,33 @@ export default function Calendar({
   const [selection, setSelection] = useState<"departure" | "return">(
     "departure"
   );
+
+  // Eventos de ida que obedecem à data-limite imposta pela volta escolhida
+  const filteredDepartureEvents = useMemo(() => {
+    if (!returnDate) return departureEventsData;
+    const limit = new Date(returnDate);
+    return departureEventsData.filter(
+      (ev) => new Date(ev.start) < limit 
+    );
+  }, [departureEventsData, returnDate]);
+
+  // Eventos de volta que obedecem à data-limite imposta pela ida escolhida
+  const filteredReturnEvents = useMemo(() => {
+    if (!departureDate) return returnEventsData;
+    const limit = new Date(departureDate);
+    return returnEventsData.filter(
+      (ev) => new Date(ev.start) > limit 
+    );
+  }, [returnEventsData, departureDate]);
+
+  useEffect(() => {
+    function handleResize() {
+      setCalendarKey(new Date().toISOString());
+    }
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     async function fetchData() {
@@ -262,7 +291,16 @@ export default function Calendar({
       ]);
     }
 
-    setIsOpenGoingBackModal(true);
+    // Se ainda não sabemos se será ida-e-volta, pergunte agora.
+    if (!roundedTrip && selection === "departure") {
+      setIsOpenOneWayTripModal(true); // pergunta: “voltar ou não?”
+      return;
+    }
+
+    // Já é ida-e-volta e o usuário acabou de escolher a data de volta:
+    if (roundedTrip) {
+      setIsOpenRoundedTripModal(true); // mostra o resumo final
+    }
   }
 
   useEffect(() => {
@@ -271,11 +309,11 @@ export default function Calendar({
 
   useEffect(() => {
     if (selection === "departure") {
-      setEventsData(departureEventsData);
+      setEventsData(filteredDepartureEvents);
     }
 
     if (selection === "return") {
-      setEventsData(returnEventsData);
+      setEventsData(filteredReturnEvents);
     }
   }, [selection, departureEventsData, returnEventsData]);
 
@@ -294,14 +332,30 @@ export default function Calendar({
               destinationAirport={destinationAirport}
               departureDate={departureDate}
               returnDate={returnDate}
-              cabin={cabin as CabinKey}
               roundedTrip={roundedTrip}
               selection={selection}
               setSelection={setSelection}
               seats={seats}
             />
-            <div className="px-2 max-w-7xl">
-              <div className="w-full h-fit rounded-lg">
+            <div className="px-2 max-w-7xl flex flex-col justify-center items-center">
+              <div className="w-fit flex flex-row items-center md:items-end justify-center gap-3 text-md sm:text-xl md:text-3xl text-[#141414] my-5">
+                {selection === "departure" ? (
+                  <>
+                    {originAirport?.city} ({originAirport?.airportCode})
+                    <FaPlane className="text-3xl" />
+                    {destinationAirport?.city} (
+                    {destinationAirport?.airportCode})
+                  </>
+                ) : (
+                  <>
+                    {destinationAirport?.city} (
+                    {destinationAirport?.airportCode})
+                    <FaPlane className="text-3xl" />
+                    {originAirport?.city} ({originAirport?.airportCode})
+                  </>
+                )}
+              </div>
+              <div className="w-full h-fit mt-[-20px]">
                 {eventsData.length > 0 && (
                   <FullCalendar
                     key={calendarKey}
@@ -416,15 +470,30 @@ export default function Calendar({
                 </div>
               </div>
             </div>
-            <GoingBackModal
-              isOpen={isOpenGoingBackModal && !roundedTrip}
-              setIsOpen={setIsOpenGoingBackModal}
+            <OneWayTripModal
+              isOpen={isOpenOneWayTripModal && !roundedTrip}
+              setIsOpen={setIsOpenOneWayTripModal}
               onSelect={(value) => {
                 setRoundedTrip(value);
                 if (value) {
                   setSelection("return");
                 }
               }}
+              cabinSelected={cabinSelected as CabinsType}
+              originAirport={originAirport}
+              destinationAirport={destinationAirport}
+              departureDate={departureDate}
+              seats={seats}
+            />
+            <RoundedTripModal
+              isOpen={isOpenRoundedTripModal && roundedTrip}
+              setIsOpen={setIsOpenRoundedTripModal}
+              cabinSelected={cabinSelected as CabinsType}
+              originAirport={originAirport}
+              destinationAirport={destinationAirport}
+              departureDate={departureDate}
+              returnDate={returnDate}
+              seats={seats}
             />
           </>
         )}
