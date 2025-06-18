@@ -44,7 +44,7 @@ export default function OneWayTripModal({
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent
         // showCloseButton={false}
-        className="bg-white text-[#00001e] rounded-md w-10/12 h-fit border-none shadow-lg p-6"
+        className="bg-white text-[#00001e] rounded-md w-6/12 h-fit border-none shadow-lg p-6"
       >
         <DialogHeader className="mb-6">
           <DialogTitle className="text-center text-2xl font-bold">
@@ -109,14 +109,14 @@ export default function OneWayTripModal({
                 alert("Please select both origin and destination airports.");
               }
             }}
-            className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-white font-medium transition cursor-pointer flex flex-row justify-center items-center gap-1"
+            className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-md text-white font-medium transition cursor-pointer flex flex-row justify-center items-center gap-1"
           >
             <FaWhatsapp />
             One-way only, proceed on WhatsApp
           </button>
           <button
             onClick={() => handleSelection(true)}
-            className="bg-gray-400 hover:bg-gray-500 px-4 py-2 rounded-md text-white font-medium transition cursor-pointer"
+            className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-white font-medium transition cursor-pointer"
           >
             Yes, add return flight
           </button>

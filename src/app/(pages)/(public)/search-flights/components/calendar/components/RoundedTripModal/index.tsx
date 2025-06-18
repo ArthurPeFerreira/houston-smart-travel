@@ -39,7 +39,7 @@ export default function RoundedTripModal({
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent
         // showCloseButton={false}
-        className="bg-white text-[#00001e] rounded-md w-10/12 h-fit border-none shadow-lg p-6"
+        className="bg-white text-[#00001e] rounded-md w-8/12 h-fit border-none shadow-lg p-6"
       >
         <DialogHeader className="mb-6">
           <DialogTitle className="text-center text-2xl font-bold">
@@ -113,7 +113,7 @@ export default function RoundedTripModal({
               })}
             </div>
             <div className="flex flex-row gap-2 justify-center">
-              <span className="font-semibold">Departure:</span>{" "}
+              <span className="font-semibold">Return:</span>{" "}
               {new Date(returnDate).toLocaleDateString("en-US", {
                 weekday: "short",
                 year: "numeric",
@@ -142,7 +142,7 @@ export default function RoundedTripModal({
                 alert("Please select both origin and destination airports.");
               }
             }}
-            className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-white font-medium transition cursor-pointer flex flex-row justify-center items-center gap-1"
+            className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-md text-white font-medium transition cursor-pointer flex flex-row justify-center items-center gap-1"
           >
             <FaWhatsapp />
             All set, proceed on WhatsApp
