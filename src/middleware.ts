@@ -6,11 +6,11 @@ export async function middleware(req: NextRequest) {
   const token = await getToken({ req });
   const { pathname } = req.nextUrl;
 
-  if (pathname == "/check-flights") {
-    const underConstructionUrl = req.nextUrl.clone();
-    underConstructionUrl.pathname = "/under-construction";
-    return NextResponse.redirect(underConstructionUrl);
-  }
+  // if (pathname == "/check-flights") {
+  //   const underConstructionUrl = req.nextUrl.clone();
+  //   underConstructionUrl.pathname = "/under-construction";
+  //   return NextResponse.redirect(underConstructionUrl);
+  // }
 
   if (
     !token &&
