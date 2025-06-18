@@ -15,13 +15,11 @@ import { api } from "@/lib/api/api";
 import { CabinsType, RoutesDataType } from "@/lib/route/types";
 import { AirportType } from "@/lib/airport/types";
 import GoingBackModal from "./components/GoingBackModal";
-import { CabinKey } from "@/lib/route/cabins";
 import Link from "next/link";
 import { FaPlane, FaSpinner } from "react-icons/fa";
 import InfoCard from "./components/InfoCard";
 import { toastConfigs } from "@/lib/toastify/toastify";
 import { toast } from "react-toastify";
-import { Plane } from "lucide-react";
 
 interface CalendarProps {
   originAirportId: number;
