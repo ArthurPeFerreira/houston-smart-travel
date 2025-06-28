@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 "use client"; // Indica que este é um componente do lado do cliente no Next.js (App Router)
 
 // Importação da API configurada para chamadas HTTP
@@ -66,9 +64,9 @@ export default function AirportBox() {
   }
 
   return (
-    <div className="mt-10 flex items-center justify-center">
+    <div className="flex items-center justify-center">
       {/* Container principal do formulário */}
-      <div className="bg-gray-800 w-fit p-5 rounded-2xl flex flex-col items-center justify-center text-white">
+      <div className="bg-gray-800 w-80 p-5 rounded-2xl flex flex-col items-center justify-center text-white">
         <h1 className="text-center font-bold text-3xl">Create New Airport</h1>
 
         {/* Formulário de criação de aeroporto */}

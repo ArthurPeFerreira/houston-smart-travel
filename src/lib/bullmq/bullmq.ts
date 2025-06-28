@@ -12,7 +12,9 @@ export const queueHst = new Queue(queueName, {
 });
 
 // Configuração de eventos da fila "Hst" para monitorar atividades, como falhas ou conclusão
-export const queueEvents = new QueueEvents(queueName);
+export const queueEvents = new QueueEvents(queueName, {
+  connection: redis,  
+});
 
 // Configuração do worker para processar as tarefas adicionadas à fila
 export const worker = new Worker(
@@ -41,7 +43,7 @@ export const worker = new Worker(
   }
 );
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 // Função para adicionar uma tarefa repetitiva à fila
 export async function addRepeatingTaskCron(
   taskName: string, // Nome da tarefa a ser adicionada]

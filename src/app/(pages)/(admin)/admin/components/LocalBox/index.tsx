@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 // Indica que este componente é executado no lado do cliente no Next.js
 "use client";
 
@@ -28,6 +27,7 @@ import LocalsInfo from "./components/LocalInfo";
 // Tipos utilizados para criação e edição de locais
 import { LocalType } from "@/lib/local/types";
 import Decimal from "decimal.js";
+import { CustomSelect } from "@/app/(pages)/(public)/components/CustomSelect";
 
 // Classe CSS reutilizável para inputs
 const inputs =
@@ -189,36 +189,28 @@ export default function LocalBox() {
 
   // JSX principal
   return (
-    <div className="mt-10 flex items-center justify-center">
-      <div className="bg-gray-800 w-fit p-5 rounded-2xl flex flex-col items-center justify-center text-white">
+    <div className="flex items-center justify-center">
+      <div className="bg-gray-800 w-80 p-5 rounded-2xl flex flex-col items-center justify-center text-white">
         {/* Título do formulário */}
         <h1 className="text-center font-bold text-3xl">Create New Local</h1>
 
         {/* Formulário de criação de local */}
         <form className="w-full mt-4" onSubmit={handleSubmit}>
           {/* Dropdown de seleção de aeroporto */}
-          <label className="block mb-1 text-white">Airport</label>
-          <select
-            name="airports"
-            id="airports"
-            className={`${inputs} invalid:text-gray-500`}
-            onChange={(e) => setAirportId(Number(e.target.value))}
+
+          <CustomSelect
+            options={(airportsToShow ?? []).map((airport) => ({
+              label: `${airport.city} - ${airport.airportCode}`,
+              value: airport.id,
+            }))}
             value={airportId}
+            setValue={setAirportId}
+            key="airports"
+            placeholder="Select an airport"
+            label="Airport"
+            disabled={false}
             required
-          >
-            <option value={0} disabled className="text-gray-400">
-              Select an airport
-            </option>
-            {airportsToShow?.map((airport) => (
-              <option
-                value={airport.id}
-                key={airport.id}
-                className="text-white"
-              >
-                {airport.city} - {airport.airportCode}
-              </option>
-            ))}
-          </select>
+          />
 
           {/* Campo de cidade */}
           <label className="block mb-1 text-white mt-4">City</label>

@@ -25,6 +25,7 @@ import { EditRouteType, RouteType } from "@/lib/route/types";
 import Decimal from "decimal.js";
 import { mileagePrograms } from "@/lib/route/mileagePrograms";
 import { FaPlus, FaSpinner, FaTrash } from "react-icons/fa";
+import { CustomSelect } from "@/app/(pages)/(public)/components/CustomSelect";
 
 // Tipagem dos dados da cabine usados no formulário
 interface CabinData {
@@ -266,34 +267,28 @@ export default function EditRoute({
 
           <div className="flex flex-col gap-2">
             {/* Seção de seleção e adição de cabines à rota */}
+
             <div className="flex flex-col">
-              <label className="block mb-1 text-white">Cabins</label>
-              <div className="flex flex-row gap-2 items-center">
+              <div className="flex flex-row gap-2 items-end">
                 {/* Dropdown de cabines disponíveis */}
-                <select
-                  name="cabins"
-                  id="cabins"
-                  className={inputs}
-                  onChange={(e) => {
-                    setCabinKey(e.target.value as CabinKey);
-                  }}
+                <CustomSelect
+                  options={cabinToShow.map((cabin) => ({
+                    label: `${cabin.label} - ${cabin.code}`,
+                    value: cabin.key,
+                  }))}
                   value={cabinKey}
-                >
-                  <option value="" disabled>
-                    Select a cabin
-                  </option>
-                  {/* Lista de cabines que ainda podem ser adicionadas */}
-                  {cabinToShow.map((cabin) => (
-                    <option key={cabin.key} value={cabin.key}>
-                      {cabin.label} - {cabin.code}
-                    </option>
-                  ))}
-                </select>
+                  setValue={setCabinKey}
+                  key="cabins"
+                  placeholder="Select a cabin"
+                  label="Cabins"
+                  disabled={false}
+                  required={false}
+                />
                 {/* Botão para adicionar nova cabine à lista */}
                 <button
                   disabled={!cabinKey}
                   onClick={() => addNewCabin(cabinKey as CabinKey)}
-                  className="p-2 h-fit bg-green-500 cursor-pointer rounded-full hover:bg-green-600 disabled:cursor-no-drop"
+                  className="p-2 h-fit bg-green-500 cursor-pointer rounded-full hover:bg-green-600 disabled:cursor-no-drop mb-[6px]"
                 >
                   <FaPlus />
                 </button>
