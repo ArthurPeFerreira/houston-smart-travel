@@ -42,37 +42,28 @@ export async function GET(
       );
     }
 
-    // Filtra rotas que contenham o aeroporto especificado pelo ID
-    const filteredRoutes = routes.filter((route) => {
-      // Ignora rotas cujo primeiro aeroporto tem ID maior que o buscado (regra de negócio específica)
-      if (route.airports[0].id > airportIdNumber) {
-        return false;
-      }
-
-      // Mantém a rota se algum dos aeroportos nela tiver o mesmo ID do buscado
-      return route.airports.some((airport) => airport.id === airportIdNumber);
-    });
-
-    // Cria um conjunto para armazenar os IDs dos aeroportos conectados ao aeroporto informado
-    const connectedAirportIds = new Set<number>();
-
-    // Adiciona ao conjunto todos os aeroportos das rotas filtradas
-    for (const route of filteredRoutes) {
-      route.airports.forEach((airport) => {
-        connectedAirportIds.add(airport.id);
-      });
-    }
-
-    // Remove do conjunto o próprio aeroporto informado (não deve ser incluído na resposta)
-    connectedAirportIds.delete(airportIdNumber);
-
-    // Filtra os aeroportos que não estão conectados ao aeroporto informado
-    const notConnectedAirports = airports.filter(
-      (airport) => (connectedAirportIds.has(airport.id) && airport.id !== airportIdNumber)
+    // Filtra só as rotas ativas que incluam o airportId
+    const activeRoutes = routes.filter(
+      (route) =>
+        route.active && route.airports.some((a) => a.id === airportIdNumber)
     );
 
-    // Retorna a lista de aeroportos não conectados em formato JSON
-    return NextResponse.json(notConnectedAirports);
+    // Monta o set de IDs dos aeroportos conectados
+    const connectedAirportIds = new Set<number>();
+    for (const route of activeRoutes) {
+      for (const a of route.airports) {
+        if (a.id !== airportIdNumber) {
+          connectedAirportIds.add(a.id);
+        }
+      }
+    }
+
+    // Filtra os aeroportos para incluir só os conectados
+    const connectedAirports = airports.filter((a) =>
+      connectedAirportIds.has(a.id)
+    );
+
+    return NextResponse.json(connectedAirports);
   } catch {
     // Captura qualquer erro inesperado e retorna status 500 com mensagem de erro
     return NextResponse.json(

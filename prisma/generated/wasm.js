@@ -134,8 +134,7 @@ exports.Prisma.UsersScalarFieldEnum = {
 exports.Prisma.AirportsScalarFieldEnum = {
   id: 'id',
   city: 'city',
-  airportCode: 'airportCode',
-  order: 'order'
+  airportCode: 'airportCode'
 };
 
 exports.Prisma.LocalsScalarFieldEnum = {
