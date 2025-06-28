@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 // Import the function that schedules a recurring task based on cron
 import { addRepeatingTaskCron } from "./bullmq";
 

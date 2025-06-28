@@ -1,4 +1,4 @@
-export const dynamic = 'force-dynamic'; 
+export const dynamic = "force-dynamic";
 
 // Importação do tipo Metadata do Next.js para definir metadados da página
 import { Metadata } from "next";
@@ -16,36 +16,34 @@ import RouteBox from "./components/RouteBox";
 export const metadata: Metadata = {
   title: "Admin Panel",
   icons: {
-    icon: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/favicon.ico`,      
-    shortcut: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/favicon.ico`,  
-    apple: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/favicon.ico`,  
+    icon: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/favicon.ico`,
+    shortcut: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/favicon.ico`,
+    apple: `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static/favicon.ico`,
   },
 };
 
 // Componente principal da página de administração
 export default async function Admin() {
-
   return (
     // O elemento <div> com uma classe Tailwind para definir o fundo escuro
-    <div className="flex flex-col items-center justify-center">
+    <main className="flex flex-col items-center justify-center min-w-full">
       {/* Componente Navbar exibido na página */}
       <Navbar />
+      <div className="flex flex-col w-full p-5 gap-4">
+        <div className="grid grid-cols-1 items-center justify-center gap-4 xl:flex xl:flex-row">
+          {/* Componente AirportBox exibido na página */}
+          <AirportBox />
 
-      <div className="w-11/12 grid grid-cols-1 items-center justify-center gap-4 lg:flex lg:flex-row">
-        {/* Componente AirportBox exibido na página */}
-        <AirportBox />
+          {/* Componente LocalBox exibido na página */}
+          <LocalBox />
 
-        {/* Componente LocalBox exibido na página */}
-        <LocalBox />
+          {/* Componente RouteBox exibido na página */}
+          <RouteBox />
+        </div>
 
-        {/* Componente RouteBox exibido na página */}
-        <RouteBox />
-      </div>
-
-      {/* Componente UserTable exibido na página */}
-      <div className="w-11/12">
+        {/* Componente UserTable exibido na página */}
         <UserTable />
       </div>
-    </div>
+    </main>
   );
 }

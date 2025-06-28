@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 
 "use client"; // Indica que este componente é do lado do cliente (Next.js App Router)
 

@@ -108,7 +108,7 @@ export const authOptions: NextAuthOptions = {
   // Configura callbacks para personalizar o token e a sessão
   callbacks: {
     // Callback JWT: Customiza o token JWT retornado.
-    /* eslint-disable @typescript-eslint/no-explicit-any */
+    
     async jwt({ token, user }: { token: JWT; user: any }) {
       if (user) {
         // Adiciona propriedades do usuário ao token JWT

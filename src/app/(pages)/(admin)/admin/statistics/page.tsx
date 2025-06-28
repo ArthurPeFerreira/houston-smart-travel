@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 export const dynamic = "force-dynamic";
 
 // Importação do tipo Metadata do Next.js para definir metadados da página

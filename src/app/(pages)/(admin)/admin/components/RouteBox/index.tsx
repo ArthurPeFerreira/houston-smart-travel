@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 "use client"; // Indica que este é um componente do lado do cliente no Next.js (App Router)
 
 import { useEffect, useState } from "react";
@@ -22,6 +20,7 @@ import {
 } from "./functions/selectMileageProgram";
 import eventEmitter from "@/lib/event/eventEmmiter";
 import { MdFlight } from "react-icons/md";
+import { CustomSelect } from "@/app/(pages)/(public)/components/CustomSelect";
 
 // Tipagem interna das cabines utilizadas no componente
 interface CabinData {
@@ -293,7 +292,7 @@ export default function RouteBox() {
 
   return (
     // Container principal centralizado na tela
-    <div className="mt-10 flex items-center justify-center">
+    <div className="flex items-center justify-center">
       {/* Caixa visual do formulário */}
       <div className="bg-gray-800 w-fit p-5 rounded-2xl flex flex-col items-center justify-center text-white">
         {/* Título da seção de criação de rota */}
@@ -323,92 +322,59 @@ export default function RouteBox() {
           </div>
 
           {/* Campo de seleção do primeiro aeroporto */}
-          <div>
-            <label className="block mb-1 text-white">Airport 1</label>
-            <select
-              name="airport1"
-              id="airport1"
-              className={`${inputs} invalid:text-gray-500`}
-              onChange={(e) => handleSelectAirport1(Number(e.target.value))}
-              value={airportId1}
-              required
-            >
-              {/* Opção inicial desabilitada */}
-              <option value={0} disabled className="text-gray-400">
-                Select an airport
-              </option>
-              {/* Lista dinâmica de aeroportos disponíveis */}
-              {airports.map((airport) => (
-                <option
-                  value={airport.id}
-                  key={airport.id}
-                  className="text-white"
-                >
-                  {airport.city} - {airport.airportCode}
-                </option>
-              ))}
-            </select>
-          </div>
+
+          <CustomSelect
+            options={airports.map((airport) => ({
+              label: `${airport.city} - ${airport.airportCode}`,
+              value: airport.id,
+            }))}
+            value={airportId1}
+            setValue={handleSelectAirport1}
+            key="airport1"
+            placeholder="Select an airport"
+            label="Airport 1"
+            disabled={false}
+            required
+          />
 
           {/* Campo de seleção do segundo aeroporto */}
-          <div>
-            <label className="block mb-1 text-white">Airport 2</label>
-            <select
-              name="airport2"
-              id="airport2"
-              className={`${inputs} invalid:text-gray-500 disabled:text-gray-500 disabled:cursor-not-allowed`}
-              onChange={(e) => setAirportId2(Number(e.target.value))}
-              value={airportId2}
-              disabled={airport2Select.length === 0}
-              required
-            >
-              {/* Opção inicial desabilitada */}
-              <option value={0} disabled className="text-gray-400">
-                Select an airport
-              </option>
-              {/* Lista dinâmica de aeroportos disponíveis */}
-              {airport2Select.map((airport) => (
-                <option
-                  value={airport.id}
-                  key={airport.id}
-                  className="text-white"
-                >
-                  {airport.city} - {airport.airportCode}
-                </option>
-              ))}
-            </select>
-          </div>
+          <CustomSelect
+            options={airport2Select.map((airport) => ({
+              label: `${airport.city} - ${airport.airportCode}`,
+              value: airport.id,
+            }))}
+            value={airportId2}
+            setValue={setAirportId2}
+            key="airport2"
+            placeholder="Select an airport"
+            label="Airport 2"
+            disabled={airport2Select.length === 0}
+            required
+          />
 
           {/* Seção de seleção e adição de cabines à rota */}
+
           <div className="flex flex-col">
-            <label className="block mb-1 text-white">Cabins</label>
-            <div className="flex flex-row gap-2 items-center">
+            <div className="flex flex-row gap-2 items-end">
               {/* Dropdown de cabines disponíveis */}
-              <select
-                name="cabins"
-                id="cabins"
-                className={inputs}
-                onChange={(e) => {
-                  setCabinKey(e.target.value as CabinKey);
-                }}
+              <CustomSelect
+                options={cabinToShow.map((cabin) => ({
+                  label: `${cabin.label} - ${cabin.code}`,
+                  value: cabin.key,
+                }))}
                 value={cabinKey}
+                setValue={setCabinKey}
+                key="cabins"
+                placeholder="Select a cabin"
+                label="Cabins"
                 disabled={airportId1 === 0 || airportId2 === 0}
-              >
-                <option value="" disabled>
-                  Select a cabin
-                </option>
-                {/* Lista de cabines que ainda podem ser adicionadas */}
-                {cabinToShow.map((cabin) => (
-                  <option key={cabin.key} value={cabin.key}>
-                    {cabin.label} - {cabin.code}
-                  </option>
-                ))}
-              </select>
+                required={false}
+              />
               {/* Botão para adicionar nova cabine à lista */}
               <button
                 disabled={!cabinKey}
                 onClick={() => addNewCabin(cabinKey as CabinKey)}
-                className="p-2 h-fit bg-green-500 cursor-pointer rounded-full hover:bg-green-600 disabled:cursor-no-drop"
+                className="p-2 h-fit bg-green-500 cursor-pointer rounded-full hover:bg-green-600 disabled:cursor-no-drop mb-[6px]"
               >
                 <FaPlus />
               </button>

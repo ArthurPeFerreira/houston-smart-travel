@@ -102,7 +102,7 @@ export default function UserTable() {
   }
 
   return (
-    <div className="mt-10 w-full flex items-center justify-center">
+    <div className="w-full flex items-center justify-center">
       <div className="bg-gray-800 w-full p-5 rounded-2xl flex flex-col items-center justify-center text-white">
         {/* Título e botão para criar usuário */}
         <div className="sm:relative flex flex-col items-center sm:justify-center w-full mb-5">

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 // Registro de tarefas, associando nomes a funções assíncronas
 import { addYears, format } from "date-fns";
 import { prismaClient } from "../prisma/prisma";

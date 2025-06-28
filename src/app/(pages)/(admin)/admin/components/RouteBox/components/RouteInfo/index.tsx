@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 "use client"; // Indica que este é um componente do lado do cliente no Next.js (App Router)
 
 import React, { useEffect, useState } from "react";
@@ -22,6 +20,7 @@ import getRoutes from "../../functions/getRoutes";
 import { mileagePrograms } from "@/lib/route/mileagePrograms";
 import SeeCabins from "./components/SeeCabins";
 import EditRoute from "./components/EditRoute";
+import { CustomSelect } from "@/app/(pages)/(public)/components/CustomSelect";
 
 interface RouteInfoProps {
   isOpen: boolean;
@@ -34,10 +33,6 @@ export default function RouteInfo({
   setIsOpen,
   airports,
 }: RouteInfoProps) {
-  // Classe para os inputs
-  const inputs =
-    "w-full border border-gray-600 bg-gray-900 p-2 rounded text-white";
-
   // Classe para células da tabela
   const classItens = "border border-gray-800 p-2 text-center";
 
@@ -153,25 +148,18 @@ export default function RouteInfo({
         </DialogHeader>
 
         {/* Dropdown para selecionar o aeroporto e filtrar as rotas relacionadas */}
-        <select
-          name="filterRouteByAirport"
-          id="filterRouteByAirport"
-          className={inputs}
-          onChange={(e) => {
-            setAirportIdSelected(Number(e.target.value));
-          }}
+        <CustomSelect
+          options={airports.map((airport) => ({
+            label: `${airport.city} - ${airport.airportCode}`,
+            value: airport.id,
+          }))}
           value={airportIdSelected}
-        >
-          <option value={0} disabled>
-            Select an airport
-          </option>
-          {/* Opções baseadas na lista de aeroportos recebida via props */}
-          {airports.map((airport) => (
-            <option key={airport.id} value={airport.id}>
-              {airport.city} - {airport.airportCode}
-            </option>
-          ))}
-        </select>
+          setValue={setAirportIdSelected}
+          key="filterRouteByAirport"
+          placeholder="Select an airport"
+          disabled={false}
+          required
+        />
 
         {/* Exibição condicional dos dados da rota com base no estado */}
         {airportIdSelected !== 0 ? (

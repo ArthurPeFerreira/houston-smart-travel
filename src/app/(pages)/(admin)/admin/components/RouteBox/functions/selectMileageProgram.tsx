@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 
 // Importa os dados dos programas de milhagem disponíveis
 import { mileagePrograms } from "@/lib/route/mileagePrograms";
@@ -6,19 +6,19 @@ import { components, OptionProps, SingleValueProps } from "react-select";
 
 // Define o formato das opções de programa de milhagem usadas no Select
 export interface MileageProgramOption {
-  value: string;      // identificador único (chave)
-  label: string;      // nome exibido
-  logoUrl: string;    // URL do ícone
+  value: string; // identificador único (chave)
+  label: string; // nome exibido
+  logoUrl: string; // URL do ícone
 }
 
 // Converte os programas de milhagem em opções para o Select
-export const options: MileageProgramOption[] = Object.values(mileagePrograms).map(
-  (program) => ({
-    value: program.key,
-    label: program.label,
-    logoUrl: program.logoUrl,
-  })
-);
+export const options: MileageProgramOption[] = Object.values(
+  mileagePrograms
+).map((program) => ({
+  value: program.key,
+  label: program.label,
+  logoUrl: program.logoUrl,
+}));
 
 // Estilos personalizados do componente react-select para combinar com o tema escuro da aplicação
 export const customStyles = {
@@ -34,6 +34,10 @@ export const customStyles = {
     "&:hover": {
       borderColor: "#4b5563",
     },
+  }),
+  input: (provided: any) => ({
+    ...provided,
+    color: "#fff",
   }),
   indicatorSeparator: () => ({
     display: "none",
@@ -83,7 +87,9 @@ export function ProgramOption(props: OptionProps<MileageProgramOption>) {
 }
 
 // Componente customizado para exibir o valor selecionado no Select com ícone
-export function ProgramSingleValue(props: SingleValueProps<MileageProgramOption>) {
+export function ProgramSingleValue(
+  props: SingleValueProps<MileageProgramOption>
+) {
   const { data } = props;
   return (
     <components.SingleValue {...props}>
