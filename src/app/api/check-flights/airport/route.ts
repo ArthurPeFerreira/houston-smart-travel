@@ -25,9 +25,12 @@ export async function GET() {
       );
     }
 
+    // Filtra apenas as rotas ativas
+    const activeRoutes = routes.filter(route => route.active);
+
     // Cria um conjunto para armazenar os IDs de aeroportos que aparecem em pelo menos uma rota
     const airportIdsWithRoutes = new Set<number>();
-    routes.forEach((route) => {
+    activeRoutes.forEach((route) => {
       // Adiciona o ID do primeiro aeroporto da rota ao conjunto
       airportIdsWithRoutes.add(route.airports[0].id);
 
