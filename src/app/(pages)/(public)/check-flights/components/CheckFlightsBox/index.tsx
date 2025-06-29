@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import { AirportType } from "@/lib/airport/types";
@@ -11,78 +9,100 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaSpinner } from "react-icons/fa";
 import { toast } from "react-toastify";
+import { CustomSelect } from "../../../components/CustomSelect";
 
 interface CheckFlightsBoxProps {
-  initialDestinationAirportId: number | undefined;
+  initialDestinationAirportId: number | undefined; // ID pré-selecionado de destino (pode vir undefined)
 }
 
+// Componente principal para verificar disponibilidade de voos
 export default function CheckFlightsBox({
   initialDestinationAirportId,
 }: CheckFlightsBoxProps) {
-  const selects = "w-full bg-gray-300 p-2 rounded";
+  // Classe base para inputs numéricos de assentos
   const inputs = "w-20 bg-gray-300 p-2 rounded";
-  const router = useRouter();
+  const router = useRouter(); // Hook do Next.js para navegação programática
 
-  // ---------- state ----------
+  // Estado: lista de aeroportos de origem carregados da API
   const [originAirports, setOriginAirports] = useState<AirportType[]>([]);
+  // Estado: lista de aeroportos de destino, filtrados após escolha da origem
   const [destinationAirports, setDestinationAirports] = useState<AirportType[]>(
     []
   );
+  // Estado: lista de cabines disponíveis para a rota selecionada
   const [cabinsRoute, setCabinsRoute] = useState<Cabin[]>([]);
+  // Estado: ID da rota selecionada (obtido após consultar a API de rotas)
   const [routeId, setRouteId] = useState(0);
 
+  // Estado de loading para desabilitar o botão e mostrar spinner
   const [loading, setLoading] = useState(false);
+  // ID do aeroporto de origem selecionado
   const [originAirportId, setOriginAirportId] = useState(0);
+  // ID do aeroporto de destino selecionado
   const [destinationAirportId, setDestinationAirportId] = useState<number>(0);
+  // Estado que mantém dados completos do destino inicial (se houver)
   const [initialDestination, setInitialDestination] = useState<AirportType>();
+  // Número de assentos a reservar
   const [seats, setSeats] = useState(1);
+  // Chave da cabine (economy, business, etc.) selecionada
   const [cabin, setCabin] = useState("");
 
-  // ---------- handlers ----------
+  // Função chamada ao mudar aeroporto de origem
   function handleOriginChange(id: number) {
     setOriginAirportId(id);
+    // Se destino inicial não foi definido externamente, limpa destinos
     if (!initialDestinationAirportId) {
       setDestinationAirportId(0);
       setDestinationAirports([]);
     }
+    // Limpa seleção de cabine e rota anterior
     setCabinsRoute([]);
     setCabin("");
     setRouteId(0);
   }
 
+  // Função chamada ao mudar aeroporto de destino
   function handleDestinationChange(id: number) {
     setDestinationAirportId(id);
+    // Limpa seleção de cabine e rota anterior
     setCabinsRoute([]);
     setCabin("");
     setRouteId(0);
   }
 
-  // ---------- fetch origin list ----------
+  // Carrega lista de aeroportos de origem ao montar o componente
   useEffect(() => {
     (async () => {
       try {
+        // Define endpoint com ou sem parâmetro inicial de destino
         const endpoint = initialDestinationAirportId
           ? `api/check-flights/airport/${initialDestinationAirportId}`
           : "api/check-flights/airport";
 
-        const { data } = await api.get(endpoint);
+        // Busca dados da API
+        const { data }: { data: AirportType[] } = await api.get(endpoint);
         setOriginAirports(data);
 
         if (initialDestinationAirportId) {
+          // Se houve destino inicial, busca dados completos desse aeroporto
           const { data: dest } = await api.get(
             `api/airport/${initialDestinationAirportId}`
           );
-
           setInitialDestination(dest);
           setDestinationAirportId(initialDestinationAirportId);
+
+          // Se Houston estiver na lista, pré-seleciona como origem, senão pega o primeiro
+          const houston = data.find((airport) => airport.airportCode === "IAH");
+          setOriginAirportId(houston ? houston.id : data[0].id);
         }
       } catch {
+        // Mostra toast em caso de falha
         toast.error("Failed to fetch origin airports.", toastConfigs);
       }
     })();
   }, []);
 
-  // ---------- fetch destinations ----------
+  // Sempre que origem mudar (e não for destino inicial), carrega destinos válidos
   useEffect(() => {
     if (originAirportId === 0 || initialDestinationAirportId) return;
 
@@ -110,20 +130,20 @@ export default function CheckFlightsBox({
     })();
 
     return () => {
-      abort = true;
+      abort = true; // Marca para não atualizar estado se componente desmontar
     };
   }, [originAirportId]);
 
-  // ---------- fetch route + cabins ----------
+  // Quando origem e destino estiverem definidos, busca rota/cabines
   useEffect(() => {
     if (originAirportId === 0 || destinationAirportId === 0) return;
 
-    // Se já temos lista de destinos, valide; caso contrário (fallback), continue
+    // Garante destino válido dentro da lista
     if (
       destinationAirports.length > 0 &&
       !destinationAirports.some((a) => a.id === destinationAirportId)
     ) {
-      return; // destino realmente inválido
+      return;
     }
 
     let abort = false;
@@ -137,6 +157,7 @@ export default function CheckFlightsBox({
         const route = data as RouteType;
         setRouteId(route.id);
 
+        // Ordena cabines de acordo com prioridade definida
         const list = route.cabins
           .map((c) => cabins[c.key as CabinKey])
           .sort((a, b) => cabinPriority[a.key] - cabinPriority[b.key]);
@@ -162,7 +183,7 @@ export default function CheckFlightsBox({
     };
   }, [originAirportId, destinationAirportId, destinationAirports]);
 
-  // ---------- submit ----------
+  // Ao submeter o form, valida e redireciona para a busca de voos
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
@@ -190,7 +211,6 @@ export default function CheckFlightsBox({
     router.push(`/search-flights?${params.toString()}`);
   }
 
-  // ---------- ui ----------
   return (
     <div className="w-full min-h-full flex items-center justify-center p-5">
       <div className="p-5 bg-[#141414] max-w-[600px] w-full rounded-4xl shadow-2xl">
@@ -202,83 +222,78 @@ export default function CheckFlightsBox({
           className="w-full mt-4 flex flex-col gap-3"
           onSubmit={handleSubmit}
         >
-          {/* origin */}
-          <div>
-            <label className="block mb-1 text-white">Select Origin:</label>
-            <select
-              className={`${selects} invalid:text-gray-500`}
-              value={originAirportId}
-              onChange={(e) => handleOriginChange(Number(e.target.value))}
-            >
-              <option value={0} disabled className="text-black">
-                Select Airport
-              </option>
-              {originAirports.map((airport) => (
-                <option key={airport.id} value={airport.id}>
-                  {airport.city} - {airport.airportCode}
-                </option>
-              ))}
-            </select>
-          </div>
+          {/* Select de Origem */}
+          <CustomSelect<number>
+            options={originAirports.map((airport) => ({
+              label: `${airport.city} - ${airport.airportCode}`,
+              value: airport.id,
+            }))}
+            value={originAirportId}
+            setValue={handleOriginChange}
+            key="originAirport"
+            placeholder="Select origin airport"
+            label="Select Origin:"
+            disabled={false}
+            required
+            colorMode="light"
+          />
 
-          {/* destination */}
-          <div>
-            <label className="block mb-1 text-white">Select Destination:</label>
-            <select
-              className={`${selects} invalid:text-gray-500 cursor-default disabled:text-gray-500 disabled:cursor-not-allowed`}
-              disabled={
-                (originAirportId === 0 || destinationAirports.length === 0) &&
-                !initialDestinationAirportId
-              }
-              value={destinationAirportId}
-              onChange={(e) => handleDestinationChange(Number(e.target.value))}
-            >
-              <option value={0} disabled className="text-gray-400">
-                Select Airport
-              </option>
-              {!initialDestinationAirportId
-                ? destinationAirports.map((airport) => (
-                    <option key={airport.id} value={airport.id}>
-                      {airport.city} – {airport.airportCode}
-                    </option>
-                  ))
-                : initialDestination && ( // ← fallback
-                    <option value={initialDestination.id}>
-                      {initialDestination.city} –{" "}
-                      {initialDestination.airportCode}
-                    </option>
-                  )}{" "}
-            </select>
-          </div>
+          {/* Select de Destino */}
+          <CustomSelect<number>
+            options={
+              !initialDestinationAirportId
+                ? destinationAirports.map((airport) => ({
+                    label: `${airport.city} – ${airport.airportCode}`,
+                    value: airport.id,
+                  }))
+                : initialDestination
+                ? [
+                    {
+                      label: `${initialDestination.city} – ${initialDestination.airportCode}`,
+                      value: initialDestination.id,
+                    },
+                  ]
+                : []
+            }
+            value={destinationAirportId}
+            setValue={handleDestinationChange}
+            key="destinationAirport"
+            placeholder="Select destination airport"
+            label="Select Destination:"
+            disabled={
+              (originAirportId === 0 || destinationAirports.length === 0) &&
+              !initialDestinationAirportId
+            }
+            required
+            colorMode="light"
+          />
 
-          {/* cabin */}
-          <div>
-            <label className="block mb-1 text-white">Select Class:</label>
-            <select
-              className={`${selects} cursor-default disabled:text-gray-500 disabled:cursor-not-allowed`}
-              disabled={
-                originAirportId === 0 ||
-                destinationAirportId === 0 ||
-                cabinsRoute.length === 0
-              }
-              value={cabin}
-              onChange={(e) => setCabin(e.target.value)}
-            >
-              <option value="" disabled className="text-gray-400">
-                Select Class
-              </option>
-              {cabinsRoute.map((c) => (
-                <option key={c.key} value={c.key}>
-                  {c.label}
-                </option>
-              ))}
-            </select>
-          </div>
+          {/* Select de Cabine */}
+          <CustomSelect<string>
+            options={cabinsRoute.map((c) => ({
+              label: c.label,
+              value: c.key,
+            }))}
+            value={cabin}
+            setValue={setCabin}
+            key="cabin"
+            placeholder="Select class"
+            label="Select Class:"
+            disabled={
+              originAirportId === 0 ||
+              destinationAirportId === 0 ||
+              cabinsRoute.length === 0
+            }
+            required
+            colorMode="light"
+          />
 
-          {/* seats */}
+          {/* Input de Assentos */}
           <div className="flex flex-row gap-10">
             <div>
-              <label className="block mb-1 text-white">Seats:</label>
+              <label htmlFor="seats" className="block mb-1 text-white">
+                Seats:
+              </label>
               <input
                 id="seats"
                 type="number"
@@ -291,7 +306,7 @@ export default function CheckFlightsBox({
             </div>
           </div>
 
-          {/* submit */}
+          {/* Botão de Submit */}
           <div className="flex justify-center">
             <button
               type="submit"
