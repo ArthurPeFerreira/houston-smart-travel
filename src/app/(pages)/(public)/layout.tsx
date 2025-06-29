@@ -3,7 +3,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import "../globals.css";
 import { ToastContainer } from "react-toastify";
-import "@/lib/bullmq/scheduler.ts"; 
+// import "@/lib/bullmq/scheduler.ts"; 
 
 export const metadata: Metadata = {
   description: "",

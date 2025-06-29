@@ -19,6 +19,7 @@ interface CustomSelectProps<V extends string | number> {
   label?: string;
   required?: boolean;
   disabled?: boolean;
+  colorMode?: "dark" | "light";
 }
 
 export function CustomSelect<V extends string | number>({
@@ -29,13 +30,14 @@ export function CustomSelect<V extends string | number>({
   label,
   required = false,
   disabled = false,
+  colorMode = "dark",
 }: CustomSelectProps<V>) {
   const selectedOption = options.find((o) => o.value === value) ?? null;
 
   const customStyles: StylesConfig<CustomSelectOption<V>, false> = {
     control: (provided, state) => ({
       ...provided,
-      backgroundColor: "#101828",
+      backgroundColor: colorMode === "dark" ? "#101828" : "#D1D5DC",
       borderColor: "#4b5563",
       borderRadius: "0.25rem",
       padding: "2px",
@@ -47,11 +49,11 @@ export function CustomSelect<V extends string | number>({
     }),
     placeholder: (provided, state) => ({
       ...provided,
-      color: state.isDisabled ? "#6B7280" : "#9CA3AF",
+      color: state.isDisabled ? "#9CA3AF" : "#6B7280",
     }),
     input: (provided) => ({
       ...provided,
-      color: "#fff",
+      color: colorMode === "dark" ? "#FFF" : "#000",
     }),
     dropdownIndicator: (provided, state) => ({
       ...provided,
@@ -62,24 +64,35 @@ export function CustomSelect<V extends string | number>({
     indicatorSeparator: () => ({ display: "none" }),
     menu: (provided) => ({
       ...provided,
-      backgroundColor: "#101828",
+      backgroundColor: colorMode === "dark" ? "#101828" : "#d1d5dc",
     }),
     option: (provided, state) => ({
       ...provided,
-      backgroundColor: state.isSelected ? "#1967d2" : "#101828",
-      color: "#fff",
+      backgroundColor: state.isSelected
+        ? "#1967d2"
+        : colorMode === "dark"
+        ? "#101828"
+        : "#d1d5dc",
+      color: colorMode === "dark" ? "#FFF" : "#000",
+      cursor: "pointer",
       ":hover": { backgroundColor: "#1967d2" },
     }),
     singleValue: (provided) => ({
       ...provided,
-      color: "#fff",
+      color: colorMode === "dark" ? "#FFF" : "#000",
+      cursor: "pointer",
     }),
   };
+
+  const safeId = (label ? label : "").toLowerCase().replace(/\s+/g, "-");
+  const inputId = `select-${safeId}`;
 
   return (
     <div className={`w-full ${disabled ? "cursor-not-allowed" : ""}`}>
       {label && <label className="block mb-1 text-white">{label}</label>}
       <Select<CustomSelectOption<V>, false>
+        instanceId={inputId}
+        inputId={inputId}
         styles={customStyles}
         isDisabled={disabled}
         required={required}

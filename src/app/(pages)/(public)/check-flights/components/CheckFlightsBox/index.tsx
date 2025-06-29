@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import { AirportType } from "@/lib/airport/types";
@@ -11,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaSpinner } from "react-icons/fa";
 import { toast } from "react-toastify";
+import { CustomSelect } from "../../../components/CustomSelect";
 
 interface CheckFlightsBoxProps {
   initialDestinationAirportId: number | undefined;
@@ -19,11 +18,9 @@ interface CheckFlightsBoxProps {
 export default function CheckFlightsBox({
   initialDestinationAirportId,
 }: CheckFlightsBoxProps) {
-  const selects = "w-full bg-gray-300 p-2 rounded";
   const inputs = "w-20 bg-gray-300 p-2 rounded";
   const router = useRouter();
 
-  // ---------- state ----------
   const [originAirports, setOriginAirports] = useState<AirportType[]>([]);
   const [destinationAirports, setDestinationAirports] = useState<AirportType[]>(
     []
@@ -38,7 +35,6 @@ export default function CheckFlightsBox({
   const [seats, setSeats] = useState(1);
   const [cabin, setCabin] = useState("");
 
-  // ---------- handlers ----------
   function handleOriginChange(id: number) {
     setOriginAirportId(id);
     if (!initialDestinationAirportId) {
@@ -57,7 +53,6 @@ export default function CheckFlightsBox({
     setRouteId(0);
   }
 
-  // ---------- fetch origin list ----------
   useEffect(() => {
     (async () => {
       try {
@@ -65,7 +60,7 @@ export default function CheckFlightsBox({
           ? `api/check-flights/airport/${initialDestinationAirportId}`
           : "api/check-flights/airport";
 
-        const { data } = await api.get(endpoint);
+        const { data }: { data: AirportType[] } = await api.get(endpoint);
         setOriginAirports(data);
 
         if (initialDestinationAirportId) {
@@ -75,6 +70,16 @@ export default function CheckFlightsBox({
 
           setInitialDestination(dest);
           setDestinationAirportId(initialDestinationAirportId);
+
+          const houstonAirport = data.find(
+            (airport) => airport.airportCode === "IAH"
+          );
+
+          if (houstonAirport) {
+            setOriginAirportId(houstonAirport.id);
+          } else {
+            setOriginAirportId(data[0].id);
+          }
         }
       } catch {
         toast.error("Failed to fetch origin airports.", toastConfigs);
@@ -82,7 +87,6 @@ export default function CheckFlightsBox({
     })();
   }, []);
 
-  // ---------- fetch destinations ----------
   useEffect(() => {
     if (originAirportId === 0 || initialDestinationAirportId) return;
 
@@ -114,7 +118,6 @@ export default function CheckFlightsBox({
     };
   }, [originAirportId]);
 
-  // ---------- fetch route + cabins ----------
   useEffect(() => {
     if (originAirportId === 0 || destinationAirportId === 0) return;
 
@@ -162,7 +165,6 @@ export default function CheckFlightsBox({
     };
   }, [originAirportId, destinationAirportId, destinationAirports]);
 
-  // ---------- submit ----------
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
@@ -190,7 +192,6 @@ export default function CheckFlightsBox({
     router.push(`/search-flights?${params.toString()}`);
   }
 
-  // ---------- ui ----------
   return (
     <div className="w-full min-h-full flex items-center justify-center p-5">
       <div className="p-5 bg-[#141414] max-w-[600px] w-full rounded-4xl shadow-2xl">
@@ -202,80 +203,71 @@ export default function CheckFlightsBox({
           className="w-full mt-4 flex flex-col gap-3"
           onSubmit={handleSubmit}
         >
-          {/* origin */}
-          <div>
-            <label className="block mb-1 text-white">Select Origin:</label>
-            <select
-              className={`${selects} invalid:text-gray-500`}
-              value={originAirportId}
-              onChange={(e) => handleOriginChange(Number(e.target.value))}
-            >
-              <option value={0} disabled className="text-black">
-                Select Airport
-              </option>
-              {originAirports.map((airport) => (
-                <option key={airport.id} value={airport.id}>
-                  {airport.city} - {airport.airportCode}
-                </option>
-              ))}
-            </select>
-          </div>
+          <CustomSelect
+            options={originAirports.map((airport) => ({
+              label: `${airport.city} - ${airport.airportCode}`,
+              value: airport.id,
+            }))}
+            value={originAirportId}
+            setValue={handleOriginChange}
+            key="originAirport"
+            placeholder="Select origin airport"
+            label="Select Origin:"
+            disabled={false}
+            required
+            colorMode="light"
+          />
+          <CustomSelect
+            options={
+              !initialDestinationAirportId
+                ? // caso sem “initial”: mapeia todo o array
+                  destinationAirports.map((airport) => ({
+                    label: `${airport.city} – ${airport.airportCode}`,
+                    value: airport.id,
+                  }))
+                : // caso com “initial”: coloca só aquela opção num array
+                initialDestination
+                ? [
+                    {
+                      label: `${initialDestination.city} – ${initialDestination.airportCode}`,
+                      value: initialDestination.id,
+                    },
+                  ]
+                : // e se initialDestination for undefined, devolve array vazio
+                  []
+            }
+            value={destinationAirportId}
+            setValue={handleDestinationChange}
+            key="destinationAirport"
+            placeholder="Select destination airport"
+            label="Select Destination:"
+            disabled={
+              (originAirportId === 0 || destinationAirports.length === 0) &&
+              !initialDestinationAirportId
+            }
+            required
+            colorMode="light"
+          />
 
-          {/* destination */}
-          <div>
-            <label className="block mb-1 text-white">Select Destination:</label>
-            <select
-              className={`${selects} invalid:text-gray-500 cursor-default disabled:text-gray-500 disabled:cursor-not-allowed`}
-              disabled={
-                (originAirportId === 0 || destinationAirports.length === 0) &&
-                !initialDestinationAirportId
-              }
-              value={destinationAirportId}
-              onChange={(e) => handleDestinationChange(Number(e.target.value))}
-            >
-              <option value={0} disabled className="text-gray-400">
-                Select Airport
-              </option>
-              {!initialDestinationAirportId
-                ? destinationAirports.map((airport) => (
-                    <option key={airport.id} value={airport.id}>
-                      {airport.city} – {airport.airportCode}
-                    </option>
-                  ))
-                : initialDestination && ( // ← fallback
-                    <option value={initialDestination.id}>
-                      {initialDestination.city} –{" "}
-                      {initialDestination.airportCode}
-                    </option>
-                  )}{" "}
-            </select>
-          </div>
+          <CustomSelect
+            options={cabinsRoute.map((cabin) => ({
+              label: `${cabin.label}`,
+              value: cabin.key,
+            }))}
+            value={cabin}
+            setValue={setCabin}
+            key="cabin"
+            placeholder="Select class"
+            label="Select Class:"
+            disabled={
+              originAirportId === 0 ||
+              destinationAirportId === 0 ||
+              cabinsRoute.length === 0
+            }
+            required
+            colorMode="light"
+          />
 
-          {/* cabin */}
-          <div>
-            <label className="block mb-1 text-white">Select Class:</label>
-            <select
-              className={`${selects} cursor-default disabled:text-gray-500 disabled:cursor-not-allowed`}
-              disabled={
-                originAirportId === 0 ||
-                destinationAirportId === 0 ||
-                cabinsRoute.length === 0
-              }
-              value={cabin}
-              onChange={(e) => setCabin(e.target.value)}
-            >
-              <option value="" disabled className="text-gray-400">
-                Select Class
-              </option>
-              {cabinsRoute.map((c) => (
-                <option key={c.key} value={c.key}>
-                  {c.label}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* seats */}
           <div className="flex flex-row gap-10">
             <div>
               <label className="block mb-1 text-white">Seats:</label>
@@ -291,7 +283,6 @@ export default function CheckFlightsBox({
             </div>
           </div>
 
-          {/* submit */}
           <div className="flex justify-center">
             <button
               type="submit"
