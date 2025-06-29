@@ -137,7 +137,10 @@ export default function Locals() {
                         `/check-flights?airportId=${local.airport.id}`
                       )
                     }
-                    className="absolute bottom-[-16px] left-1/2 transform -translate-x-1/2 bg-[#141414] text-white px-4 py-1 rounded-full whitespace-nowrap cursor-pointer hover:scale-105"
+                    className="absolute bottom-[-16px] left-1/2 transform -translate-x-1/2
+                     bg-[#141414] text-white px-4 py-1 rounded-full whitespace-nowrap 
+                     cursor-pointer 
+                     hover:duration-400 hover:scale-105"
                   >
                     Check Availability
                   </button>
