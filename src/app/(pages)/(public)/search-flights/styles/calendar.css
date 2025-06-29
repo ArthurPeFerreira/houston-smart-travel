@@ -55,28 +55,30 @@
   height: 40%;
 }
 
-.selected-flight-departure {
-  background-color: #ffcb6b !important;
-}
-
+.selected-flight-departure,
 .selected-flight-return {
-  background-color: #f78c6b !important;
+  background-color: #155dfc;
+  color: #fff !important;
 }
 
-
-.has-flight-direct {
-  background-color: #95dfbc;
+.departure-direct {
+  background: #95dfbc;
+}
+.departure-layover {
+  background: #51a2ff;
 }
 
-.has-flight-layovers {
-  background-color: #51a2ff;
+.return-direct {
+  background: #ffd37f;
+}
+.return-layover {
+  background: #ff9e9e;
 }
 
-.has-flight-direct:hover {
-  cursor: pointer;
-}
-
-.has-flight-layovers:hover {
+.departure-direct:hover,
+.departure-layover:hover,
+.return-direct:hover,
+.return-layover:hover {
   cursor: pointer;
 }
 

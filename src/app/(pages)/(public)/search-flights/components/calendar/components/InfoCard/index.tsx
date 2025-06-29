@@ -2,6 +2,7 @@ import { AirportType } from "@/lib/airport/types";
 import { CabinKey, cabins } from "@/lib/route/cabins";
 import { CabinsType } from "@/lib/route/types";
 import { CheckCircle, DollarSign, Luggage, Plane } from "lucide-react";
+import { BsFillSuitcase2Fill } from "react-icons/bs";
 
 interface InfoCardProps {
   cabinSelected: CabinsType;
@@ -37,12 +38,20 @@ export default function InfoCard({
                 {cabins[cabinSelected.key as CabinKey].label}
               </span>
             </div>
-            <div className="flex items-center mb-4 w-full justify-center gap-2 text-base">
-              <Luggage className="text-blue-600" size={20} />
-              <strong>{`Includes 1 carry-on and ${cabinSelected?.bagsAmount} checked (23kg) bag, free of charge.`}</strong>
+            <div className="flex flex-col items-center md:flex-row md:gap-4">
+              <div className="flex items-center w-full mb-3 justify-center gap-2 text-justify">
+                <Luggage className="text-indigo-600" size={20} />
+                <strong>{`Includes ${cabinSelected?.bagsAmount} checked (23kg) bag.`}</strong>
+              </div>
+
+              <div className="flex items-center w-full mb-3 justify-center gap-2 text-justify">
+                <BsFillSuitcase2Fill className="text-indigo-600" size={20} />
+                <strong>{`Includes 1 carry-on bag.`}</strong>
+              </div>
             </div>
+
             {originAirport && destinationAirport && (
-              <div className="flex flex-col gap-4 items-center md:flex-row md:gap-10 ">
+              <div className="flex flex-col gap-4 items-center md:flex-row md:gap-10">
                 <div className="flex items-center gap-2">
                   <Plane className="text-indigo-600" size={20} />
                   <span>
@@ -86,9 +95,9 @@ export default function InfoCard({
             )}
             {roundedTrip && (
               <div className="text-black h-fit">
-                <div className="flex flex-col gap-2">
-                  <div className="mt-4">
-                    <div className="grid grid-cols-2">
+                <div className="flex flex-col mt-3 gap-2 justify-center">
+                  <div className="">
+                    <div className="flex flex-col gap-2 md:grid md:grid-cols-2 w-full items-center">
                       {departureDate ? (
                         <div>
                           <span className="font-semibold">Departure:</span>{" "}
@@ -125,7 +134,7 @@ export default function InfoCard({
                       )}
                     </div>
 
-                    <div className="flex items-center justify-center gap-2 mt-4">
+                    <div className="flex items-center justify-center gap-2 mt-3">
                       <button
                         onClick={() => setSelection("departure")}
                         className={`px-4 py-2 rounded-md border transition-all duration-200 ${

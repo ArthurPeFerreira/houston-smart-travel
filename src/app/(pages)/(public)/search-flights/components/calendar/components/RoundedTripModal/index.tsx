@@ -13,6 +13,7 @@ import { CheckCircle, DollarSign, Luggage, Plane } from "lucide-react";
 import { CabinKey, cabins } from "@/lib/route/cabins";
 import { FaWhatsapp } from "react-icons/fa";
 import { sendWhatsappMessage } from "../sendWhatsappMessage";
+import { BsFillSuitcase2Fill } from "react-icons/bs";
 
 interface RoundedTripModalProps {
   isOpen: boolean;
@@ -38,10 +39,12 @@ export default function RoundedTripModal({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent
-        // showCloseButton={false}
-        className="bg-white text-[#00001e] rounded-md w-11/12 lg:w-9/12 xl:w-8/12 h-fit border-none shadow-lg p-6"
+        showCloseButton={false}
+        className="bg-white text-[#00001e] rounded-md w-11/12 
+                  max-w-md sm:w-full sm:max-w-lg md:max-w-3xl mx-auto h-fit 
+                  max-h-fit border-none shadow-lg p-6"
       >
-        <DialogHeader className="mb-6">
+        <DialogHeader className="mb-2">
           <DialogTitle className="text-center text-2xl font-bold">
             Is everything correct?
           </DialogTitle>
@@ -57,7 +60,12 @@ export default function RoundedTripModal({
 
           <div className="flex items-center w-full justify-center gap-2">
             <Luggage className="text-blue-600" size={20} />
-            <strong>{`Includes 1 carry-on and ${cabinSelected?.bagsAmount} checked (23kg) bag, free of charge.`}</strong>
+            <strong>{`Includes ${cabinSelected?.bagsAmount} checked (23kg) bag.`}</strong>
+          </div>
+
+          <div className="flex items-center w-full justify-center gap-2">
+            <BsFillSuitcase2Fill className="text-blue-600" size={20} />
+            <strong>{`Includes 1 carry-on bag.`}</strong>
           </div>
 
           <div className="flex flex-col gap-4 items-center md:flex-row md:gap-10">
@@ -125,7 +133,7 @@ export default function RoundedTripModal({
           </div>
         </div>
 
-        <div className="flex flex-col gap-4 mt-6">
+        <div className="flex flex-col gap-4">
           <button
             onClick={() => {
               if (originAirport && destinationAirport) {

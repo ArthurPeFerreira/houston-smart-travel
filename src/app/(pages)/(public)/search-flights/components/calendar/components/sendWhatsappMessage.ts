@@ -1,11 +1,12 @@
-import { format } from "date-fns";
 import { phone } from "@/lib/systemInfo/contacts";
 import { AirportType } from "@/lib/airport/types";
 import { CabinsType } from "@/lib/route/types";
 import { CabinKey, cabins } from "@/lib/route/cabins";
+import { formatInTimeZone } from "date-fns-tz";
 
 function formatDate(dateStr: string) {
-  return format(new Date(dateStr), "EEE, MMM dd, yyyy");
+  console.log(dateStr)
+  return formatInTimeZone(dateStr, 'UTC', 'EEE, MMM dd, yyyy');
 }
 
 export function sendWhatsappMessage({

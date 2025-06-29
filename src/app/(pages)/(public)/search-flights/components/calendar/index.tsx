@@ -6,9 +6,8 @@ import interactionPlugin from "@fullcalendar/interaction";
 import multiMonthPlugin from "@fullcalendar/multimonth";
 import { useEffect, useRef, useState, useMemo } from "react";
 import { addYears, startOfToday } from "date-fns";
-
+import debounce from "lodash/debounce";
 import "../../styles/calendar.css";
-
 import "@fullcalendar/daygrid/index.js";
 import "@fullcalendar/multimonth/index.js";
 import { api } from "@/lib/api/api";
@@ -98,27 +97,26 @@ export default function Calendar({
   const filteredDepartureEvents = useMemo(() => {
     if (!returnDate) return departureEventsData;
     const limit = new Date(returnDate);
-    return departureEventsData.filter(
-      (ev) => new Date(ev.start) < limit 
-    );
+    return departureEventsData.filter((ev) => new Date(ev.start) < limit);
   }, [departureEventsData, returnDate]);
 
   // Eventos de volta que obedecem à data-limite imposta pela ida escolhida
   const filteredReturnEvents = useMemo(() => {
     if (!departureDate) return returnEventsData;
     const limit = new Date(departureDate);
-    return returnEventsData.filter(
-      (ev) => new Date(ev.start) > limit 
-    );
+    return returnEventsData.filter((ev) => new Date(ev.start) > limit);
   }, [returnEventsData, departureDate]);
 
   useEffect(() => {
-    function handleResize() {
+    const debounced = debounce(() => {
       setCalendarKey(new Date().toISOString());
-    }
+    }, 1500);
 
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    window.addEventListener("resize", debounced);
+    return () => {
+      window.removeEventListener("resize", debounced);
+      debounced.cancel();
+    };
   }, []);
 
   useEffect(() => {
@@ -134,33 +132,34 @@ export default function Calendar({
 
         if (responseDepartureEvents.data.length > 0) {
           setEventsData(
-            responseDepartureEvents.data.map((data: RoutesDataType) => {
-              const date = new Date(data.date).toISOString().slice(0, 10);
+            responseDepartureEvents.data.map((route: RoutesDataType) => {
+              const date = new Date(route.date).toISOString().slice(0, 10);
               return {
-                title: `${data.originAirport} -> ${data.destinationAirport} - ${date}`,
+                title: `${route.originAirport} → ${route.destinationAirport} - ${date}`,
                 start: date,
                 end: date,
                 allDay: true,
                 extendedProps: {
-                  eventType: data.direct
-                    ? "has-flight-direct"
-                    : "has-flight-layovers",
+                  eventType: route.direct
+                    ? "departure-direct"
+                    : "departure-layover",
                 },
               };
             })
           );
+
           setDepartureEventsData(
-            responseDepartureEvents.data.map((data: RoutesDataType) => {
-              const date = new Date(data.date).toISOString().slice(0, 10);
+            responseDepartureEvents.data.map((route: RoutesDataType) => {
+              const date = new Date(route.date).toISOString().slice(0, 10);
               return {
-                title: `${data.originAirport} -> ${data.destinationAirport} - ${date}`,
+                title: `${route.originAirport} → ${route.destinationAirport} - ${date}`,
                 start: date,
                 end: date,
                 allDay: true,
                 extendedProps: {
-                  eventType: data.direct
-                    ? "has-flight-direct"
-                    : "has-flight-layovers",
+                  eventType: route.direct
+                    ? "departure-direct"
+                    : "departure-layover",
                 },
               };
             })
@@ -172,17 +171,15 @@ export default function Calendar({
 
         if (responseReturnEvents.data.length > 0) {
           setReturnEventsData(
-            responseReturnEvents.data.map((data: RoutesDataType) => {
-              const date = new Date(data.date).toISOString().slice(0, 10);
+            responseReturnEvents.data.map((route: RoutesDataType) => {
+              const date = new Date(route.date).toISOString().slice(0, 10);
               return {
-                title: `${data.originAirport} -> ${data.destinationAirport} - ${date}`,
+                title: `${route.originAirport} → ${route.destinationAirport} - ${date}`,
                 start: date,
                 end: date,
                 allDay: true,
                 extendedProps: {
-                  eventType: data.direct
-                    ? "has-flight-direct"
-                    : "has-flight-layovers",
+                  eventType: route.direct ? "return-direct" : "return-layover",
                 },
               };
             })
@@ -223,6 +220,13 @@ export default function Calendar({
 
   // Função disparada ao clicar em um dia
   function handleDateClick(arg: { dateStr: string }) {
+    const FLIGHT_TYPES = [
+      "departure-direct",
+      "departure-layover",
+      "return-direct",
+      "return-layover",
+    ];
+
     const clickedDate = arg.dateStr;
 
     const events = calendarRef.current
@@ -230,17 +234,14 @@ export default function Calendar({
       .getEvents()
       .filter((ev) => ev.start?.toISOString().slice(0, 10) === clickedDate);
 
-    const hasFlight = events?.some(
-      (ev) =>
-        ev.extendedProps.eventType === "has-flight-direct" ||
-        ev.extendedProps.eventType === "has-flight-layovers"
+    const hasFlight = events?.some((ev) =>
+      FLIGHT_TYPES.includes(ev.extendedProps.eventType)
     );
-
     if (!hasFlight) return;
 
     if (selection === "return" && departureDate) {
       const departure = new Date(departureDate);
-      const returning = new Date(clickedDate); // ← data clicada para a volta
+      const returning = new Date(clickedDate);
 
       if (returning <= departure) {
         toast.info(
@@ -298,7 +299,10 @@ export default function Calendar({
     }
 
     // Já é ida-e-volta e o usuário acabou de escolher a data de volta:
-    if (roundedTrip) {
+    if (
+      roundedTrip &&
+      (selection === "return" || (departureDate !== "" && returnDate !== ""))
+    ) {
       setIsOpenRoundedTripModal(true); // mostra o resumo final
     }
   }
@@ -316,6 +320,25 @@ export default function Calendar({
       setEventsData(filteredReturnEvents);
     }
   }, [selection, departureEventsData, returnEventsData]);
+
+  function resetTrip() {
+    // Zera datas e modo
+    setDepartureDate("");
+    setReturnDate("");
+    setRoundedTrip(false);
+    setSelection("departure");
+
+    // Remove eventos "Departure"/"Return" que pintam as células
+    setDepartureEventsData((prev) =>
+      prev.filter((ev) => ev.extendedProps.eventType !== "departure-date")
+    );
+    setReturnEventsData((prev) =>
+      prev.filter((ev) => ev.extendedProps.eventType !== "return-date")
+    );
+
+    // Força o FullCalendar a reconstruir o DOM
+    setCalendarKey(new Date().toISOString());
+  }
 
   return (
     <main className="relative flex-1 w-full min-h-[60vh] md:min-h-fit flex items-center justify-center p-5">
@@ -391,50 +414,50 @@ export default function Calendar({
                     showNonCurrentDates={false}
                     height="auto"
                     dayCellDidMount={(arg) => {
-                      const cellDateStr = arg.date.toISOString().slice(0, 10);
+                      if (arg.isOther) return;
 
-                      // Filtra os eventos desse dia
+                      const cellDateStr = arg.date.toISOString().slice(0, 10);
                       const events = arg.view.calendar
                         .getEvents()
-                        .filter((event) => {
-                          return (
-                            event.start &&
-                            event.start.toISOString().slice(0, 10) ===
-                              cellDateStr
-                          );
-                        });
+                        .filter(
+                          (ev) =>
+                            ev.start?.toISOString().slice(0, 10) === cellDateStr
+                        );
+
+                      if (!events.length) return;
 
                       if (events.length) {
                         // Zera todas as classes customizadas antes de aplicar novas
                         arg.el.classList.remove(
-                          "has-flight-direct",
-                          "has-flight-layovers",
+                          "departure-direct",
+                          "departure-layover",
+                          "return-direct",
+                          "return-layover",
                           "selected-flight-departure",
                           "selected-flight-return"
                         );
 
                         for (const ev of events) {
-                          const eventType = ev.extendedProps.eventType;
+                          const type = ev.extendedProps.eventType;
 
-                          if (eventType === "has-flight-layovers") {
-                            arg.el.classList.add("has-flight-layovers");
-                          }
+                          if (type === "departure-direct")
+                            arg.el.classList.add("departure-direct");
+                          if (type === "departure-layover")
+                            arg.el.classList.add("departure-layover");
+                          if (type === "return-direct")
+                            arg.el.classList.add("return-direct");
+                          if (type === "return-layover")
+                            arg.el.classList.add("return-layover");
 
-                          if (eventType === "has-flight-direct") {
-                            arg.el.classList.remove("has-flight-layovers");
-                            arg.el.classList.add("has-flight-direct");
-                          }
-
-                          if (eventType === "departure-date") {
-                            arg.el.classList.remove("has-flight-layovers");
-                            arg.el.classList.remove("has-flight-direct");
+                          if (type === "departure-date") {
                             arg.el.classList.add("selected-flight-departure");
+                            arg.el.classList.remove("departure-direct");
+                            arg.el.classList.remove("departure-layover");
                           }
-
-                          if (eventType === "return-date") {
-                            arg.el.classList.remove("has-flight-layovers");
-                            arg.el.classList.remove("has-flight-direct");
+                          if (type === "return-date") {
                             arg.el.classList.add("selected-flight-return");
+                            arg.el.classList.remove("return-direct");
+                            arg.el.classList.remove("return-layover");
                           }
                         }
                       }
@@ -456,13 +479,25 @@ export default function Calendar({
                 </div>
                 <div className="flex flex-row gap-2">
                   <div className="flex flex-row items-center gap-2">
-                    <div className="bg-[#95dfbc] w-fit p-5 relative">
+                    <div
+                      className={`${
+                        selection === "departure"
+                          ? "departure-direct"
+                          : "return-direct"
+                      } w-fit p-5 relative`}
+                    >
                       <label className="absolute right-1 top-0.5">19</label>
                     </div>
                     <div>Direct flight</div>
                   </div>
                   <div className="flex flex-row items-center gap-2">
-                    <div className="bg-[#51a2ff] w-fit p-5 relative">
+                    <div
+                      className={`${
+                        selection === "departure"
+                          ? "departure-layover"
+                          : "return-layover"
+                      } w-fit p-5 relative`}
+                    >
                       <label className="absolute right-1 top-0.5">19</label>
                     </div>
                     <div>Flight with connection(s)</div>
@@ -484,6 +519,7 @@ export default function Calendar({
               destinationAirport={destinationAirport}
               departureDate={departureDate}
               seats={seats}
+              resetDepatureDate={resetTrip}
             />
             <RoundedTripModal
               isOpen={isOpenRoundedTripModal && roundedTrip}
